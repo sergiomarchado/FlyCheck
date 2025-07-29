@@ -1,0 +1,34 @@
+<resources>
+    <string name="app_name">FlyCheck</string>
+
+    <!--SPLASH SCREEN-->
+    <string name="splash_screen_main_text">FlyCheck ✈️</string>
+    <string name="splash_screen_loadingtext">Preparando cabina…</string>
+
+<!--    CHECK LIST INPUT-->
+    <string name="checklistinput_new_item_textfield_label">Nuevo ítem de checklist</string>
+    <string name="checklistinput_bottom_add">Agregar</string>
+    
+    <!--ChecklistItemCard-->
+    <string name="checklistitemcard_icon_content_description">Eliminar ítem</string>
+    <string name="checklistitemcard_alertdialog_title">Eliminar elemento</string>
+    <string name="checklistitemcard_alertdialog_text">¿Estás seguro de que deseas eliminar esta acción de la checklist?</string>
+    <string name="checklistitemcard_alertdialog_option_yes">Sí</string>
+    <string name="checklistitemcard_alertdialog_option_cancel">Cancelar</string>
+
+
+    <!--HOME SCREEN-->
+    <string name="home_screen_maintext">¿Qué tipo de Check List quieres usar hoy?</string>
+    <string name="home_screen_button_customchecklist">✏️ Crear Check List Personalizada</string>
+
+    <!--Create Check List Screen-->
+    <string name="createchecklistscreen_text_title">Crear nueva Check List</string>
+    <string name="createchecklistscreen_outlinedtextfield_name_label">Nombre de la Check List</string>
+    <string name="createchecklistscreen_outlinedtextfield_modelaircraft_label">Modelo de avión (ej. B738, A320)</string>
+    <string name="createchecklistscreen_outlinedtextfield_airlinename_label">Compañía o aerolínea (opcional)</string>
+    <string name="createchecklistscreen_row_switch_includelogo">¿Incluir logo?</string>
+    <string name="createchecklistscreen_outlinedtextfield_sectionsnumber">Número de secciones</string>
+    <string name="createchecklistscreen_bottom_continue">Continuar</string>
+    <string name="createchecklistscreen_contentDescription_add">Incrementar número de secciones</string>
+    <string name="createchecklistscreen_contentDescription_remove">Disminuir número de secciones</string>
+</resources>
