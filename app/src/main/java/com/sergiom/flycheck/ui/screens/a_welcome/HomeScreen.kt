@@ -1,4 +1,4 @@
-package com.sergiom.flycheck.ui.screens.part1
+package com.sergiom.flycheck.ui.screens.a_welcome
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column

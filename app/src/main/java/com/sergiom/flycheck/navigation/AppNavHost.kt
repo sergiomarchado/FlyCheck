@@ -1,18 +1,23 @@
 package com.sergiom.flycheck.navigation
 
+import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.sergiom.flycheck.ui.screens.CreateCheckListScreen
-import com.sergiom.flycheck.ui.screens.HomeScreen
-import com.sergiom.flycheck.ui.screens.SplashScreen
+import com.sergiom.flycheck.ui.screens.a_welcome.HomeScreen
+import com.sergiom.flycheck.ui.screens.a_welcome.SplashScreen
+import com.sergiom.flycheck.ui.screens.b_custom.CheckListEditorScreen
+import com.sergiom.flycheck.ui.screens.b_custom.CreateCustomCheckListScreen
 
 
+@SuppressLint("UnrememberedGetBackStackEntry")
 @Composable
 fun AppNavHost(navController: NavHostController) {
 
     NavHost(navController = navController, startDestination = NavigationRoutes.Splash.route){
+
+        // Splash
         composable(NavigationRoutes.Splash.route) {
             // Simulamos un splash screen corto con delay
             SplashScreen(
@@ -24,6 +29,7 @@ fun AppNavHost(navController: NavHostController) {
             )
         }
 
+        // HOME SCREEN TRAS SPLASCREEN
         composable(NavigationRoutes.Home.route){
             HomeScreen(
                 onGoCustomCheckList = {
@@ -33,20 +39,49 @@ fun AppNavHost(navController: NavHostController) {
             )
         }
 
+        // OPCIÓN DE CREAR CHECK LIST PERSONALIZADA O CUSTOM
         composable(NavigationRoutes.CheckListCustom.route) {
-            CreateCheckListScreen(
-                onContinue = { name ->
-                    navController.navigate(NavigationRoutes.CheckListEditor.route)
+            CreateCustomCheckListScreen(
+                onContinue = {name, model, airline, logo, sectionCount ->
+                    navController.navigate(
+                        NavigationRoutes.CheckListEditor.withArgs(
+                            name,
+                            model,
+                            airline,
+                            logo,
+                            sectionCount
+                        )
+                    )
                 }
+            )
+        }
+
+        /// Editor checklist con datos pasados por navegación
+        composable(
+            route = NavigationRoutes.CheckListEditor.fullRoute
+        ) { backStackEntry ->
+            val name = backStackEntry.arguments?.getString("name") ?: ""
+            val model = backStackEntry.arguments?.getString("model") ?: ""
+            val airline = backStackEntry.arguments?.getString("airline") ?: ""
+            val logo = backStackEntry.arguments?.getString("logo")?.toBooleanStrictOrNull() ?: false
+            val sectionCount = backStackEntry.arguments?.getString("sectionCount")?.toIntOrNull() ?: 1
+
+            CheckListEditorScreen(
+                templateName = name,
+                model = model,
+                airline = airline,
+                includeLogo = logo,
+                sectionCount = sectionCount
             )
         }
 
         composable(NavigationRoutes.CheckListPredefined.route) {
             // Pendiente de implementar más adelante
         }
+
+
+
+
     }
-
-
-
 }
 

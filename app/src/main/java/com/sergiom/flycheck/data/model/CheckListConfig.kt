@@ -6,6 +6,6 @@ data class CheckListConfig(
     val modelAircraft: String = "",
     val airline: String = "",
     val includeLogo: Boolean = false,
-    val sectionsNumber: Int = 1
+    val sections: MutableList<CheckListSection> = mutableListOf()
 )
 

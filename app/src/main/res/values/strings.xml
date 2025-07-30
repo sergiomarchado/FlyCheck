@@ -21,7 +21,7 @@
     <string name="home_screen_maintext">¿Qué tipo de Check List quieres usar hoy?</string>
     <string name="home_screen_button_customchecklist">✏️ Crear Check List Personalizada</string>
 
-    <!--Create Check List Screen-->
+    <!--Create Custom Check List Screen-->
     <string name="createchecklistscreen_text_title">Crear nueva Check List</string>
     <string name="createchecklistscreen_outlinedtextfield_name_label">Nombre de la Check List</string>
     <string name="createchecklistscreen_outlinedtextfield_modelaircraft_label">Modelo de avión (ej. B738, A320)</string>
@@ -31,4 +31,20 @@
     <string name="createchecklistscreen_bottom_continue">Continuar</string>
     <string name="createchecklistscreen_contentDescription_add">Incrementar número de secciones</string>
     <string name="createchecklistscreen_contentDescription_remove">Disminuir número de secciones</string>
+    <string name="createchecklistscreen_section_text">Secciones</string>
+    <string name="createchecklistscreen_errortext_name">El campo nombre de la Check List es obligatorio</string>
+    <string name="createchecklistscreen_errortext_aircraftmodel">El campo modelo de aeronave es obligatorio</string>
+
+    <!--Create Custom Check List View Model-->
+    <string name="createcustomchecklistviewmodel_section">Sección </string>
+
+    <!--SectionEditor-->
+    <string name="sectioneditor_text_label">Título de la Sección</string>
+
+    <!--CheckListEditorScreen-->
+    <string name="checklisteditorscreen_item_text">Nuevo Ítem</string>
+    <string name="checklisteditorscreen_add">Añadir</string>
+
+    <!--CheckListHeader-->
+    <string name="checklistheader_contentdescription">Logo de la Aerolínea</string>
 </resources>

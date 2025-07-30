@@ -1,4 +1,4 @@
-package com.sergiom.flycheck.ui.screens
+package com.sergiom.flycheck.ui.screens.b_custom
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,106 +18,100 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.sergiom.flycheck.R
-import com.sergiom.flycheck.viewmodel.CreateCheckListViewModel
+import com.sergiom.flycheck.viewmodel.CreatecCustomCheckListViewModel
 
 
 @Composable
 fun CreateCustomCheckListScreen(
-    onContinue: (String) -> Unit // Pasar config completa en el futuro
-
+    onContinue: (String, String, String, Boolean, Int) -> Unit
 ) {
-    val viewModel: CreateCheckListViewModel = hiltViewModel()
-    val config = viewModel.config
-
-    var sectionCount by rememberSaveable { mutableIntStateOf(1) }
-
-    var nameError by rememberSaveable { mutableStateOf(false) }
-    var modelError by rememberSaveable { mutableStateOf(false) }
+    val viewModel: CreatecCustomCheckListViewModel = hiltViewModel()
+    val uiState by viewModel.uiState.collectAsState()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(vertical = 48.dp, horizontal = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+            .padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         Text(
             text = stringResource(R.string.createchecklistscreen_text_title),
-            style = MaterialTheme.typography.headlineSmall
+            style = MaterialTheme.typography.headlineMedium,
+            color = MaterialTheme.colorScheme.primary
         )
 
+        // Check List Name
         OutlinedTextField(
-            value = config.name,
-            onValueChange = {
-                viewModel.onNameChanged(it)
-                nameError = it.isBlank()
-            },
+            value = uiState.name,
+            onValueChange = viewModel::onNameChanged,
             label = { Text(stringResource(R.string.createchecklistscreen_outlinedtextfield_name_label)) },
-            isError = nameError,
+            isError = uiState.nameError,
+            shape = MaterialTheme.shapes.extraLarge,
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
-        if(nameError){
+        if(uiState.nameError){
             Text(
-                text = "Check List name is required",
+                text = stringResource(R.string.createchecklistscreen_errortext_name),
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodySmall
             )
         }
 
+        // Aircraft Model
         OutlinedTextField(
-            value = config.modelAircraft,
-            onValueChange = {
-                viewModel.onAircraftModelChanged(it)
-                modelError = it.isBlank()
-            },
+            value = uiState.aircraftModel,
+            onValueChange = viewModel::onAircraftModelChanged,
             label = { Text(stringResource(R.string.createchecklistscreen_outlinedtextfield_modelaircraft_label)) },
-            isError = modelError,
+            isError = uiState.modelError,
+            shape = MaterialTheme.shapes.extraLarge,
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
 
-        if (modelError){
+        if (uiState.modelError){
             Text(
-                text = "Aircraft model is required",
+                text = stringResource(R.string.createchecklistscreen_errortext_aircraftmodel),
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodySmall
             )
         }
 
+        // Airline (optional)
         OutlinedTextField(
-            value = config.airline,
+            value = uiState.airline,
             onValueChange = viewModel::onAirlineChanged,
             label = { Text(stringResource(R.string.createchecklistscreen_outlinedtextfield_airlinename_label)) },
+            shape = MaterialTheme.shapes.extraLarge,
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
 
+        // Include Logo
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
                 text = stringResource(R.string.createchecklistscreen_row_switch_includelogo),
+                style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.weight(1f)
             )
             Switch(
-                checked = config.includeLogo,
+                checked = uiState.includeLogo,
                 onCheckedChange = viewModel::onIncludeLogoChanged
             )
         }
 
-        // Selector de número de secciones con botones
+        // Selector section number
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -127,11 +121,11 @@ fun CreateCustomCheckListScreen(
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 IconButton(
                     onClick = {
-                        sectionCount = (sectionCount - 1).coerceAtLeast(1)
+                        viewModel.onSectionCountChange(uiState.sectionCount -1)
                     }
                 ) {
                     Icon(
@@ -140,11 +134,11 @@ fun CreateCustomCheckListScreen(
                     )
                 }
 
-                Text("$sectionCount", style = MaterialTheme.typography.bodyLarge)
+                Text("${uiState.sectionCount}", style = MaterialTheme.typography.titleMedium)
 
                 IconButton(
                     onClick = {
-                        sectionCount = (sectionCount + 1).coerceAtMost(15)
+                        viewModel.onSectionCountChange(uiState.sectionCount + 1)
                     }
                 ) {
                     Icon(
@@ -159,16 +153,18 @@ fun CreateCustomCheckListScreen(
 
         Button(
             onClick = {
-                // Validación antes de Continuar
-                nameError = config.name.isBlank()
-                modelError = config.modelAircraft.isBlank()
-
-                if (!nameError && !modelError){
-                    viewModel.initializeSections(sectionCount)
-                    onContinue(config.name)
+                viewModel.validateAndContinue { form ->
+                    onContinue(
+                        form.name,
+                        form.aircraftModel,
+                        form.airline,
+                        form.includeLogo,
+                        form.sectionCount
+                    )
                 }
             },
-            modifier = Modifier.fillMaxWidth()
+            shape = MaterialTheme.shapes.extraLarge,
+            modifier = Modifier.fillMaxWidth().padding(bottom = 42.dp)
         ) {
             Text(stringResource(R.string.createchecklistscreen_bottom_continue))
         }
