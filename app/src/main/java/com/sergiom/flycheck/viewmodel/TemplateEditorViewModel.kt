@@ -2,9 +2,9 @@ package com.sergiom.flycheck.viewmodel
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.sergiom.flycheck.data.model.CheckListItem
+import com.sergiom.flycheck.data.model.CheckListItemModel
 import com.sergiom.flycheck.data.model.CheckListSection
-import com.sergiom.flycheck.data.model.CheckListTemplate
+import com.sergiom.flycheck.data.model.CheckListTemplateModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -12,7 +12,7 @@ import javax.inject.Inject
 @HiltViewModel
 class TemplateEditorViewModel @Inject constructor(): ViewModel() {
 
-    private val _uiState = mutableStateOf(CheckListTemplate())
+    private val _uiState = mutableStateOf(CheckListTemplateModel())
 
     val uiState = _uiState
 
@@ -50,7 +50,7 @@ class TemplateEditorViewModel @Inject constructor(): ViewModel() {
             sections = _uiState.value.sections.map { section ->
                 if (section.id == sectionId) {
                     section.copy(
-                        items = section.items + CheckListItem(
+                        items = section.items + CheckListItemModel(
                             title = title,
                             action = action,
                             backgroundColorHex = colorHex
@@ -120,7 +120,7 @@ class TemplateEditorViewModel @Inject constructor(): ViewModel() {
             CheckListSection(title = "Section ${index + 1}")
         }
 
-        _uiState.value = CheckListTemplate(
+        _uiState.value = CheckListTemplateModel(
             name = name,
             aircraftModel = model,
             airline = airline,
@@ -149,6 +149,18 @@ class TemplateEditorViewModel @Inject constructor(): ViewModel() {
             sections = _uiState.value.sections.map { section ->
                 if (section.id == sectionId) section.copy(title = newTitle)
                 else section
+            }
+        )
+    }
+
+    fun deleteItemFromSection(sectionId: String, itemId: String) {
+        _uiState.value = _uiState.value.copy(
+            sections = _uiState.value.sections.map { section ->
+                if (section.id == sectionId) {
+                    section.copy(
+                        items = section.items.filterNot { it.id == itemId }
+                    )
+                } else section
             }
         )
     }

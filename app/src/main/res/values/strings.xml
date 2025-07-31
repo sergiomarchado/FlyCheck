@@ -5,18 +5,6 @@
     <string name="splash_screen_main_text">FlyCheck ✈️</string>
     <string name="splash_screen_loadingtext">Preparando cabina…</string>
 
-<!--    CHECK LIST INPUT-->
-    <string name="checklistinput_new_item_textfield_label">Nuevo ítem de checklist</string>
-    <string name="checklistinput_bottom_add">Agregar</string>
-    
-    <!--ChecklistItemCard-->
-    <string name="checklistitemcard_icon_content_description">Eliminar ítem</string>
-    <string name="checklistitemcard_alertdialog_title">Eliminar elemento</string>
-    <string name="checklistitemcard_alertdialog_text">¿Estás seguro de que deseas eliminar esta acción de la checklist?</string>
-    <string name="checklistitemcard_alertdialog_option_yes">Sí</string>
-    <string name="checklistitemcard_alertdialog_option_cancel">Cancelar</string>
-
-
     <!--HOME SCREEN-->
     <string name="home_screen_maintext">¿Qué tipo de Check List quieres usar hoy?</string>
     <string name="home_screen_button_customchecklist">✏️ Crear Check List Personalizada</string>
@@ -35,16 +23,51 @@
     <string name="createchecklistscreen_errortext_name">El campo nombre de la Check List es obligatorio</string>
     <string name="createchecklistscreen_errortext_aircraftmodel">El campo modelo de aeronave es obligatorio</string>
 
-    <!--Create Custom Check List View Model-->
-    <string name="createcustomchecklistviewmodel_section">Sección </string>
-
-    <!--SectionEditor-->
-    <string name="sectioneditor_text_label">Título de la Sección</string>
-
     <!--CheckListEditorScreen-->
-    <string name="checklisteditorscreen_item_text">Nuevo Ítem</string>
-    <string name="checklisteditorscreen_add">Añadir</string>
+    <string name="checklisteditorscreen_dialog_title">Editar título de sección</string>
+    <string name="checklisteditorscreen_dialog_outlined_newtitle">Nuevo título</string>
+    <string name="checklisteditorscreen_dialog_confirmbutton">Guardar</string>
+    <string name="checklisteditorscreen_dialog_dismissbutton">Cancelar</string>
+    <string name="checklisteditorscreen_deletesection_title">Eliminar Sección</string>
+    <string name="checklisteditorscreen_deletesection_warning">⚠️ Atención!: Esto eliminará también todos los items que se encuentren dentro de esta Sección</string>
+    <string name="checklisteditorscreen_deletesection_confirm">Eliminar</string>
+    <string name="checklisteditorscreen_deletesection_dismiss">Cancelar</string>
 
     <!--CheckListHeader-->
     <string name="checklistheader_contentdescription">Logo de la Aerolínea</string>
+
+    <!--CheckListItemCard-->
+    <string name="checklistitemcard_outlinedtextfield_item">Ítem</string>
+    <string name="checklistitemcard_outlinedtextfield_action">Acción</string>
+    <string name="checklistitemcard_menu_deleteitem">Eliminar Ítem</string>
+    <string name="checklistitemcard_icon_moreopcions">Menú de más opciones</string>
+
+    <!--CheckListSection Editor-->
+    <string name="checklistsectioneditor_alertdialog_title">Editar título de sección</string>
+    <string name="checklistsectioneditor_alertdialog_outlinedtf_label">Nuevo título</string>
+    <string name="checklistsectioneditor_alertdialog_confirmbutton">Guardar</string>
+    <string name="checklistsectioneditor_alertdialog_dismissbutton">Cancelar</string>
+    <string name="checklistsectioneditor_outlinedtf_item">Ítem</string>
+    <string name="checklistsectioneditor_outlinedtf_action">Acción</string>
+    <string name="checklistsectioneditor_button_accept">Aceptar</string>
+    <string name="checklistsectioneditor_button_additem">Añadir ítem</string>
+
+    <!--CheckListSectionHeader-->
+    <string name="checklistsectionheader_menu_contentdescription">Menú con más opciones</string>
+    <string name="checklistsectionheader_menu_rename">Renombrar</string>
+    <string name="checklistsectionheader_menu_delete">Eliminar</string>
+
+
+
+
+
+
+
+    <!--Create Custom Check List View Model-->
+    <string name="createcustomchecklistviewmodel_section">Sección </string>
+
+
+
+
+
 </resources>

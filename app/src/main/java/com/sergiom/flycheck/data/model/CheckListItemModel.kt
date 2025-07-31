@@ -2,7 +2,7 @@ package com.sergiom.flycheck.data.model
 
 import java.util.UUID
 
-data class CheckListItem(
+data class CheckListItemModel(
     val id: String = UUID.randomUUID().toString(),
     val title: String = "",
     val action: String = "",

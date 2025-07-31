@@ -6,5 +6,5 @@ import java.util.UUID
 data class CheckListSection(
     val id: String = UUID.randomUUID().toString(),
     var title: String = "",
-    val items: List<CheckListItem> = emptyList()
+    val items: List<CheckListItemModel> = emptyList()
 )

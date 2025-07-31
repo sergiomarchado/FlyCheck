@@ -6,19 +6,22 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.sergiom.flycheck.data.model.CheckListItem
+import com.sergiom.flycheck.R
+import com.sergiom.flycheck.data.model.CheckListItemModel
 
 @Composable
 fun CheckListSectionEditor(
     sectionId: String,
     title: String,
-    items: List<CheckListItem>,
+    items: List<CheckListItemModel>,
     onTitleChange: (String) -> Unit,
     onAddItem: (String, String) -> Unit,
     onToggleItemChecked: (String) -> Unit,
     onItemTitleChange: (String, String) -> Unit,
-    onItemActionChange: (String, String) -> Unit
+    onItemActionChange: (String, String) -> Unit,
+    onDeleteItem: (String) -> Unit
 ) {
     var showEditDialog by rememberSaveable(sectionId + "_dialog") { mutableStateOf(false) }
     var editedTitle by rememberSaveable(sectionId + "_title") { mutableStateOf(title) }
@@ -32,13 +35,16 @@ fun CheckListSectionEditor(
     if (showEditDialog) {
         AlertDialog(
             onDismissRequest = { showEditDialog = false },
-            title = { Text("Editar título de sección") },
+            title = { Text(stringResource(R.string.checklistsectioneditor_alertdialog_title)) },
             text = {
                 OutlinedTextField(
                     value = editedTitle,
                     onValueChange = { editedTitle = it },
                     singleLine = true,
-                    label = { Text("Nuevo título") }
+                    label = {
+                        Text(
+                            stringResource
+                                (R.string.checklistsectioneditor_alertdialog_outlinedtf_label)) }
                 )
             },
             confirmButton = {
@@ -46,12 +52,12 @@ fun CheckListSectionEditor(
                     onTitleChange(editedTitle)
                     showEditDialog = false
                 }) {
-                    Text("Guardar")
+                    Text(stringResource(R.string.checklistsectioneditor_alertdialog_confirmbutton))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showEditDialog = false }) {
-                    Text("Cancelar")
+                    Text(stringResource(R.string.checklistsectioneditor_alertdialog_dismissbutton))
                 }
             }
         )
@@ -70,7 +76,8 @@ fun CheckListSectionEditor(
                 item = item,
                 onToggleChecked = { onToggleItemChecked(item.id) },
                 onTitleChange = { onItemTitleChange(item.id, it) },
-                onActionChange = { onItemActionChange(item.id, it) }
+                onActionChange = { onItemActionChange(item.id, it) },
+                onDeleteItem = { onDeleteItem(item.id)}
             )
         }
 
@@ -78,20 +85,20 @@ fun CheckListSectionEditor(
 
         if (showAddFields) {
             Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedTextField(
                         value = newItemTitle,
                         onValueChange = { newItemTitle = it },
-                        label = { Text("Item") },
+                        label = { Text(stringResource(R.string.checklistsectioneditor_outlinedtf_item)) },
                         modifier = Modifier.weight(1f)
                     )
                     OutlinedTextField(
                         value = newItemAction,
                         onValueChange = { newItemAction = it },
-                        label = { Text("Acción") },
+                        label = { Text(stringResource(R.string.checklistsectioneditor_outlinedtf_action)) },
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -107,7 +114,7 @@ fun CheckListSectionEditor(
                     },
                     modifier = Modifier.align(Alignment.End)
                 ) {
-                    Text("Aceptar")
+                    Text(stringResource(R.string.checklistsectioneditor_button_accept))
                 }
             }
         } else {
@@ -115,7 +122,7 @@ fun CheckListSectionEditor(
                 onClick = { showAddFields = true },
                 modifier = Modifier.align(Alignment.Start)
             ) {
-                Text("Añadir ítem")
+                Text(stringResource(R.string.checklistsectioneditor_button_additem))
             }
         }
     }

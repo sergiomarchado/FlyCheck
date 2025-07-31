@@ -5,15 +5,15 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.sergiom.flycheck.data.model.CheckListItem
+import com.sergiom.flycheck.data.model.CheckListItemModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class ChecklistViewModel @Inject constructor() : ViewModel() {
 
-    private val _checkListItems = mutableStateListOf<CheckListItem>()
-    val checkListItems: List<CheckListItem> = _checkListItems
+    private val _checkListItemModels = mutableStateListOf<CheckListItemModel>()
+    val checkListItemModels: List<CheckListItemModel> = _checkListItemModels
 
     private var nextId = 0
 
@@ -26,8 +26,8 @@ class ChecklistViewModel @Inject constructor() : ViewModel() {
 
     fun addItem() {
         if (newTextItem.isNotBlank()) {
-            _checkListItems.add(
-                CheckListItem(
+            _checkListItemModels.add(
+                CheckListItemModel(
                     title = newTextItem,
                 )
             )
@@ -35,14 +35,14 @@ class ChecklistViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    fun deleteItem(item: CheckListItem) {
-        _checkListItems.remove(item)
+    fun deleteItem(item: CheckListItemModel) {
+        _checkListItemModels.remove(item)
     }
 
-    fun markAsCompleted(item: CheckListItem) {
-        val index = _checkListItems.indexOf(item)
+    fun markAsCompleted(item: CheckListItemModel) {
+        val index = _checkListItemModels.indexOf(item)
         if (index != -1) {
-            _checkListItems[index] = item.copy(completed = !item.completed)
+            _checkListItemModels[index] = item.copy(completed = !item.completed)
         }
     }
 }

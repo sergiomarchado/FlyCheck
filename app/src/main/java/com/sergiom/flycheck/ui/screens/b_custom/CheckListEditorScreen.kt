@@ -21,8 +21,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.sergiom.flycheck.R
 import com.sergiom.flycheck.components.CheckListHeader
 import com.sergiom.flycheck.components.CheckListSectionEditor
 import com.sergiom.flycheck.components.CheckListSectionHeader
@@ -52,6 +54,8 @@ fun CheckListEditorScreen(
     var editingSectionId by remember { mutableStateOf<String?>(null) }
     var editingSectionTitle by remember { mutableStateOf("") }
 
+    var deletingSectionId by remember { mutableStateOf<String?>(null) }
+
     Column(modifier = Modifier.fillMaxSize()) {
 
         // Cabecera general
@@ -79,9 +83,12 @@ fun CheckListEditorScreen(
                 stickyHeader(key = "header_$index") {
                     CheckListSectionHeader(
                         title = section.title,
-                        onEditClick = {
+                        onRenameClick = {
                             editingSectionId = section.id
                             editingSectionTitle = section.title
+                        },
+                        onDeleteClick = {
+                            deletingSectionId = section.id
                         }
                     )
                 }
@@ -103,23 +110,26 @@ fun CheckListEditorScreen(
                         },
                         onItemActionChange = { itemId, newAction ->
                             viewModel.updateItemAction(section.id, itemId, newAction)
+                        },
+                        onDeleteItem = {itemId ->
+                            viewModel.deleteItemFromSection(section.id, itemId)
                         }
                     )
                 }
             }
         }
 
-        // Diálogo de edición del título de sección
+        // Diálogo para renombrar la sección
         if (editingSectionId != null) {
             AlertDialog(
                 onDismissRequest = { editingSectionId = null },
-                title = { Text("Editar título de sección") },
+                title = { Text(stringResource(R.string.checklisteditorscreen_dialog_title)) },
                 text = {
                     OutlinedTextField(
                         value = editingSectionTitle,
                         onValueChange = { editingSectionTitle = it },
                         singleLine = true,
-                        label = { Text("Nuevo título") }
+                        label = { Text(stringResource(R.string.checklisteditorscreen_dialog_outlined_newtitle)) }
                     )
                 },
                 confirmButton = {
@@ -127,15 +137,40 @@ fun CheckListEditorScreen(
                         viewModel.updateSectionTitle(editingSectionId!!, editingSectionTitle)
                         editingSectionId = null
                     }) {
-                        Text("Guardar")
+                        Text(stringResource(R.string.checklisteditorscreen_dialog_confirmbutton))
                     }
                 },
                 dismissButton = {
                     TextButton(onClick = { editingSectionId = null }) {
-                        Text("Cancelar")
+                        Text(stringResource(R.string.checklisteditorscreen_dialog_dismissbutton))
                     }
                 }
             )
         }
+
+        // Diálogo para confirmar eliminación de sección
+        if (deletingSectionId != null) {
+            AlertDialog(
+                onDismissRequest = { deletingSectionId = null },
+                title = { Text(stringResource(R.string.checklisteditorscreen_deletesection_title)) },
+                text = { Text(stringResource(R.string.checklisteditorscreen_deletesection_warning)) },
+                confirmButton = {
+                    TextButton(onClick = {
+                        deletingSectionId?.let {
+                            viewModel.deleteSection(it)
+                            deletingSectionId = null
+                        }
+                    }) {
+                        Text(stringResource(R.string.checklisteditorscreen_deletesection_confirm))
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { deletingSectionId = null }) {
+                        Text(stringResource(R.string.checklisteditorscreen_deletesection_dismiss))
+                    }
+                }
+            )
+        }
+
     }
 }
