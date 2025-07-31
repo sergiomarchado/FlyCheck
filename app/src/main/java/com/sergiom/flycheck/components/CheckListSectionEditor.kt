@@ -17,7 +17,7 @@ fun CheckListSectionEditor(
     title: String,
     items: List<CheckListItemModel>,
     onTitleChange: (String) -> Unit,
-    onAddItem: (String, String) -> Unit,
+    onAddItem: (String, String) -> Boolean,
     onToggleItemChecked: (String) -> Unit,
     onItemTitleChange: (String, String) -> Unit,
     onItemActionChange: (String, String) -> Unit,
@@ -106,10 +106,13 @@ fun CheckListSectionEditor(
                 Button(
                     onClick = {
                         if (newItemTitle.isNotBlank() || newItemAction.isNotBlank()) {
-                            onAddItem(newItemTitle, newItemAction)
-                            newItemTitle = ""
-                            newItemAction = ""
-                            showAddFields = false
+                            val wasAdded = onAddItem(newItemTitle, newItemAction)
+                            if (wasAdded) {
+                                newItemTitle = ""
+                                newItemAction = ""
+                                showAddFields = false
+                            }
+                            // Si no se añade, simplemente no cerramos ni limpiamos
                         }
                     },
                     modifier = Modifier.align(Alignment.End)

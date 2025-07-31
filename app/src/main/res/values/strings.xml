@@ -32,6 +32,9 @@
     <string name="checklisteditorscreen_deletesection_warning">⚠️ Atención!: Esto eliminará también todos los items que se encuentren dentro de esta Sección</string>
     <string name="checklisteditorscreen_deletesection_confirm">Eliminar</string>
     <string name="checklisteditorscreen_deletesection_dismiss">Cancelar</string>
+    <string name="checklisteditorscreen_invalid_item">El ítem no puede estar vacío o duplicado.</string>
+    <string name="checklisteditorscreen_invalid_section_title">El título de la sección no puede estar vacío ni duplicado.</string>
+
 
     <!--CheckListHeader-->
     <string name="checklistheader_contentdescription">Logo de la Aerolínea</string>
