@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
@@ -21,13 +20,12 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.sergiom.flycheck.R
 import com.sergiom.flycheck.data.model.CheckListItem
 
 @Composable
@@ -36,14 +34,17 @@ fun CheckListSectionEditor(
     title: String,
     items: List<CheckListItem>,
     onTitleChange: (String) -> Unit,
-    onAddItem: (String) -> Unit,
+    onAddItem: (String, String) -> Unit,
     onToggleItemChecked: (String) -> Unit,
     onItemTitleChange: (String, String) -> Unit,
     onItemActionChange: (String, String) -> Unit
 ) {
     var showEditDialog by rememberSaveable(sectionId + "_dialog") { mutableStateOf(false) }
     var editedTitle by rememberSaveable(sectionId + "_title") { mutableStateOf(title) }
-    var newItemText by rememberSaveable(sectionId + "_newitem") { mutableStateOf("") }
+
+    var showAddFields by remember { mutableStateOf(false) }
+    var newItemTitle by rememberSaveable(sectionId + "_newitem_title") { mutableStateOf("") }
+    var newItemAction by rememberSaveable(sectionId + "_newitem_action") { mutableStateOf("") }
 
     // Cabecera editable
     Row(
@@ -106,36 +107,50 @@ fun CheckListSectionEditor(
                 onActionChange = { onItemActionChange(item.id, it) }
             )
         }
-    }
 
-    Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
-    // Añadir nuevo ítem
-    Row {
-        OutlinedTextField(
-            value = newItemText,
-            onValueChange = { newItemText = it },
-            label = { Text(stringResource(R.string.checklisteditorscreen_item_text)) },
-            modifier = Modifier
-                .weight(1f)
-                .padding(horizontal = 16.dp)
-        )
+        if (showAddFields) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedTextField(
+                        value = newItemTitle,
+                        onValueChange = { newItemTitle = it },
+                        label = { Text("Item") },
+                        modifier = Modifier.weight(1f)
+                    )
+                    OutlinedTextField(
+                        value = newItemAction,
+                        onValueChange = { newItemAction = it },
+                        label = { Text("Acción") },
+                        modifier = Modifier.weight(1f)
+                    )
+                }
 
-        Spacer(modifier = Modifier.width(8.dp))
-
-        Button(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            onClick = {
-                if (newItemText.isNotBlank()) {
-                    onAddItem(newItemText)
-                    newItemText = ""
+                Button(
+                    onClick = {
+                        if (newItemTitle.isNotBlank() || newItemAction.isNotBlank()) {
+                            onAddItem(newItemTitle, newItemAction)
+                            newItemTitle = ""
+                            newItemAction = ""
+                            showAddFields = false
+                        }
+                    },
+                    modifier = Modifier.align(Alignment.End)
+                ) {
+                    Text("Aceptar")
                 }
             }
-        ) {
-            Text(
-                text = stringResource(R.string.checklisteditorscreen_add),
-                modifier = Modifier.padding(horizontal = 16.dp)
-            )
+        } else {
+            Button(
+                onClick = { showAddFields = true },
+                modifier = Modifier.align(Alignment.Start)
+            ) {
+                Text("Añadir ítem")
+            }
         }
     }
 

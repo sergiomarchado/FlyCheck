@@ -45,14 +45,18 @@ class TemplateEditorViewModel @Inject constructor(): ViewModel() {
         )
     }
 
-    fun addItemToSection(sectionId: String, title: String, colorHex: String = "#ECECEC"){
+    fun addItemToSection(sectionId: String, title: String, action: String = "", colorHex: String = "#ECECEC") {
         _uiState.value = _uiState.value.copy(
             sections = _uiState.value.sections.map { section ->
                 if (section.id == sectionId) {
                     section.copy(
-                        items = section.items + CheckListItem(title = title, backgroundColorHex = colorHex)
+                        items = section.items + CheckListItem(
+                            title = title,
+                            action = action,
+                            backgroundColorHex = colorHex
+                        )
                     )
-                }else section
+                } else section
             }
         )
     }
