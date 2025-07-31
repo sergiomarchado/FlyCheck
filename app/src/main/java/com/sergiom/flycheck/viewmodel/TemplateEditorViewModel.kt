@@ -1,13 +1,19 @@
 package com.sergiom.flycheck.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.sergiom.flycheck.R
 import com.sergiom.flycheck.data.model.CheckListItemModel
 import com.sergiom.flycheck.data.model.CheckListSection
 import com.sergiom.flycheck.data.model.CheckListTemplateModel
+import com.sergiom.flycheck.ui.events.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -17,6 +23,9 @@ class TemplateEditorViewModel @Inject constructor(): ViewModel() {
     private val _uiState = MutableStateFlow(CheckListTemplateModel())
 
     val uiState: StateFlow<CheckListTemplateModel> = _uiState
+
+    private val _eventFlow = MutableSharedFlow<UiEvent>()
+    val eventFlow: SharedFlow<UiEvent> = _eventFlow
 
     fun setTemplateName(name: String) {
         _uiState.update { it.copy(name = name) }
@@ -53,7 +62,12 @@ class TemplateEditorViewModel @Inject constructor(): ViewModel() {
         _uiState.update { it -> it.copy(sections = it.sections.filterNot { it.id == sectionId }) }
     }
 
-    fun addItemToSection(sectionId: String, title: String, action: String = "", colorHex: String = "#ECECEC"): Boolean {
+    fun addItemToSection(
+        sectionId: String,
+        title: String,
+        action: String = "",
+        colorHex: String = "#ECECEC"
+    ): Boolean {
         val trimmedTitle = title.trim()
         var success = false
 
@@ -72,6 +86,15 @@ class TemplateEditorViewModel @Inject constructor(): ViewModel() {
                             )
                         )
                     } else {
+                        // Emitimos evento con recurso de string adecuado
+                        viewModelScope.launch {
+                            val resId = if (trimmedTitle.isBlank()) {
+                                R.string.templateeditorviewmodel_warning_item_title_empty
+                            } else {
+                                R.string.templateeditorviewmodel_warning_item_already_exist
+                            }
+                            _eventFlow.emit(UiEvent.ShowToast(resId))
+                        }
                         section
                     }
                 } else section
@@ -159,9 +182,11 @@ class TemplateEditorViewModel @Inject constructor(): ViewModel() {
 
     fun updateSectionTitle(sectionId: String, newTitle: String): Boolean {
         val trimmedTitle = newTitle.trim()
-        val titleExists = _uiState.value.sections.any { it.id != sectionId && it.title.equals(trimmedTitle, ignoreCase = true) }
+        val exists = _uiState.value.sections.any {
+            it.id != sectionId && it.title.equals(trimmedTitle, ignoreCase = true)
+        }
 
-        return if (trimmedTitle.isNotEmpty() && !titleExists) {
+        return if (trimmedTitle.isNotEmpty() && !exists) {
             _uiState.update { template ->
                 template.copy(
                     sections = template.sections.map { section ->
@@ -171,6 +196,14 @@ class TemplateEditorViewModel @Inject constructor(): ViewModel() {
             }
             true
         } else {
+            viewModelScope.launch {
+                val msgResId = if (trimmedTitle.isBlank()) {
+                    R.string.checklisteditorscreen_invalid_section_title_empty
+                } else {
+                    R.string.checklisteditorscreen_invalid_section_title_duplicate
+                }
+                _eventFlow.emit(UiEvent.ShowToast(msgResId))
+            }
             false
         }
     }

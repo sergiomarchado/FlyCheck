@@ -1,4 +1,4 @@
-package com.sergiom.flycheck.components
+package com.sergiom.flycheck.ui.screens.b_custom.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

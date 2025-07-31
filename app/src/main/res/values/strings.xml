@@ -60,14 +60,17 @@
     <string name="checklistsectionheader_menu_rename">Renombrar</string>
     <string name="checklistsectionheader_menu_delete">Eliminar</string>
 
-
-
+    <!--TemplateEditorViewModel-->
+    <string name="templateeditorviewmodel_warning_item_title_empty">El título no puede estar vacío.</string>
+    <string name="templateeditorviewmodel_warning_item_already_exist">Ya existe un item con ese título.</string>
+    <string name="checklisteditorscreen_invalid_section_title_empty">Ya existe un item con ese título.</string>
 
 
 
 
     <!--Create Custom Check List View Model-->
-    <string name="createcustomchecklistviewmodel_section">Sección </string>
+    <string name="createcustomchecklistviewmodel_section">El título no puede estar vacío </string>
+    <string name="checklisteditorscreen_invalid_section_title_duplicate">Ya existe una sección con ese nombre</string>
 
 
 
