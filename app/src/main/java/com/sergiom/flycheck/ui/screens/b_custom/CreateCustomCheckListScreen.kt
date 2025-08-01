@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.sergiom.flycheck.R
-import com.sergiom.flycheck.ui.screens.b_custom.components.editor.EditorTopBar
+import com.sergiom.flycheck.ui.screens.b_custom.components.editor.FlyCheckTopBar
 import com.sergiom.flycheck.viewmodel.CreatecCustomCheckListViewModel
 
 
@@ -47,7 +47,7 @@ fun CreateCustomCheckListScreen(
 
     Scaffold(
         topBar = {
-            EditorTopBar(
+            FlyCheckTopBar(
                 onBackClick = {
                     navController.popBackStack()
                 },

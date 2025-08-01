@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 import com.sergiom.flycheck.data.model.CheckListTemplateModel
 
 @Composable
-fun EditorHeader(template: CheckListTemplateModel) {
+fun EditorHeaderMain(template: CheckListTemplateModel) {
     Card(
         modifier = Modifier
             .fillMaxWidth(),
@@ -27,7 +27,7 @@ fun EditorHeader(template: CheckListTemplateModel) {
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp, vertical = 12.dp)
         ) {
-            CheckListHeader(
+            CheckListHeaderCard(
                 name = template.name,
                 model = template.aircraftModel,
                 airline = template.airline,

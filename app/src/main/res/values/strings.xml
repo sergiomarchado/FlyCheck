@@ -9,6 +9,12 @@
     <string name="home_screen_maintext">¿Qué tipo de Check List quieres usar hoy?</string>
     <string name="home_screen_button_customchecklist">✏️ Crear Check List Personalizada</string>
 
+    <!--FLYCHECKTOPBAR-->
+    <string name="topbar_back_contentdescription">Volver</string>
+    <string name="topbar_back_icon_menu">Menú</string>
+    <string name="topbar_dropdown_menu_item_export_pdf">Exportar PDF</string>
+    <string name="topbar_dropdown_menu_item_settings">Ajustes</string>
+
     <!--Create Custom Check List Screen-->
     <string name="createchecklistscreen_text_title">Crear nueva Check List</string>
     <string name="createchecklistscreen_outlinedtextfield_name_label">Nombre de la Check List</string>

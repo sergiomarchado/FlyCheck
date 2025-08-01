@@ -17,8 +17,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.sergiom.flycheck.ui.screens.b_custom.components.editor.section.ConfirmDeleteSectionDialog
-import com.sergiom.flycheck.ui.screens.b_custom.components.editor.header.EditorHeader
-import com.sergiom.flycheck.ui.screens.b_custom.components.editor.EditorTopBar
+import com.sergiom.flycheck.ui.screens.b_custom.components.editor.header.EditorHeaderMain
+import com.sergiom.flycheck.ui.screens.b_custom.components.editor.FlyCheckTopBar
 import com.sergiom.flycheck.ui.screens.b_custom.components.editor.ObserveUiEvents
 import com.sergiom.flycheck.ui.screens.b_custom.components.editor.section.RenameSectionDialog
 import com.sergiom.flycheck.ui.screens.b_custom.components.editor.SectionList
@@ -58,7 +58,7 @@ fun CheckListEditorScreen(
 
     Scaffold(
         topBar = {
-            EditorTopBar(
+            FlyCheckTopBar(
                 onBackClick = {
                     navController.popBackStack()
                 },
@@ -73,7 +73,7 @@ fun CheckListEditorScreen(
             template = template,
             header = {
                 Spacer(modifier = Modifier.height(16.dp))
-                EditorHeader(template)
+                EditorHeaderMain(template)
             },
             onRename = { id, title ->
                 editingSectionId = id

@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import com.sergiom.flycheck.R
 
 @Composable
-fun CheckListSectionHeader(
+fun CheckListSectionTitleCard(
     title: String,
     onRenameClick: () -> Unit,
     onDeleteClick: () -> Unit

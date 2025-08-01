@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.sergiom.flycheck.R
 
 @Composable
-fun CheckListHeader(
+fun CheckListHeaderCard(
     name: String,
     model: String,
     airline: String,

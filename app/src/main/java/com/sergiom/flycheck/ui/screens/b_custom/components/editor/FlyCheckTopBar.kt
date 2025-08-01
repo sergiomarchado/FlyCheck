@@ -4,7 +4,7 @@ package com.sergiom.flycheck.ui.screens.b_custom.components.editor
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,7 +26,7 @@ import com.sergiom.flycheck.util.LOGO_LETTERS_COLOR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditorTopBar(
+fun FlyCheckTopBar(
     onBackClick: () -> Unit = {},
     onMenuOptionClick: (String) -> Unit = {}
 ) {
@@ -43,7 +43,7 @@ fun EditorTopBar(
             IconButton(onClick = onBackClick) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Volver",
+                    contentDescription = stringResource(R.string.topbar_back_contentdescription),
                     tint = MaterialTheme.colorScheme.onPrimary
                 )
             }
@@ -53,8 +53,8 @@ fun EditorTopBar(
 
             IconButton(onClick = { expanded = true }) {
                 Icon(
-                    imageVector = Icons.Default.MoreVert,
-                    contentDescription = "Menú",
+                    imageVector = Icons.Default.Menu,
+                    contentDescription = stringResource(R.string.topbar_back_icon_menu),
                     tint = MaterialTheme.colorScheme.onPrimary
                 )
             }
@@ -64,14 +64,14 @@ fun EditorTopBar(
                 onDismissRequest = { expanded = false }
             ) {
                 DropdownMenuItem(
-                    text = { Text("Exportar PDF") },
+                    text = { Text(stringResource(R.string.topbar_dropdown_menu_item_export_pdf)) },
                     onClick = {
                         expanded = false
                         onMenuOptionClick("export_pdf")
                     }
                 )
                 DropdownMenuItem(
-                    text = { Text("Ajustes") },
+                    text = { Text(stringResource(R.string.topbar_dropdown_menu_item_settings)) },
                     onClick = {
                         expanded = false
                         onMenuOptionClick("settings")
