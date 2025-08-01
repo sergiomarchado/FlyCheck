@@ -5,7 +5,7 @@ import androidx.compose.ui.graphics.Color
 // === Azul oscuro moderno (principal) ===
 val Blue80 = Color(0xFF9DCBFF)       // Azul claro para light mode
 val Blue40 = Color(0xFF032949)       // Azul profundo principal (modo oscuro)
-val DeepBlueBackground = Color(0xFF0A192F) // Fondo principal dark moderno
+val DeepBlueHeader = Color(0xFF112240) // Fondo principal dark moderno
 val DeepBlueSurface = Color(0xFF112240)    // Superficie dark moderna
 val DeepBluePrimary = Color(0xFF031D41)    // Superficie dark moderna
 
@@ -20,13 +20,13 @@ val OrangeWarning = Color(0xFFFFA726) // Advertencia
 val RedError = Color(0xFFE53935)      // Error
 
 // === Texto ===
-val GreyTextLight = Color(0xFF646464) // Texto claro sobre fondo oscuro
+val GreyTextLight = Color(0xFF333333) // Texto claro sobre fondo oscuro
 val GreyTextDark = Color(0xFF1F1F1F)  // Texto oscuro sobre fondo claro
 val GreyLight = Color(0xFFBB2222)  // Texto oscuro sobre fondo claro
 
 // === Fondos claros ===
 val SoftWhite = Color(0xFFF5F5F5)
-val SoftSurface = Color(0xFFF0F4F8) // Alternativa más neutra para surface claro
+val SoftSurface = Color(0xFFD4D4D4) // Alternativa más neutra para surface claro
 
 // === Extras modernos ===
 val NeonBlue = Color(0xFF00B0FF)

@@ -16,6 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sergiom.flycheck.R
+import com.sergiom.flycheck.util.LOGO_LETTERS_COLOR
 import kotlinx.coroutines.delay
 
 
@@ -37,7 +38,7 @@ fun SplashScreen(onTimeout: () -> Unit) {
                 text = stringResource(R.string.splash_screen_main_text),
                 fontSize = 36.sp,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
+                color = LOGO_LETTERS_COLOR
             )
 
             Spacer(modifier = Modifier.height(12.dp))

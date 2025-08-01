@@ -1,6 +1,7 @@
 package com.sergiom.flycheck.ui.screens.b_custom.components.editor
 
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
@@ -21,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.sergiom.flycheck.R
+import com.sergiom.flycheck.util.LOGO_LETTERS_COLOR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -28,8 +30,15 @@ fun EditorTopBar(
     onBackClick: () -> Unit = {},
     onMenuOptionClick: (String) -> Unit = {}
 ) {
+
+    val isDark = isSystemInDarkTheme()
+    val defaultTopBarColor =
+        if(isDark) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.primary
     TopAppBar(
-        title = { Text(text = stringResource(R.string.app_name) + " ✈️", color = MaterialTheme.colorScheme.primary) },
+        title = {
+            Text(
+                text = stringResource(R.string.app_name) + " ✈️",
+                color = LOGO_LETTERS_COLOR) },
         navigationIcon = {
             IconButton(onClick = onBackClick) {
                 Icon(
@@ -71,7 +80,7 @@ fun EditorTopBar(
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.tertiary,
+            containerColor = defaultTopBarColor,
             titleContentColor = Color.White
         )
     )

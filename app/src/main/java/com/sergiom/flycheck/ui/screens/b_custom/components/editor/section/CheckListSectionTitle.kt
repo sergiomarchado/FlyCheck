@@ -1,4 +1,4 @@
-package com.sergiom.flycheck.ui.screens.b_custom.components.editor.header
+package com.sergiom.flycheck.ui.screens.b_custom.components.editor.section
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
@@ -38,7 +38,7 @@ fun CheckListSectionHeader(
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
+                .padding(horizontal = 8.dp, vertical = 8.dp),
             shape = MaterialTheme.shapes.medium,
             color = MaterialTheme.colorScheme.surface,
             tonalElevation = 4.dp,

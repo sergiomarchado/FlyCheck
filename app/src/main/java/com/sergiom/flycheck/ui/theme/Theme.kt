@@ -32,10 +32,11 @@ private val LightColorScheme = lightColorScheme(
     tertiary = Cyan30,
     onSecondary = Color.White,
     background = SoftWhite,
+    primaryContainer = DeepBlueHeader,
     onSecondaryContainer = GreyLight,
     onBackground = GreyTextDark,
     surface = SoftSurface,             // Surface claro neutro
-    onSurface = GreyTextDark
+    onSurface = GreyTextLight
 )
 
 @Composable
