@@ -2,26 +2,44 @@ package com.sergiom.flycheck.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// Primarios
-val Blue80 = Color(0xFF9DCBFF)        // Azul suave (modo claro)
-val Blue40 = Color(0xFF032949)        // Azul principal
+// === Azul oscuro moderno (principal) ===
+val Blue80 = Color(0xFF9DCBFF)       // Azul claro para light mode
+val Blue40 = Color(0xFF032949)       // Azul profundo principal (modo oscuro)
+val DeepBlueBackground = Color(0xFF0A192F) // Fondo principal dark moderno
+val DeepBlueSurface = Color(0xFF112240)    // Superficie dark moderna
+val DeepBluePrimary = Color(0xFF031D41)    // Superficie dark moderna
 
-val Cyan80 = Color(0xFFB2EBF2)        // Cian claro
-val Cyan40 = Color(0xFF00BCD4)        // Cian fuerte (tecnológico)
+// === Acentos tecnológicos ===
+val Cyan80 = Color(0xFFB2EBF2)
+val Cyan40 = Color(0xFF00BCD4)       // Acento cian brillante
+val Cyan30 = Color(0xFF008DC0)       // Acento cian brillante
 
-// Secundarios y acciones
-val GreenSuccess = Color(0xFF00C853)  // Verde para éxito/completado
-val OrangeWarning = Color(0xFFFFA726) // Para advertencias
-val RedError = Color(0xFFE53935)      // Para errores
+// === Estados ===
+val GreenSuccess = Color(0xFF00C853)  // Éxito
+val OrangeWarning = Color(0xFFFFA726) // Advertencia
+val RedError = Color(0xFFE53935)      // Error
 
-// Neutros
-val GreyBackground = Color(0xFF121212) // Fondo oscuro moderno
-val GreySurface = Color(0xFF1E1E1E)     // Superficie cards
-val GreyBorder = Color(0xFF2C2C2C)
-val GreyTextLight = Color(0xFFB0BEC5)   // Texto en fondos oscuros
-val GreyTextDark = Color(0xFF37474F)    // Texto en fondos claros
+// === Texto ===
+val GreyTextLight = Color(0xFF646464) // Texto claro sobre fondo oscuro
+val GreyTextDark = Color(0xFF1F1F1F)  // Texto oscuro sobre fondo claro
+val GreyLight = Color(0xFFBB2222)  // Texto oscuro sobre fondo claro
 
-// Extras modernos
-val NeonBlue = Color(0xFF00B0FF)       // Azul neón
-val SoftWhite = Color(0xFFF5F5F5)      // Blanco suave para fondos
-val DarkModeAccent = Color(0xFF0A84FF) // Azul acento en dark
+// === Fondos claros ===
+val SoftWhite = Color(0xFFF5F5F5)
+val SoftSurface = Color(0xFFF0F4F8) // Alternativa más neutra para surface claro
+
+// === Extras modernos ===
+val NeonBlue = Color(0xFF00B0FF)
+val DarkModeAccent = Color(0xFF0A84FF)
+
+
+
+val TextOnDarkPrimary = Color(0xFFE0E0E0) // Gris claro legible en fondo oscuro
+val TextOnDarkSecondary = Color(0xFFCCCCCC)
+val DialogSurfaceDark = Color(0xFF1C2B3A) // Fondo para diálogos en dark mode
+
+val BlueDarkBackground = Color(0xFF0D1B2A) // Fondo general
+val BlueDarkSurface = Color(0xFF1B263B)    // Cards, secciones
+val BlueDarkPrimary = Color(0xFF415A77)    // Acento principal
+val BlueDarkText = Color(0xFFDEE2E6)       // Texto claro
+val BlueDarkBorder = Color(0xFF748CAB)     // Bordes y outline

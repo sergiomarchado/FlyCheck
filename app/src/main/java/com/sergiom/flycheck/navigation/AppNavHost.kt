@@ -42,6 +42,7 @@ fun AppNavHost(navController: NavHostController) {
         // OPCIÓN DE CREAR CHECK LIST PERSONALIZADA O CUSTOM
         composable(NavigationRoutes.CheckListCustom.route) {
             CreateCustomCheckListScreen(
+                navController = navController,
                 onContinue = {name, model, airline, logo, sectionCount ->
                     navController.navigate(
                         NavigationRoutes.CheckListEditor.withArgs(
@@ -58,7 +59,7 @@ fun AppNavHost(navController: NavHostController) {
 
         /// Editor checklist con datos pasados por navegación
         composable(
-            route = NavigationRoutes.CheckListEditor.fullRoute
+            route = NavigationRoutes.CheckListEditor.FULLROUTE
         ) { backStackEntry ->
             val name = backStackEntry.arguments?.getString("name") ?: ""
             val model = backStackEntry.arguments?.getString("model") ?: ""
@@ -71,17 +72,14 @@ fun AppNavHost(navController: NavHostController) {
                 model = model,
                 airline = airline,
                 includeLogo = logo,
-                sectionCount = sectionCount
+                sectionCount = sectionCount,
+                navController = navController
             )
         }
 
         composable(NavigationRoutes.CheckListPredefined.route) {
             // Pendiente de implementar más adelante
         }
-
-
-
-
     }
 }
 

@@ -4,7 +4,6 @@ import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
@@ -12,37 +11,43 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.graphics.Color
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Blue40,               // Color principal para botones, switches...
-    onPrimary = Color.White,
-    secondary = Cyan40,             // Color secundario/acento
-    onSecondary = Color.White,
-    background = GreyBackground,    // Fondo general
-    onBackground = GreyTextLight,   // Texto sobre fondo oscuro
-    surface = GreySurface,          // Tarjetas, contenedores
-    onSurface = GreyTextLight       // Texto sobre surface
+    primary = Cyan30,               // Color de acento azul elegante
+    onPrimary = Color.White,                 // Texto sobre botones/acento
+    secondary = Cyan30,                      // Acento secundario llamativo
+    onSecondary = Color.White,               // Texto sobre secundario
+    tertiary = DeepBluePrimary,                       // Alternativa más clara
+    background = BlueDarkBackground,         // Fondo principal (pantallas)
+    onBackground = BlueDarkText,             // Texto sobre fondo
+    surface = BlueDarkSurface,               // Cards, diálogos, etc.
+    onSurface = TextOnDarkPrimary,           // Texto sobre cards
+    primaryContainer = DarkModeAccent,
+    onSecondaryContainer = TextOnDarkSecondary, // Texto atenuado
+    outline = BlueDarkBorder                 // Bordes, líneas de campos
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Blue40,
+    primary = DeepBluePrimary,                  // Azul claro
     onPrimary = Color.White,
-    secondary = Cyan40,
+    secondary = Blue40,
+    tertiary = Cyan30,
     onSecondary = Color.White,
     background = SoftWhite,
+    onSecondaryContainer = GreyLight,
     onBackground = GreyTextDark,
-    surface = Color.White,
+    surface = SoftSurface,             // Surface claro neutro
     onSurface = GreyTextDark
 )
 
 @Composable
 fun FlyCheckTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false, // Usamos nuestra paleta personalizada
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !darkTheme -> {
             val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+            dynamicLightColorScheme(context)
         }
 
         darkTheme -> DarkColorScheme

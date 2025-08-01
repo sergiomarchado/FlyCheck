@@ -32,7 +32,7 @@ fun HomeScreen(
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                text = stringResource(R.string.app_name),
+                text = stringResource( R.string.app_name) + " ✈️",
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary

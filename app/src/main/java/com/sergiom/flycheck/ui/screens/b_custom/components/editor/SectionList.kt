@@ -1,4 +1,4 @@
-package com.sergiom.flycheck.ui.screens.b_custom.components
+package com.sergiom.flycheck.ui.screens.b_custom.components.editor
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,14 +12,21 @@ import com.sergiom.flycheck.viewmodel.TemplateEditorViewModel
 @Composable
 fun SectionList(
     template: CheckListTemplateModel,
+    modifier: Modifier = Modifier,
+    header: @Composable (() -> Unit)? = null,
     onRename: (String, String) -> Unit,
     onDelete: (String) -> Unit,
     viewModel: TemplateEditorViewModel
 ) {
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(bottom = 80.dp)
     ) {
+
+        header?.let {
+            item { it() }
+        }
+
         template.sections.forEachIndexed { index, section ->
 
             stickyHeader(key = "header_$index") {

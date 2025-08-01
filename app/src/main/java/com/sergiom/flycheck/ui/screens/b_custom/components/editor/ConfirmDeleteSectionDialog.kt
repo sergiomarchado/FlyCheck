@@ -1,4 +1,4 @@
-package com.sergiom.flycheck.ui.screens.b_custom.components
+package com.sergiom.flycheck.ui.screens.b_custom.components.editor
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text

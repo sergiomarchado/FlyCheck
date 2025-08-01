@@ -16,6 +16,6 @@ sealed class NavigationRoutes (val route: String) {
             return "checklist_editor/$name/$model/$airline/$logo/$sectionCount"
         }
 
-        val fullRoute = "checklist_editor/{name}/{model}/{airline}/{logo}/{sectionCount}"
+        const val FULLROUTE = "checklist_editor/{name}/{model}/{airline}/{logo}/{sectionCount}"
     }
 }

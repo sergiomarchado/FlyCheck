@@ -1,11 +1,11 @@
 package com.sergiom.flycheck.util
 
 import androidx.compose.ui.graphics.Color
-import android.graphics.Color as AndroidColor
+import androidx.core.graphics.toColorInt
 
 
 fun String.toColor(): Color = try {
-    Color(AndroidColor.parseColor(this))
+    Color(this.toColorInt())
 } catch (e:Exception){
     Color.LightGray
 }

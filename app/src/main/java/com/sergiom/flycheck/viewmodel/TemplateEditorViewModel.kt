@@ -66,7 +66,7 @@ class TemplateEditorViewModel @Inject constructor(): ViewModel() {
         sectionId: String,
         title: String,
         action: String = "",
-        colorHex: String = "#ECECEC"
+        colorHex: String = "#C9C9C9"
     ): Boolean {
         val trimmedTitle = title.trim()
         var success = false
