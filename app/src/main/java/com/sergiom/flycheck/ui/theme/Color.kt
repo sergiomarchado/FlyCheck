@@ -31,6 +31,7 @@ val SoftSurface = Color(0xFFD4D4D4) // Alternativa más neutra para surface clar
 // === Extras modernos ===
 val NeonBlue = Color(0xFF00B0FF)
 val DarkModeAccent = Color(0xFF0A84FF)
+val SubSectionDark = Color(0xFF004077)
 
 
 

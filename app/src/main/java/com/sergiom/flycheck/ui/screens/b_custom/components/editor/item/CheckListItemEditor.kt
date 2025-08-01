@@ -9,15 +9,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.sergiom.flycheck.R
-import com.sergiom.flycheck.data.model.CheckListItemModel
+import com.sergiom.flycheck.data.model.CheckListBlock
 
 @Composable
 fun CheckListItemEditor(
     sectionId: String,
     title: String,
-    items: List<CheckListItemModel>,
+    blocks: List<CheckListBlock>,
     onTitleChange: (String) -> Unit,
     onAddItem: (String, String) -> Boolean,
+    onAddSubsection: () -> Unit,
     onToggleItemChecked: (String) -> Unit,
     onItemTitleChange: (String, String) -> Unit,
     onItemActionChange: (String, String) -> Unit,
@@ -30,8 +31,8 @@ fun CheckListItemEditor(
     var newItemTitle by rememberSaveable(sectionId + "_newitem_title") { mutableStateOf("") }
     var newItemAction by rememberSaveable(sectionId + "_newitem_action") { mutableStateOf("") }
 
-    // ⚠️ El título de la sección se muestra en CheckListSectionHeader)
-    // Solo mantenemos el diálogo
+    var showSubsectionForm by remember { mutableStateOf(false) }
+
     if (showEditDialog) {
         AlertDialog(
             onDismissRequest = { showEditDialog = false },
@@ -42,9 +43,8 @@ fun CheckListItemEditor(
                     onValueChange = { editedTitle = it },
                     singleLine = true,
                     label = {
-                        Text(
-                            stringResource
-                                (R.string.checklistsectioneditor_alertdialog_outlinedtf_label)) }
+                        Text(stringResource(R.string.checklistsectioneditor_alertdialog_outlinedtf_label))
+                    }
                 )
             },
             confirmButton = {
@@ -71,13 +71,15 @@ fun CheckListItemEditor(
             .padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items.forEach { item ->
+        // Render de los ítems
+        blocks.filterIsInstance<CheckListBlock.ItemBlock>().forEach { block ->
+            val item = block.item
             CheckListItemCard(
                 item = item,
                 onToggleChecked = { onToggleItemChecked(item.id) },
                 onTitleChange = { onItemTitleChange(item.id, it) },
                 onActionChange = { onItemActionChange(item.id, it) },
-                onDeleteItem = { onDeleteItem(item.id)}
+                onDeleteItem = { onDeleteItem(item.id) }
             )
         }
 
@@ -85,7 +87,9 @@ fun CheckListItemEditor(
 
         if (showAddFields) {
             Column(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -112,7 +116,6 @@ fun CheckListItemEditor(
                                 newItemAction = ""
                                 showAddFields = false
                             }
-                            // Si no se añade, simplemente no cerramos ni limpiamos
                         }
                     },
                     modifier = Modifier.align(Alignment.End)
@@ -121,14 +124,26 @@ fun CheckListItemEditor(
                 }
             }
         } else {
-            Button(
-                onClick = { showAddFields = true },
-                modifier = Modifier.align(Alignment.Start)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Text(stringResource(R.string.checklistsectioneditor_button_additem))
+                Button(
+                    onClick = { showAddFields = true },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(stringResource(R.string.checklistsectioneditor_button_additem))
+                }
+
+                Button(
+                    onClick = onAddSubsection,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text("Añadir Subsección")
+                }
             }
         }
-    }
 
-    Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(24.dp))
+    }
 }

@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
 import com.sergiom.flycheck.ui.events.UiEvent
-import com.sergiom.flycheck.viewmodel.TemplateEditorViewModel
+import com.sergiom.flycheck.presentation.viewmodel.TemplateEditorViewModel
 
 @Composable
 fun ObserveUiEvents(viewModel: TemplateEditorViewModel) {

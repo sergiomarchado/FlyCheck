@@ -1,7 +1,7 @@
-package com.sergiom.flycheck.viewmodel
+package com.sergiom.flycheck.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.sergiom.flycheck.viewmodel.state.CreateCheckListFormState
+import com.sergiom.flycheck.presentation.viewmodel.state.CreateCheckListFormState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

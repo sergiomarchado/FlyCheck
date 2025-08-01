@@ -19,8 +19,10 @@ private val DarkColorScheme = darkColorScheme(
     background = BlueDarkBackground,         // Fondo principal (pantallas)
     onBackground = BlueDarkText,             // Texto sobre fondo
     surface = BlueDarkSurface,               // Cards, diálogos, etc.
+    surfaceVariant = BlueDarkPrimary,
     onSurface = TextOnDarkPrimary,           // Texto sobre cards
     primaryContainer = DarkModeAccent,
+    secondaryContainer = SubSectionDark,
     onSecondaryContainer = TextOnDarkSecondary, // Texto atenuado
     outline = BlueDarkBorder                 // Bordes, líneas de campos
 )
@@ -33,9 +35,11 @@ private val LightColorScheme = lightColorScheme(
     onSecondary = Color.White,
     background = SoftWhite,
     primaryContainer = DeepBlueHeader,
+    secondaryContainer = SubSectionDark,
     onSecondaryContainer = GreyLight,
     onBackground = GreyTextDark,
-    surface = SoftSurface,             // Surface claro neutro
+    surface = SoftSurface,
+    surfaceVariant = BlueDarkPrimary,// Surface claro neutro
     onSurface = GreyTextLight
 )
 

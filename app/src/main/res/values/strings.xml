@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">FlyCheck</string>
 
+
+    <string name="templateeditorviewmodel_warning_section_not_found">Error al crear una nueva Sección</string>
+
+
+
     <!--SPLASH SCREEN-->
     <string name="splash_screen_main_text">FlyCheck ✈️</string>
     <string name="splash_screen_loadingtext">Preparando cabina…</string>
@@ -77,9 +82,7 @@
     <!--Create Custom Check List View Model-->
     <string name="createcustomchecklistviewmodel_section">El título no puede estar vacío </string>
     <string name="checklisteditorscreen_invalid_section_title_duplicate">Ya existe una sección con ese nombre</string>
-
-
-
+    <string name="generic_error">Disculpa las molestias, ha ocurrido un error inesperado</string>
 
 
 </resources>

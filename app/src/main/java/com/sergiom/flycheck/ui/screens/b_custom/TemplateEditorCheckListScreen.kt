@@ -16,16 +16,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.sergiom.flycheck.ui.screens.b_custom.components.editor.section.ConfirmDeleteSectionDialog
-import com.sergiom.flycheck.ui.screens.b_custom.components.editor.header.EditorHeaderMain
+import com.sergiom.flycheck.presentation.viewmodel.TemplateEditorViewModel
 import com.sergiom.flycheck.ui.screens.b_custom.components.editor.FlyCheckTopBar
 import com.sergiom.flycheck.ui.screens.b_custom.components.editor.ObserveUiEvents
-import com.sergiom.flycheck.ui.screens.b_custom.components.editor.section.RenameSectionDialog
 import com.sergiom.flycheck.ui.screens.b_custom.components.editor.SectionList
-import com.sergiom.flycheck.viewmodel.TemplateEditorViewModel
+import com.sergiom.flycheck.ui.screens.b_custom.components.editor.header.EditorHeaderMain
+import com.sergiom.flycheck.ui.screens.b_custom.components.editor.section.ConfirmDeleteSectionDialog
+import com.sergiom.flycheck.ui.screens.b_custom.components.editor.section.RenameSectionDialog
+
 
 @Composable
-fun CheckListEditorScreen(
+fun TemplateEditorCheckListScreen(
     templateName: String,
     model: String,
     airline: String,

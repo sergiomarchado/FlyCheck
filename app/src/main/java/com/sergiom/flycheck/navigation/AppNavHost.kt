@@ -7,8 +7,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.sergiom.flycheck.ui.screens.a_welcome.HomeScreen
 import com.sergiom.flycheck.ui.screens.a_welcome.SplashScreen
-import com.sergiom.flycheck.ui.screens.b_custom.CheckListEditorScreen
-import com.sergiom.flycheck.ui.screens.b_custom.CreateCustomCheckListScreen
+import com.sergiom.flycheck.ui.screens.b_custom.PreCheckListEditorScreen
+import com.sergiom.flycheck.ui.screens.b_custom.TemplateEditorCheckListScreen
 
 
 @SuppressLint("UnrememberedGetBackStackEntry")
@@ -41,16 +41,12 @@ fun AppNavHost(navController: NavHostController) {
 
         // OPCIÓN DE CREAR CHECK LIST PERSONALIZADA O CUSTOM
         composable(NavigationRoutes.CheckListCustom.route) {
-            CreateCustomCheckListScreen(
+            PreCheckListEditorScreen(
                 navController = navController,
-                onContinue = {name, model, airline, logo, sectionCount ->
+                onContinue = { name, model, airline, logo, sectionCount ->
                     navController.navigate(
                         NavigationRoutes.CheckListEditor.withArgs(
-                            name,
-                            model,
-                            airline,
-                            logo,
-                            sectionCount
+                            name, model, airline, logo, sectionCount
                         )
                     )
                 }
@@ -67,7 +63,7 @@ fun AppNavHost(navController: NavHostController) {
             val logo = backStackEntry.arguments?.getString("logo")?.toBooleanStrictOrNull() ?: false
             val sectionCount = backStackEntry.arguments?.getString("sectionCount")?.toIntOrNull() ?: 1
 
-            CheckListEditorScreen(
+            TemplateEditorCheckListScreen(
                 templateName = name,
                 model = model,
                 airline = airline,

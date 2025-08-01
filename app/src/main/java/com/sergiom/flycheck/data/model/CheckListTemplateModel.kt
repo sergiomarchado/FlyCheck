@@ -9,5 +9,5 @@ data class CheckListTemplateModel(
     val aircraftModel: String = "",
     val airline: String = "",
     val includeLogo: Boolean = false,
-    val sections: List <CheckListSection> = emptyList()
+    val blocks: List<CheckListBlock> = emptyList()
 )

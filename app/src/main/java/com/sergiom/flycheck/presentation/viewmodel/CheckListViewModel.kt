@@ -1,4 +1,4 @@
-package com.sergiom.flycheck.viewmodel
+package com.sergiom.flycheck.presentation.viewmodel
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf

@@ -1,4 +1,4 @@
-package com.sergiom.flycheck.viewmodel.state
+package com.sergiom.flycheck.presentation.viewmodel.state
 
 data class CreateCheckListFormState(
     val name: String = "",
