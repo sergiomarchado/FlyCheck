@@ -1,4 +1,4 @@
-package com.sergiom.flycheck.ui.screens.b_custom.components.editor
+package com.sergiom.flycheck.ui.screens.b_custom.components.editor.header
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box

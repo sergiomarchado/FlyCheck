@@ -7,6 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.sergiom.flycheck.data.model.CheckListTemplateModel
+import com.sergiom.flycheck.ui.screens.b_custom.components.editor.header.CheckListSectionHeader
+import com.sergiom.flycheck.ui.screens.b_custom.components.editor.section.CheckListSectionEditor
 import com.sergiom.flycheck.viewmodel.TemplateEditorViewModel
 
 @Composable

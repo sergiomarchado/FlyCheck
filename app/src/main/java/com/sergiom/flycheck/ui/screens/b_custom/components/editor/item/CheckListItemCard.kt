@@ -1,4 +1,4 @@
-package com.sergiom.flycheck.components
+package com.sergiom.flycheck.ui.screens.b_custom.components.editor.item
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.clickable

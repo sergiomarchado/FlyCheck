@@ -16,11 +16,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.sergiom.flycheck.ui.screens.b_custom.components.editor.ConfirmDeleteSectionDialog
-import com.sergiom.flycheck.ui.screens.b_custom.components.editor.EditorHeader
+import com.sergiom.flycheck.ui.screens.b_custom.components.editor.section.ConfirmDeleteSectionDialog
+import com.sergiom.flycheck.ui.screens.b_custom.components.editor.header.EditorHeader
 import com.sergiom.flycheck.ui.screens.b_custom.components.editor.EditorTopBar
 import com.sergiom.flycheck.ui.screens.b_custom.components.editor.ObserveUiEvents
-import com.sergiom.flycheck.ui.screens.b_custom.components.editor.RenameSectionDialog
+import com.sergiom.flycheck.ui.screens.b_custom.components.editor.section.RenameSectionDialog
 import com.sergiom.flycheck.ui.screens.b_custom.components.editor.SectionList
 import com.sergiom.flycheck.viewmodel.TemplateEditorViewModel
 

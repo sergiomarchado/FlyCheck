@@ -1,4 +1,4 @@
-package com.sergiom.flycheck.ui.screens.b_custom.components.editor
+package com.sergiom.flycheck.ui.screens.b_custom.components.editor.header
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,16 +9,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.sergiom.flycheck.components.CheckListHeader
 import com.sergiom.flycheck.data.model.CheckListTemplateModel
 
 @Composable
 fun EditorHeader(template: CheckListTemplateModel) {
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp),
-        shape = MaterialTheme.shapes.large,
+            .fillMaxWidth(),
+        shape = MaterialTheme.shapes.small,
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
@@ -27,7 +25,7 @@ fun EditorHeader(template: CheckListTemplateModel) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 24.dp)
+                .padding(horizontal = 12.dp, vertical = 12.dp)
         ) {
             CheckListHeader(
                 name = template.name,

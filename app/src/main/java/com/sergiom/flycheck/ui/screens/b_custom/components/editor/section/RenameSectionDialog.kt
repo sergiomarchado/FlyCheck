@@ -1,4 +1,4 @@
-package com.sergiom.flycheck.ui.screens.b_custom.components.editor
+package com.sergiom.flycheck.ui.screens.b_custom.components.editor.section
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.OutlinedTextField
