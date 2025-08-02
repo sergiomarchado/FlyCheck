@@ -14,6 +14,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.dp
 import com.sergiom.flycheck.data.model.CheckListTemplateModel
 import com.sergiom.flycheck.data.model.FlatBlock
@@ -87,29 +88,28 @@ fun FlatSectionListView(
                         DraggableItem(
                             itemId = subsectionId,
                             isDragging = draggingItemId == subsectionId,
-                            onDragStart = { draggingItemId = subsectionId },
-                            onDrag = { delta -> /* opcional */ },
-                            onDragEnd = { offsetY ->
+                            onDragStart = {
+                                draggingItemId = subsectionId
+                            },
+                            onDrag = { delta: Offset ->
                                 val draggedMeta = flatBlocksWithIndices.find {
-                                    val block = it.block
-                                    block is FlatBlock.Subsection &&
-                                            block.subsectionBlock.subsection.id == subsectionId
+                                    it.block is FlatBlock.Subsection &&
+                                            it.block.subsectionBlock.subsection.id == subsectionId
                                 } ?: return@DraggableItem
 
                                 val draggedPos = itemPositions[subsectionId] ?: return@DraggableItem
-                                val draggedCenterY = draggedPos.first + draggedPos.second / 2
+                                val draggedCenterY = draggedPos.first + delta.y + draggedPos.second / 2
 
-                                val possibleTargets = flatBlocksWithIndices
-                                    .filter {
-                                        val block = it.block
-                                        block is FlatBlock.Subsection &&
-                                                block.subsectionBlock.subsection.id != subsectionId &&
-                                                block.sectionId == draggedMeta.block.sectionId
-                                    }
+                                val possibleTargets = flatBlocksWithIndices.filter {
+                                    it.block is FlatBlock.Subsection &&
+                                            it.block.subsectionBlock.subsection.id != subsectionId &&
+                                            it.block.sectionId == draggedMeta.block.sectionId
+                                }
 
                                 val closestTarget = possibleTargets.minByOrNull { meta ->
-                                    val block = meta.block as? FlatBlock.Subsection ?: return@minByOrNull Float.MAX_VALUE
-                                    val pos = itemPositions[block.subsectionBlock.subsection.id] ?: return@minByOrNull Float.MAX_VALUE
+                                    val targetBlock = meta.block as FlatBlock.Subsection
+                                    val id = targetBlock.subsectionBlock.subsection.id
+                                    val pos = itemPositions[id] ?: return@minByOrNull Float.MAX_VALUE
                                     val centerY = pos.first + pos.second / 2
                                     kotlin.math.abs(centerY - draggedCenterY)
                                 } ?: return@DraggableItem
@@ -117,7 +117,6 @@ fun FlatSectionListView(
                                 if (
                                     draggedMeta.localIndex != null &&
                                     closestTarget.localIndex != null &&
-                                    draggedMeta.block.sectionId == closestTarget.block.sectionId &&
                                     draggedMeta.localIndex != closestTarget.localIndex
                                 ) {
                                     viewModel.moveBlockInSection(
@@ -126,7 +125,8 @@ fun FlatSectionListView(
                                         toIndex = closestTarget.localIndex
                                     )
                                 }
-
+                            },
+                            onDragEnd = {
                                 draggingItemId = null
                                 viewModel.disableDragFor(subsectionId)
                             },
@@ -134,11 +134,23 @@ fun FlatSectionListView(
                                 itemPositions[id] = y to height
                             }
                         ) { modifier, _, _, _ ->
-                            subsectionCard(modifier.animateItem().fillMaxWidth().padding(vertical = 4.dp))
+                            subsectionCard(
+                                modifier
+                                    .animateItem() // ← Asegúrate que esta extensión usa animateItemPlacement() correctamente
+                                    .fillMaxWidth()
+                                    .padding(vertical = 4.dp)
+                            )
                         }
                     } else {
-                        subsectionCard(Modifier.fillMaxWidth().padding(vertical = 4.dp))
+                        subsectionCard(
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp)
+                        )
                     }
+
+
+
 
 
                 }

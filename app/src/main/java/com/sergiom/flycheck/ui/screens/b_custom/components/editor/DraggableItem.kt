@@ -1,14 +1,17 @@
 package com.sergiom.flycheck.ui.screens.b_custom.components.editor
 
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
@@ -22,12 +25,12 @@ fun DraggableItem(
     itemId: String,
     onDragStart: () -> Unit,
     onDragEnd: (Float) -> Unit,
-    onDrag: (Float) -> Unit,
+    onDrag: (Offset) -> Unit, // ✅ Offset en vez de Float
     registerItemPosition: (String, Float, Float) -> Unit,
     content: @Composable (
         modifier: Modifier,
-        delta: Float,
-        startExternalDrag: (delta: Float) -> Unit,
+        offset: Offset,
+        startExternalDrag: (Offset) -> Unit,
         endExternalDrag: () -> Unit
     ) -> Unit
 ) {
@@ -37,9 +40,6 @@ fun DraggableItem(
         targetValue = offsetY,
         label = "dragOffset"
     )
-
-    // DEBUG: muestra estado de renderizado
-    println("🧩 [DraggableItem] Renderizando itemId=$itemId con isDragging=$isDragging offsetY=$offsetY")
 
     Box(
         modifier = Modifier
@@ -51,25 +51,21 @@ fun DraggableItem(
             .offset { IntOffset(0, animatedOffsetY.roundToInt()) }
             .then(
                 if (isDragging) {
-                    println("🟡 [DraggableItem] isDragging == true → activando pointerInput para $itemId")
                     Modifier.pointerInput(Unit) {
                         detectDragGestures(
                             onDragStart = {
-                                println("🟢 [DraggableItem] onDragStart ejecutado")
                                 onDragStart()
                             },
                             onDrag = { change, dragAmount ->
                                 change.consume()
                                 offsetY += dragAmount.y
-                                onDrag(offsetY)
+                                onDrag(dragAmount) // ✅ Pasamos Offset directamente
                             },
                             onDragEnd = {
-                                println("🛑 [DraggableItem] onDragEnd ejecutado con offsetY: $offsetY")
                                 onDragEnd(offsetY)
                                 offsetY = 0f
                             },
                             onDragCancel = {
-                                println("🟠 [DraggableItem] onDragCancel ejecutado con offsetY: $offsetY")
                                 onDragEnd(offsetY)
                                 offsetY = 0f
                             }
@@ -79,19 +75,16 @@ fun DraggableItem(
             )
     ) {
         content(
-            Modifier
-                .fillMaxWidth(),
-            offsetY, // ✅ Añade esto como segundo parámetro: el delta
+            Modifier.fillMaxWidth(),
+            Offset(0f, offsetY), // ✅ offset en formato Offset
             { delta ->
-                offsetY += delta
-                onDrag(offsetY)
+                offsetY += delta.y
+                onDrag(delta)
             },
             {
-                println("🟥 [DraggableItem] endExternalDrag ejecutado con offsetY: $offsetY")
                 onDragEnd(offsetY)
                 offsetY = 0f
             }
         )
-
     }
 }
