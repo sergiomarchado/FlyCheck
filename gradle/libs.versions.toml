@@ -49,6 +49,7 @@ kotlinx-serialization-json = {module = "org.jetbrains.kotlinx:kotlinx-serializat
 hilt-android = {module = "com.google.dagger:hilt-android", version.ref = "hilt"}
 hilt-compiler = {module = "com.google.dagger:hilt-compiler", version.ref = "hilt"}
 hilt-navigation = {module = "androidx.hilt:hilt-navigation-compose", version.ref = "hilt-navigation"}
+foundation = { group = "androidx.compose.foundation", name = "foundation-layout", version = "1.8.3" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -75,6 +75,8 @@ dependencies {
     implementation(libs.hilt.navigation)
     ksp(libs.hilt.compiler)
 
+    implementation(libs.foundation)
+
 
 
     // TESTING

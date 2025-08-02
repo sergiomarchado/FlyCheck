@@ -80,7 +80,6 @@ fun DraggableItem(
     ) {
         content(
             Modifier
-                .background(Color.Red)
                 .fillMaxWidth(),
             offsetY, // ✅ Añade esto como segundo parámetro: el delta
             { delta ->

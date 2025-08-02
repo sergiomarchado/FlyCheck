@@ -24,6 +24,9 @@ import com.sergiom.flycheck.ui.screens.b_custom.components.editor.section.CheckL
 import com.sergiom.flycheck.ui.screens.b_custom.components.editor.subsection.CheckListSubsectionTitleCard
 import com.sergiom.flycheck.util.toFlatBlockListWithIndices
 
+
+
+
 @Composable
 fun FlatSectionListView(
     template: CheckListTemplateModel,
@@ -131,7 +134,7 @@ fun FlatSectionListView(
                                 itemPositions[id] = y to height
                             }
                         ) { modifier, _, _, _ ->
-                            subsectionCard(modifier.fillMaxWidth().padding(vertical = 4.dp))
+                            subsectionCard(modifier.animateItem().fillMaxWidth().padding(vertical = 4.dp))
                         }
                     } else {
                         subsectionCard(Modifier.fillMaxWidth().padding(vertical = 4.dp))
@@ -228,10 +231,12 @@ fun FlatSectionListView(
                                 itemPositions[id] = y to height
                             }
                         ) { modifier, _, _, _ ->
-                            itemCard(modifier.fillMaxWidth().padding(vertical = 4.dp))
+                            itemCard(modifier.animateItem().fillMaxWidth().padding(vertical = 4.dp))
                         }
                     } else {
-                        itemCard(Modifier.fillMaxWidth().padding(vertical = 4.dp))
+                        itemCard(Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp))
                     }
                 }
 
