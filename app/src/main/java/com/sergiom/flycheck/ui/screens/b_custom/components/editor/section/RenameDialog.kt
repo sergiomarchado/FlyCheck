@@ -9,25 +9,26 @@ import androidx.compose.ui.res.stringResource
 import com.sergiom.flycheck.R
 
 @Composable
-fun RenameSectionDialog(
-    title: String,
-    onTitleChange: (String) -> Unit,
+fun RenameDialog(
+    currentText: String,
+    onTextChange: (String) -> Unit,
     onDismiss: () -> Unit,
-    onConfirm: (String) -> Unit
+    onConfirm: (String) -> Unit,
+    dialogTitle: String = stringResource(R.string.checklisteditorscreen_dialog_title)
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(stringResource(R.string.checklisteditorscreen_dialog_title)) },
+        title = { Text(dialogTitle) },
         text = {
             OutlinedTextField(
-                value = title,
-                onValueChange = onTitleChange,
+                value = currentText,
+                onValueChange = onTextChange,
                 singleLine = true,
                 label = { Text(stringResource(R.string.checklisteditorscreen_dialog_outlined_newtitle)) }
             )
         },
         confirmButton = {
-            TextButton(onClick = { onConfirm(title) }) {
+            TextButton(onClick = { onConfirm(currentText) }) {
                 Text(stringResource(R.string.checklisteditorscreen_dialog_confirmbutton))
             }
         },
@@ -38,4 +39,3 @@ fun RenameSectionDialog(
         }
     )
 }
-
