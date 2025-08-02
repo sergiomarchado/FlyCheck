@@ -8,5 +8,6 @@ data class EditorUseCases(
     val updateItem: UpdateItemUseCase,
     val toggleItemCompletion: ToggleItemCompletionUseCase,
     val updateSectionTitle: UpdateSectionTitleUseCase,
-    val deleteSection: DeleteSectionUseCase,
+    val updateSubsectionTitle: UpdateSubsectionTitleUseCase,
+    val deleteSection: DeleteSectionUseCase
 )

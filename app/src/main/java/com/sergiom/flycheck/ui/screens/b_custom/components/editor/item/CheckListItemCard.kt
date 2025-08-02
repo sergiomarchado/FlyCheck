@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Card
@@ -27,10 +28,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.sergiom.flycheck.R
@@ -48,35 +51,37 @@ fun CheckListItemCard(
     onToggleChecked: () -> Unit,
     onTitleChange: (String) -> Unit,
     onActionChange: (String) -> Unit,
-    onDeleteItem: () -> Unit
+    onDeleteItem: () -> Unit,
+    onEnableDrag: () -> Unit,
+    modifier: Modifier = Modifier,
+    showDragHandle: Boolean = false,
 ) {
-
     val isDark = isSystemInDarkTheme()
     val defaultBackgroundColor =
         if (isDark) ITEM_DEFAULT_BACKGROUND_COLOR_DARK else ITEM_DEFAULT_BACKGROUND_COLOR_LIGHT
 
-    val backgroundColor = if (item.completed) ITEM_COMPLETED_COLOR  else defaultBackgroundColor
-
+    val backgroundColor = if (item.completed) ITEM_COMPLETED_COLOR else defaultBackgroundColor
 
     val scale by animateFloatAsState(
-        targetValue = if(item.completed) ITEM_COMPLETED_SCALE else ITEM_DEFAULT_SCALE,
+        targetValue = if (item.completed) ITEM_COMPLETED_SCALE else ITEM_DEFAULT_SCALE,
         label = "scale"
     )
 
     val haptic = LocalHapticFeedback.current
 
-    //Trigger de la vibración
     LaunchedEffect(item.completed) {
-        if(item.completed){
+        if (item.completed) {
             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
         }
     }
 
     var expanded by remember { mutableStateOf(false) }
 
+    var localTitle by remember(item.id) { mutableStateOf(item.title) }
+    var localAction by remember(item.id) { mutableStateOf(item.action) }
+
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = modifier
             .graphicsLayer(scaleX = scale, scaleY = scale)
             .padding(horizontal = 8.dp, vertical = 4.dp),
         shape = MaterialTheme.shapes.medium,
@@ -93,17 +98,18 @@ fun CheckListItemCard(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.Top
             ) {
-
-                // Campo título
+                // 🔹 Campo título
                 OutlinedTextField(
-                    value = item.title,
-                    onValueChange = onTitleChange,
-                    label = {
-                        Text(
-                            text = stringResource(R.string.checklistitemcard_outlinedtextfield_item),
-                        )
-                    },
-                    modifier = Modifier.weight(1f),
+                    value = localTitle,
+                    onValueChange = { localTitle = it },
+                    label = { Text(stringResource(R.string.checklistitemcard_outlinedtextfield_item)) },
+                    modifier = Modifier
+                        .weight(1f)
+                        .onFocusChanged { focus ->
+                            if (!focus.isFocused && localTitle != item.title) {
+                                onTitleChange(localTitle)
+                            }
+                        },
                     textStyle = MaterialTheme.typography.bodyMedium,
                     singleLine = false,
                     minLines = 1,
@@ -111,16 +117,18 @@ fun CheckListItemCard(
                     colors = flyCheckOutlinedTextFieldColorsFor(backgroundColor)
                 )
 
-                // Campo acción
+                // 🔹 Campo acción
                 OutlinedTextField(
-                    value = item.action,
-                    onValueChange = onActionChange,
-                    label = {
-                        Text(
-                            text = stringResource(R.string.checklistitemcard_outlinedtextfield_action),
-                        )
-                    },
-                    modifier = Modifier.weight(1f),
+                    value = localAction,
+                    onValueChange = { localAction = it },
+                    label = { Text(stringResource(R.string.checklistitemcard_outlinedtextfield_action)) },
+                    modifier = Modifier
+                        .weight(1f)
+                        .onFocusChanged { focus ->
+                            if (!focus.isFocused && localAction != item.action) {
+                                onActionChange(localAction)
+                            }
+                        },
                     textStyle = MaterialTheme.typography.bodyMedium,
                     singleLine = false,
                     minLines = 1,
@@ -128,6 +136,19 @@ fun CheckListItemCard(
                     colors = flyCheckOutlinedTextFieldColorsFor(backgroundColor)
                 )
 
+                // 🔹 Icono de arrastre (opcional)
+                if (showDragHandle) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_drag_indicator),
+                        contentDescription = "Arrastrar",
+                        tint = Color.Gray,
+                        modifier = Modifier
+                            .padding(top = 4.dp)
+                            .size(24.dp)
+                    )
+                }
+
+                // 🔹 Menú contextual
                 Box {
                     IconButton(onClick = { expanded = true }) {
                         Icon(
@@ -142,6 +163,13 @@ fun CheckListItemCard(
                         onDismissRequest = { expanded = false }
                     ) {
                         DropdownMenuItem(
+                            text = { Text("Mover") },
+                            onClick = {
+                                expanded = false
+                                onEnableDrag()
+                            }
+                        )
+                        DropdownMenuItem(
                             text = { Text(stringResource(R.string.checklistitemcard_menu_deleteitem)) },
                             onClick = {
                                 expanded = false
@@ -154,5 +182,3 @@ fun CheckListItemCard(
         }
     }
 }
-
-

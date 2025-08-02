@@ -29,28 +29,32 @@ import com.sergiom.flycheck.R
 fun CheckListSubsectionTitleCard(
     title: String,
     onRenameClick: () -> Unit,
-    onDeleteClick: () -> Unit
+    onDeleteClick: () -> Unit,
+    onEnableDrag: () -> Unit,
+    modifier: Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
+
     Surface(
-        shape = MaterialTheme.shapes.medium, // más suave
+        shape = MaterialTheme.shapes.medium,
         tonalElevation = 0.5.dp,
         color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
                 text = title,
-                style = MaterialTheme.typography.labelLarge.copy( // tamaño más pequeño
+                style = MaterialTheme.typography.labelLarge.copy(
                     color = MaterialTheme.colorScheme.onSecondaryContainer
                 ),
-                modifier = Modifier.weight(1f).padding(12.dp)
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(12.dp)
             )
 
             Box {
@@ -80,11 +84,15 @@ fun CheckListSubsectionTitleCard(
                             onDeleteClick()
                         }
                     )
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.checklistsectionheader_menu_move)) },
+                        onClick = {
+                            expanded = false
+                            onEnableDrag()
+                        }
+                    )
                 }
             }
-
         }
     }
 }
-
-

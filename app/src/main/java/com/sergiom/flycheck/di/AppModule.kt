@@ -22,7 +22,8 @@ object AppModule {
             deleteSection = DeleteSectionUseCase(), // ← ✅ Añadir esto
             updateItem = UpdateItemUseCase(),
             toggleItemCompletion = ToggleItemCompletionUseCase(),
-            updateSectionTitle = UpdateSectionTitleUseCase()
+            updateSectionTitle = UpdateSectionTitleUseCase(),
+            updateSubsectionTitle = UpdateSubsectionTitleUseCase()
         )
     }
 }

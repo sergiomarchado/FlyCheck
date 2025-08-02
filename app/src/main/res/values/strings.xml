@@ -84,5 +84,12 @@
     <string name="checklisteditorscreen_invalid_section_title_duplicate">Ya existe una sección con ese nombre</string>
     <string name="generic_error">Disculpa las molestias, ha ocurrido un error inesperado</string>
 
+    <string name="error_title_cannot_be_empty">El título no puede estar vacío</string>
+    <string name="error_action_cannot_be_empty">La acción no puede estar vacía</string>
+
+    <string name="checklisteditorscreen_dialog_title_section">Renombrar sección</string>
+    <string name="checklisteditorscreen_dialog_title_subsection">Renombrar subsección</string>
+    <string name="checklistsectionheader_menu_move">Mover</string>
+
 
 </resources>

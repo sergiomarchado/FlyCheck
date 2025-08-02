@@ -29,6 +29,9 @@ class TemplateEditorViewModel @Inject constructor(
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow: SharedFlow<UiEvent> = _eventFlow
 
+    private val _draggableIds = MutableStateFlow<Set<String>>(emptySet())
+    val draggableIds: StateFlow<Set<String>> = _draggableIds
+
     fun setTemplateName(name: String) {
         _uiState.update { it.copy(name = name) }
     }
@@ -95,6 +98,16 @@ class TemplateEditorViewModel @Inject constructor(
     }
 
     fun updateItem(sectionId: String, itemId: String, newTitle: String, newAction: String) {
+        if (newTitle.isBlank()) {
+            showToast(R.string.error_title_cannot_be_empty)
+            return
+        }
+
+        if (newAction.isBlank()) {
+            showToast(R.string.error_action_cannot_be_empty)
+            return
+        }
+
         val currentTemplate = _uiState.value
 
         val updatedBlocks = currentTemplate.blocks.map { block ->
@@ -121,6 +134,21 @@ class TemplateEditorViewModel @Inject constructor(
 
     fun updateSectionTitle(sectionId: String, newTitle: String): Boolean {
         val result = editorUseCases.updateSectionTitle(_uiState.value, sectionId, newTitle)
+
+        result.onSuccess { updated ->
+            _uiState.value = updated
+            return true
+        }.onFailure { exception ->
+            exception.message?.toIntOrNull()?.let { resId ->
+                showToast(resId)
+            }
+        }
+
+        return false
+    }
+
+    fun updateSubsectionTitle(subsectionId: String, newTitle: String): Boolean {
+        val result = editorUseCases.updateSubsectionTitle(_uiState.value, subsectionId, newTitle)
 
         result.onSuccess { updated ->
             _uiState.value = updated
@@ -162,5 +190,36 @@ class TemplateEditorViewModel @Inject constructor(
         viewModelScope.launch {
             _eventFlow.emit(UiEvent.ShowToast(resId))
         }
+    }
+
+    fun moveBlockInSection(sectionId: String, fromIndex: Int, toIndex: Int) {
+        println("🟢 moveBlockInSection: de $fromIndex a $toIndex en sección $sectionId")
+        val updatedBlocks = _uiState.value.blocks.map { block ->
+            if (block is CheckListBlock.SectionBlock && block.section.id == sectionId) {
+                val mutable = block.section.blocks.toMutableList()
+                if (fromIndex in mutable.indices && toIndex in 0..mutable.size) {
+                    val movedItem = mutable.removeAt(fromIndex)
+                    mutable.add(toIndex, movedItem)
+                }
+                val updatedSection = block.section.copy(blocks = mutable)
+                CheckListBlock.SectionBlock(updatedSection)
+            } else {
+                block
+            }
+        }
+        _uiState.value = _uiState.value.copy(blocks = updatedBlocks)
+    }
+
+    fun enableDragFor(id: String) {
+        println("🧲 Habilitando modo mover para ID: $id")
+        _draggableIds.update { it + id }
+    }
+
+    fun disableDragFor(id: String) {
+        _draggableIds.update { it - id }
+    }
+
+    fun clearDraggable() {
+        _draggableIds.value = emptySet()
     }
 }

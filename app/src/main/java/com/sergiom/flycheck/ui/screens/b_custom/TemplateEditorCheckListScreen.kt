@@ -1,5 +1,6 @@
 package com.sergiom.flycheck.ui.screens.b_custom
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -13,16 +14,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.sergiom.flycheck.R
 import com.sergiom.flycheck.presentation.viewmodel.TemplateEditorViewModel
+import com.sergiom.flycheck.ui.screens.b_custom.components.editor.FlatSectionListView
 import com.sergiom.flycheck.ui.screens.b_custom.components.editor.FlyCheckTopBar
 import com.sergiom.flycheck.ui.screens.b_custom.components.editor.ObserveUiEvents
-import com.sergiom.flycheck.ui.screens.b_custom.components.editor.SectionList
 import com.sergiom.flycheck.ui.screens.b_custom.components.editor.header.EditorHeaderMain
 import com.sergiom.flycheck.ui.screens.b_custom.components.editor.section.ConfirmDeleteSectionDialog
-import com.sergiom.flycheck.ui.screens.b_custom.components.editor.section.RenameSectionDialog
+import com.sergiom.flycheck.data.model.RenameTargetType
+import com.sergiom.flycheck.ui.screens.b_custom.components.editor.section.RenameDialog
 
 
 @Composable
@@ -50,8 +54,11 @@ fun TemplateEditorCheckListScreen(
     val template by viewModel.uiState.collectAsState()
 
     // Estados para los diálogos
-    var editingSectionId by remember { mutableStateOf<String?>(null) }
-    var editingSectionTitle by remember { mutableStateOf("") }
+    var renameTargetId by remember { mutableStateOf<String?>(null) }
+    var renameTargetTitle by remember { mutableStateOf("") }
+    var renameTargetType by
+    remember { mutableStateOf(RenameTargetType.SECTION) }
+
     var deletingSectionId by remember { mutableStateOf<String?>(null) }
 
     // Mostrar toasts u otros eventos
@@ -70,45 +77,70 @@ fun TemplateEditorCheckListScreen(
         }
     ) { innerPadding ->
 
-        SectionList(
-            template = template,
-            header = {
-                Spacer(modifier = Modifier.height(16.dp))
-                EditorHeaderMain(template)
-            },
-            onRename = { id, title ->
-                editingSectionId = id
-                editingSectionTitle = title
-            },
-            onDelete = { id -> deletingSectionId = id },
-            viewModel = viewModel,
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-        )
+        ) {
 
-        // Diálogo: renombrar sección
-        if (editingSectionId != null) {
-            RenameSectionDialog(
-                title = editingSectionTitle,
-                onDismiss = { editingSectionId = null },
-                onConfirm = {
-                    val success = viewModel.updateSectionTitle(editingSectionId!!, it)
-                    if (success) editingSectionId = null
+            Spacer(modifier = Modifier.height(16.dp))
+            EditorHeaderMain(template)
+
+            FlatSectionListView(
+                template = template,
+                viewModel = viewModel,
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(innerPadding),
+                onRename = { id, title, type ->
+                    renameTargetId = id
+                    renameTargetTitle = title
+                    renameTargetType = type
                 },
-                onTitleChange = { editingSectionTitle = it }
+                onDelete = { id ->
+                    deletingSectionId = id
+                }
             )
+
+            // Diálogo: renombrar títulos sección o subsección
+            if (renameTargetId != null) {
+                RenameDialog(
+                    currentText = renameTargetTitle,
+                    onTextChange = { renameTargetTitle = it },
+                    onDismiss = { renameTargetId = null },
+                    onConfirm = { newTitle ->
+                        val success = when (renameTargetType) {
+                            RenameTargetType.SECTION -> viewModel.updateSectionTitle(
+                                renameTargetId!!,
+                                newTitle
+                            )
+
+                            RenameTargetType.SUBSECTION -> viewModel.updateSubsectionTitle(
+                                renameTargetId!!,
+                                newTitle
+                            )
+                        }
+                        if (success) renameTargetId = null
+                    },
+                    dialogTitle = when (renameTargetType) {
+                        RenameTargetType.SECTION -> stringResource(R.string.checklisteditorscreen_dialog_title_section)
+                        RenameTargetType.SUBSECTION -> stringResource(R.string.checklisteditorscreen_dialog_title_subsection)
+                    }
+                )
+            }
+
+            // Diálogo: eliminar sección
+            if (deletingSectionId != null) {
+                ConfirmDeleteSectionDialog(
+                    onConfirm = {
+                        viewModel.deleteSection(deletingSectionId!!)
+                        deletingSectionId = null
+                    },
+                    onDismiss = { deletingSectionId = null }
+                )
+            }
+
         }
 
-        // Diálogo: eliminar sección
-        if (deletingSectionId != null) {
-            ConfirmDeleteSectionDialog(
-                onConfirm = {
-                    viewModel.deleteSection(deletingSectionId!!)
-                    deletingSectionId = null
-                },
-                onDismiss = { deletingSectionId = null }
-            )
-        }
     }
 }
