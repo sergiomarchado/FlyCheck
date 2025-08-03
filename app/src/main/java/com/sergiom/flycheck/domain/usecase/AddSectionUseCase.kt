@@ -3,8 +3,11 @@ package com.sergiom.flycheck.domain.usecase
 import com.sergiom.flycheck.data.model.CheckListBlock
 import com.sergiom.flycheck.data.model.CheckListSection
 import com.sergiom.flycheck.data.model.CheckListTemplateModel
-import java.util.*
 
+
+/**
+ * Caso de uso para añadir una nueva sección vacía al checklist.
+ */
 class AddSectionUseCase {
     operator fun invoke(template: CheckListTemplateModel): CheckListTemplateModel {
         val newSection = CheckListSection(
