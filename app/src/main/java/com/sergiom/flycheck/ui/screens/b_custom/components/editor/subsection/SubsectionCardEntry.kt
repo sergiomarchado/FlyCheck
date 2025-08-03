@@ -64,7 +64,7 @@ fun SubsectionCardEntry(
         },
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp) // Espaciado vertical entre subsecciones
+            .padding(start = 16.dp, end = 8.dp, top = 8.dp, bottom = 8.dp) // Espaciado vertical entre subsecciones
     )
 }
 

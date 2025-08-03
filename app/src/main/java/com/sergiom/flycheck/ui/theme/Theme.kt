@@ -22,7 +22,7 @@ private val DarkColorScheme = darkColorScheme(
     surfaceVariant = BlueDarkPrimary,
     onSurface = TextOnDarkPrimary,           // Texto sobre cards
     primaryContainer = DarkModeAccent,
-    secondaryContainer = SubSectionDark,
+    secondaryContainer = SubSectionDarkP2,
     onSecondaryContainer = TextOnDarkSecondary, // Texto atenuado
     outline = BlueDarkBorder                 // Bordes, líneas de campos
 )

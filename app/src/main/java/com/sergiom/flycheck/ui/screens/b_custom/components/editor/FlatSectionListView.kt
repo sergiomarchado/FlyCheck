@@ -2,8 +2,8 @@ package com.sergiom.flycheck.ui.screens.b_custom.components.editor
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -12,9 +12,10 @@ import com.sergiom.flycheck.data.model.CheckListTemplateModel
 import com.sergiom.flycheck.data.model.FlatBlock
 import com.sergiom.flycheck.data.model.RenameTargetType
 import com.sergiom.flycheck.presentation.viewmodel.TemplateEditorViewModel
+import com.sergiom.flycheck.ui.screens.b_custom.components.editor.header.EditorHeaderMain
 import com.sergiom.flycheck.ui.screens.b_custom.components.editor.item.ItemCardEntry
-import com.sergiom.flycheck.ui.screens.b_custom.components.editor.titlesection.CheckListSectionTitleCard
 import com.sergiom.flycheck.ui.screens.b_custom.components.editor.subsection.SubsectionCardEntry
+import com.sergiom.flycheck.ui.screens.b_custom.components.editor.titlesection.CheckListSectionTitleCard
 import com.sergiom.flycheck.ui.screens.b_custom.components.editor.utils.SectionAddControls
 import com.sergiom.flycheck.util.toFlatBlockListWithIndices
 
@@ -41,62 +42,60 @@ fun FlatSectionListView(
         template.blocks.toFlatBlockListWithIndices()
     }
 
-    // LazyColumn para renderizar la lista de bloques planos de forma eficiente
     LazyColumn(
-        modifier = modifier.fillMaxSize(),
-        // espacio inferior para evitar solapamiento con posibles FABs o barras
+        modifier = modifier
+            .fillMaxSize()
+            .padding(vertical = 12.dp, horizontal = 8.dp),
         contentPadding = PaddingValues(bottom = 80.dp)
     ) {
+        // CABECERA: información básica de la plantilla (no sticky)
+        item {
+            EditorHeaderMain(template)
+        }
 
-        // Renderizado de cada tipo de bloque según su tipo concreto (clave única por ID)
-        itemsIndexed(flatBlocksWithIndices, key = { _, meta ->
-            when (val block = meta.block) {
-                is FlatBlock.SectionHeader -> block.section.id
-                is FlatBlock.Subsection -> block.subsectionBlock.subsection.id
-                is FlatBlock.Item -> block.itemBlock.item.id
-
-                // Clave pseudo-única para controles de adición
-                is FlatBlock.AddControls -> "add-${block.sectionId}"
-            }
-        }) { _, meta ->
+        // Itera manualmente los bloques planos
+        flatBlocksWithIndices.forEachIndexed { _, meta ->
             when (val block = meta.block) {
                 is FlatBlock.SectionHeader -> {
-
-                    // CABECERA de la sección con opciones para renombrar o eliminar
-                    CheckListSectionTitleCard(
-                        title = block.section.title,
-                        onRenameClick = {
-                            onRename(block.section.id, block.section.title, RenameTargetType.SECTION)
-                        },
-                        onDeleteClick = {
-                            onDelete(block.section.id)
-                        }
-                    )
+                    stickyHeader(key = block.section.id) {
+                        CheckListSectionTitleCard(
+                            title = block.section.title,
+                            onRenameClick = {
+                                onRename(block.section.id, block.section.title, RenameTargetType.SECTION)
+                            },
+                            onDeleteClick = {
+                                onDelete(block.section.id)
+                            },
+                        )
+                    }
                 }
 
                 is FlatBlock.Subsection -> {
-                    // SUBSECCIÓN: renderiza subsecciones y delega comportamiento
-                    SubsectionCardEntry(
-                        meta = meta,
-                        viewModel = viewModel,
-                        onRename = onRename
-                    )
+                    item(key = block.subsectionBlock.subsection.id) {
+                        SubsectionCardEntry(
+                            meta = meta,
+                            viewModel = viewModel,
+                            onRename = onRename
+                        )
+                    }
                 }
 
                 is FlatBlock.Item -> {
-                    // ITEMS: renderiza items con acciones propias
-                    ItemCardEntry(
-                        meta = meta,
-                        viewModel = viewModel
-                    )
+                    item(key = block.itemBlock.item.id) {
+                        ItemCardEntry(
+                            meta = meta,
+                            viewModel = viewModel
+                        )
+                    }
                 }
 
                 is FlatBlock.AddControls -> {
-                    // BOTONES para añadir ítems o subsecciones
-                    SectionAddControls(
-                        sectionId = block.sectionId,
-                        viewModel = viewModel
-                    )
+                    item(key = "add-${block.sectionId}") {
+                        SectionAddControls(
+                            sectionId = block.sectionId,
+                            viewModel = viewModel
+                        )
+                    }
                 }
             }
         }

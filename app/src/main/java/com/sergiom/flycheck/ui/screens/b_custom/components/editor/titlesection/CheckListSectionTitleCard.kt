@@ -47,7 +47,7 @@ fun CheckListSectionTitleCard(
         Surface(
             modifier = Modifier
                 .fillMaxWidth() // Ocupa el ancho completo del padre
-                .padding(horizontal = 8.dp, vertical = 8.dp),
+                .padding( vertical = 8.dp),
             shape = MaterialTheme.shapes.medium,
             color = MaterialTheme.colorScheme.surface, // Color de fondo
             tonalElevation = 4.dp,
@@ -61,7 +61,7 @@ fun CheckListSectionTitleCard(
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 12.dp)
             ) {
-                // TÍTULO SUBSECCIÓN
+                // TÍTULO SECCIÓN
                 Text(
                     text = title,
                     style = MaterialTheme.typography.titleLarge,
