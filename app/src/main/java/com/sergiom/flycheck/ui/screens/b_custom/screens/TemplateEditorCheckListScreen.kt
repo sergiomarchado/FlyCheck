@@ -1,4 +1,4 @@
-package com.sergiom.flycheck.ui.screens.b_custom
+package com.sergiom.flycheck.ui.screens.b_custom.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -22,13 +22,24 @@ import com.sergiom.flycheck.R
 import com.sergiom.flycheck.presentation.viewmodel.TemplateEditorViewModel
 import com.sergiom.flycheck.ui.screens.b_custom.components.editor.FlatSectionListView
 import com.sergiom.flycheck.ui.screens.b_custom.components.editor.FlyCheckTopBar
-import com.sergiom.flycheck.ui.screens.b_custom.components.editor.ObserveUiEvents
+import com.sergiom.flycheck.ui.screens.b_custom.components.editor.utils.ObserveUiEvents
 import com.sergiom.flycheck.ui.screens.b_custom.components.editor.header.EditorHeaderMain
-import com.sergiom.flycheck.ui.screens.b_custom.components.editor.section.ConfirmDeleteSectionDialog
+import com.sergiom.flycheck.ui.screens.b_custom.components.editor.titlesection.ConfirmDeleteSectionDialog
 import com.sergiom.flycheck.data.model.RenameTargetType
-import com.sergiom.flycheck.ui.screens.b_custom.components.editor.section.RenameDialog
+import com.sergiom.flycheck.ui.screens.b_custom.components.editor.utils.RenameDialog
 
-
+/**
+ * Pantalla principal del editor de checklist.
+ * Se encarga de mostrar las secciones, subsecciones e ítems que componen una plantilla.
+ *
+ * @param templateName Nombre de la plantilla a editar.
+ * @param model Modelo del avión.
+ * @param airline Aerolínea asociada a la plantilla.
+ * @param includeLogo Indica si se debe mostrar el logo.
+ * @param sectionCount Cantidad de secciones iniciales.
+ * @param navController Controlador de navegación.
+ * @param viewModel ViewModel asociado a la pantalla.
+ */
 @Composable
 fun TemplateEditorCheckListScreen(
     templateName: String,
@@ -39,7 +50,7 @@ fun TemplateEditorCheckListScreen(
     navController: NavHostController,
     viewModel: TemplateEditorViewModel = hiltViewModel()
 ) {
-    // Inicializar plantilla
+    // Lógica se ejecuta una vez al entrar en la pantalla: inicializa la plantilla en el ViewModel.
     LaunchedEffect(Unit) {
         viewModel.initializeTemplate(
             name = templateName,
@@ -50,10 +61,10 @@ fun TemplateEditorCheckListScreen(
         )
     }
 
-    // Estado actual de la plantilla
+    // Observa el estado de la plantilla (secciones, ítems, etc.)
     val template by viewModel.uiState.collectAsState()
 
-    // Estados para los diálogos
+    // Estados necesarios para los diálogos de renombrado y eliminación
     var renameTargetId by remember { mutableStateOf<String?>(null) }
     var renameTargetTitle by remember { mutableStateOf("") }
     var renameTargetType by
@@ -61,8 +72,9 @@ fun TemplateEditorCheckListScreen(
 
     var deletingSectionId by remember { mutableStateOf<String?>(null) }
 
-    // Mostrar toasts u otros eventos
+    // Observa eventos de UI (ej. Toasts)
     ObserveUiEvents(viewModel)
+
 
     Scaffold(
         topBar = {
@@ -80,29 +92,34 @@ fun TemplateEditorCheckListScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
+                .padding(innerPadding) // Respeta el padding del Scaffold
         ) {
 
             Spacer(modifier = Modifier.height(16.dp))
+
+            // CABECERA: información básica de la plantilla
             EditorHeaderMain(template)
 
+            // LISTA DE LA CHECKLIST: secciones, subsecciones e ítems
             FlatSectionListView(
                 template = template,
                 viewModel = viewModel,
                 modifier = Modifier
                     .weight(1f)
-                    .padding(innerPadding),
+                    .padding(innerPadding),  // El mismo padding que usa el Scaffold
+                // Configura el estado para mostrar el diálogo de renombrado
                 onRename = { id, title, type ->
                     renameTargetId = id
                     renameTargetTitle = title
                     renameTargetType = type
                 },
+                // Configura el estado para mostrar el diálogo de eliminación
                 onDelete = { id ->
                     deletingSectionId = id
                 }
             )
 
-            // Diálogo: renombrar títulos sección o subsección
+            // Diálogo: renombrar títulos de sección o subsección
             if (renameTargetId != null) {
                 RenameDialog(
                     currentText = renameTargetTitle,
@@ -120,6 +137,7 @@ fun TemplateEditorCheckListScreen(
                                 newTitle
                             )
                         }
+                        // Si el cambio fue exitoso, se cierra el diálogo
                         if (success) renameTargetId = null
                     },
                     dialogTitle = when (renameTargetType) {

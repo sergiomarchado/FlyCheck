@@ -55,6 +55,9 @@
     <string name="checklistitemcard_outlinedtextfield_action">Acción</string>
     <string name="checklistitemcard_menu_deleteitem">Eliminar Ítem</string>
     <string name="checklistitemcard_icon_moreopcions">Menú de más opciones</string>
+    <string name="checklistitemcard_button_move_up">Mover arriba</string>
+    <string name="checklistitemcard_button_move_down">Mover abajo</string>
+    <string name="checklistitemcard_context_menu_move">Mover</string>
 
     <!--CheckListSection Editor-->
     <string name="checklistsectioneditor_alertdialog_title">Editar título de sección</string>
@@ -90,6 +93,19 @@
     <string name="checklisteditorscreen_dialog_title_section">Renombrar sección</string>
     <string name="checklisteditorscreen_dialog_title_subsection">Renombrar subsección</string>
     <string name="checklistsectionheader_menu_move">Mover</string>
+
+    <!--SectionAddsControls-->
+    <string name="sectionaddscontrols_item_title">Título del ítem</string>
+    <string name="sectionaddscontrols_item_action">Acción</string>
+    <string name="sectionaddscontrols_button_accept">Aceptar</string>
+    <string name="sectionaddscontrols_button_cancel">Cancelar</string>
+    <string name="sectionaddscontrols_button_add_item">Añadir Ítem</string>
+    <string name="sectionaddscontrols_button_add_subsection">Añadir Subsección</string>
+    <string name="sectionaddscontrols_subsection_title">Título de la subsección</string>
+
+
+
+
 
 
 </resources>

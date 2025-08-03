@@ -24,6 +24,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.sergiom.flycheck.R
 
+/**
+ * Cabecera visual que muestra el nombre, modelo, aerolínea y opcionalmente el logo,
+ * adaptándose automáticamente al modo vertical u horizontal del dispositivo.
+ *
+ * @param name Nombre de la plantilla o checklist
+ * @param model Modelo de avión o aeronave
+ * @param airline Aerolínea asociada
+ * @param includeLogo Si es true, se mostrará el logo de la aerolínea
+ */
 @Composable
 fun CheckListHeaderCard(
     name: String,
@@ -31,8 +40,10 @@ fun CheckListHeaderCard(
     airline: String,
     includeLogo: Boolean
 ) {
+    // Detectamos la orientación del dispositivo
     val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
 
+    // MODO HORIZONTAL
     if (isLandscape) {
         Row(
             modifier = Modifier
@@ -41,19 +52,23 @@ fun CheckListHeaderCard(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
+            // Columna con nombre y modelo
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+
+                // NOMBRE
                 Text(
                     text = name,
                     style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.onPrimary
                 )
+                // MODELO
                 Text(
                     text = model,
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onPrimary
                 )
             }
-
+            // Fila con aerolínea y logo (si está activado)
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -71,12 +86,14 @@ fun CheckListHeaderCard(
                             .height(48.dp)
                             .width(48.dp)
                             .padding(start = 4.dp)
-                            .clip(RoundedCornerShape(6.dp))
+                            .clip(RoundedCornerShape(6.dp))  // Logo con bordes redondeados
                     )
                 }
             }
         }
-    } else {
+    }
+    // MODO VERTICAL
+    else {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -91,6 +108,7 @@ fun CheckListHeaderCard(
 
             Spacer(modifier = Modifier.height(8.dp))
 
+            // Fila inferior con aerolínea (y logo) + modelo
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -98,6 +116,7 @@ fun CheckListHeaderCard(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
+                // Aerolínea y logo (opcional)
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     if (includeLogo) {
                         Image(
@@ -116,7 +135,7 @@ fun CheckListHeaderCard(
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                 }
-
+                // Modelo del avión
                 Text(
                     text = model,
                     style = MaterialTheme.typography.bodySmall,

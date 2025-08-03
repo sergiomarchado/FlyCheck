@@ -7,17 +7,18 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.sergiom.flycheck.ui.screens.a_welcome.HomeScreen
 import com.sergiom.flycheck.ui.screens.a_welcome.SplashScreen
-import com.sergiom.flycheck.ui.screens.b_custom.PreCheckListEditorScreen
-import com.sergiom.flycheck.ui.screens.b_custom.TemplateEditorCheckListScreen
+import com.sergiom.flycheck.ui.screens.b_custom.screens.PreCheckListEditorScreen
+import com.sergiom.flycheck.ui.screens.b_custom.screens.TemplateEditorCheckListScreen
 
-
+// Define la estructura de navegación principal de la app usando Jetpack Navigation en Compose
 @SuppressLint("UnrememberedGetBackStackEntry")
 @Composable
 fun AppNavHost(navController: NavHostController) {
 
+    // PANTALLA INICIAL DE LA APP
     NavHost(navController = navController, startDestination = NavigationRoutes.Splash.route){
 
-        // Splash
+        // Pantalla de bienvenida (Splash)
         composable(NavigationRoutes.Splash.route) {
             // Simulamos un splash screen corto con delay
             SplashScreen(
@@ -29,7 +30,7 @@ fun AppNavHost(navController: NavHostController) {
             )
         }
 
-        // HOME SCREEN TRAS SPLASCREEN
+        // HOME SCREEN
         composable(NavigationRoutes.Home.route){
             HomeScreen(
                 onGoCustomCheckList = {
@@ -73,6 +74,7 @@ fun AppNavHost(navController: NavHostController) {
             )
         }
 
+        // Placeholder para futuras checklists predefinidas
         composable(NavigationRoutes.CheckListPredefined.route) {
             // Pendiente de implementar más adelante
         }

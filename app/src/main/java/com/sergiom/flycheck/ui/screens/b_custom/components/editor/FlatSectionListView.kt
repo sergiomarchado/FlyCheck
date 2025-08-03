@@ -2,32 +2,32 @@ package com.sergiom.flycheck.ui.screens.b_custom.components.editor
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.dp
 import com.sergiom.flycheck.data.model.CheckListTemplateModel
 import com.sergiom.flycheck.data.model.FlatBlock
 import com.sergiom.flycheck.data.model.RenameTargetType
 import com.sergiom.flycheck.presentation.viewmodel.TemplateEditorViewModel
-import com.sergiom.flycheck.ui.screens.b_custom.components.editor.item.CheckListItemCard
-import com.sergiom.flycheck.ui.screens.b_custom.components.editor.section.CheckListSectionTitleCard
-import com.sergiom.flycheck.ui.screens.b_custom.components.editor.subsection.CheckListSubsectionTitleCard
+import com.sergiom.flycheck.ui.screens.b_custom.components.editor.item.ItemCardEntry
+import com.sergiom.flycheck.ui.screens.b_custom.components.editor.titlesection.CheckListSectionTitleCard
+import com.sergiom.flycheck.ui.screens.b_custom.components.editor.subsection.SubsectionCardEntry
+import com.sergiom.flycheck.ui.screens.b_custom.components.editor.utils.SectionAddControls
 import com.sergiom.flycheck.util.toFlatBlockListWithIndices
 
-
-
-
+/**
+ * Composable principal que renderiza todos los elementos de un checklist (secciones, subsecciones, ítems, etc.)
+ * en formato plano y ordenado, utilizando una LazyColumn para rendimiento eficiente.
+ *
+ * @param template Modelo completo del checklist, que contiene bloques jerárquicos.
+ * @param viewModel ViewModel que gestiona la lógica del editor.
+ * @param modifier Modificador de estilo externo.
+ * @param onRename Callback para renombrar secciones o subsecciones.
+ * @param onDelete Callback para eliminar secciones completas.
+ */
 @Composable
 fun FlatSectionListView(
     template: CheckListTemplateModel,
@@ -36,22 +36,33 @@ fun FlatSectionListView(
     onRename: (String, String, RenameTargetType) -> Unit,
     onDelete: (String) -> Unit
 ) {
-    val draggableIds by viewModel.draggableIds.collectAsState()
-    val flatBlocksWithIndices = remember(template, draggableIds) {
+    // Se obtiene una versión plana de todos los bloques jerárquicos (con sus índices locales)
+    val flatBlocksWithIndices = remember(template) {
         template.blocks.toFlatBlockListWithIndices()
     }
-    val flatBlocks = flatBlocksWithIndices.map { it.block }
 
-    var draggingItemId by remember { mutableStateOf<String?>(null) }
-    val itemPositions = remember { mutableStateMapOf<String, Pair<Float, Float>>() }
-
+    // LazyColumn para renderizar la lista de bloques planos de forma eficiente
     LazyColumn(
         modifier = modifier.fillMaxSize(),
+        // espacio inferior para evitar solapamiento con posibles FABs o barras
         contentPadding = PaddingValues(bottom = 80.dp)
     ) {
-        itemsIndexed(flatBlocks, key = { _, block -> block.hashCode() }) { _, block ->
-            when (block) {
+
+        // Renderizado de cada tipo de bloque según su tipo concreto (clave única por ID)
+        itemsIndexed(flatBlocksWithIndices, key = { _, meta ->
+            when (val block = meta.block) {
+                is FlatBlock.SectionHeader -> block.section.id
+                is FlatBlock.Subsection -> block.subsectionBlock.subsection.id
+                is FlatBlock.Item -> block.itemBlock.item.id
+
+                // Clave pseudo-única para controles de adición
+                is FlatBlock.AddControls -> "add-${block.sectionId}"
+            }
+        }) { _, meta ->
+            when (val block = meta.block) {
                 is FlatBlock.SectionHeader -> {
+
+                    // CABECERA de la sección con opciones para renombrar o eliminar
                     CheckListSectionTitleCard(
                         title = block.section.title,
                         onRenameClick = {
@@ -64,196 +75,24 @@ fun FlatSectionListView(
                 }
 
                 is FlatBlock.Subsection -> {
-                    val subsectionId = block.subsectionBlock.subsection.id
-                    val isDraggable = draggableIds.contains(subsectionId)
-
-                    val subsectionCard: @Composable (Modifier) -> Unit = { subsectionModifier ->
-                        CheckListSubsectionTitleCard(
-                            title = block.subsectionBlock.subsection.title,
-                            onRenameClick = {
-                                onRename(subsectionId, block.subsectionBlock.subsection.title, RenameTargetType.SUBSECTION)
-                            },
-                            onDeleteClick = {
-                                viewModel.deleteSubsection(block.sectionId, subsectionId)
-                            },
-                            onEnableDrag = {
-                                draggingItemId = subsectionId
-                                viewModel.enableDragFor(subsectionId)
-                            },
-                            modifier = subsectionModifier
-                        )
-                    }
-
-                    if (isDraggable) {
-                        DraggableItem(
-                            itemId = subsectionId,
-                            isDragging = draggingItemId == subsectionId,
-                            onDragStart = {
-                                draggingItemId = subsectionId
-                            },
-                            onDrag = { delta: Offset ->
-                                val draggedMeta = flatBlocksWithIndices.find {
-                                    it.block is FlatBlock.Subsection &&
-                                            it.block.subsectionBlock.subsection.id == subsectionId
-                                } ?: return@DraggableItem
-
-                                val draggedPos = itemPositions[subsectionId] ?: return@DraggableItem
-                                val draggedCenterY = draggedPos.first + delta.y + draggedPos.second / 2
-
-                                val possibleTargets = flatBlocksWithIndices.filter {
-                                    it.block is FlatBlock.Subsection &&
-                                            it.block.subsectionBlock.subsection.id != subsectionId &&
-                                            it.block.sectionId == draggedMeta.block.sectionId
-                                }
-
-                                val closestTarget = possibleTargets.minByOrNull { meta ->
-                                    val targetBlock = meta.block as FlatBlock.Subsection
-                                    val id = targetBlock.subsectionBlock.subsection.id
-                                    val pos = itemPositions[id] ?: return@minByOrNull Float.MAX_VALUE
-                                    val centerY = pos.first + pos.second / 2
-                                    kotlin.math.abs(centerY - draggedCenterY)
-                                } ?: return@DraggableItem
-
-                                if (
-                                    draggedMeta.localIndex != null &&
-                                    closestTarget.localIndex != null &&
-                                    draggedMeta.localIndex != closestTarget.localIndex
-                                ) {
-                                    viewModel.moveBlockInSection(
-                                        sectionId = draggedMeta.block.sectionId,
-                                        fromIndex = draggedMeta.localIndex,
-                                        toIndex = closestTarget.localIndex
-                                    )
-                                }
-                            },
-                            onDragEnd = {
-                                draggingItemId = null
-                                viewModel.disableDragFor(subsectionId)
-                            },
-                            registerItemPosition = { id, y, height ->
-                                itemPositions[id] = y to height
-                            }
-                        ) { modifier, _, _, _ ->
-                            subsectionCard(
-                                modifier
-                                    .animateItem() // ← Asegúrate que esta extensión usa animateItemPlacement() correctamente
-                                    .fillMaxWidth()
-                                    .padding(vertical = 4.dp)
-                            )
-                        }
-                    } else {
-                        subsectionCard(
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 4.dp)
-                        )
-                    }
-
-
-
-
-
+                    // SUBSECCIÓN: renderiza subsecciones y delega comportamiento
+                    SubsectionCardEntry(
+                        meta = meta,
+                        viewModel = viewModel,
+                        onRename = onRename
+                    )
                 }
 
                 is FlatBlock.Item -> {
-                    val itemId = block.itemBlock.item.id
-                    val isDraggable = draggableIds.contains(itemId)
-
-                    val itemCard: @Composable (Modifier) -> Unit = { itemModifier ->
-                        CheckListItemCard(
-                            item = block.itemBlock.item,
-                            onToggleChecked = {
-                                viewModel.toggleItemCompleted(block.sectionId, block.itemBlock.item.id)
-                            },
-                            onTitleChange = {
-                                viewModel.updateItem(
-                                    block.sectionId,
-                                    block.itemBlock.item.id,
-                                    it,
-                                    block.itemBlock.item.action
-                                )
-                            },
-                            onActionChange = {
-                                viewModel.updateItem(
-                                    block.sectionId,
-                                    block.itemBlock.item.id,
-                                    block.itemBlock.item.title,
-                                    it
-                                )
-                            },
-                            onDeleteItem = {
-                                viewModel.deleteItem(block.sectionId, block.itemBlock.item.id)
-                            },
-                            onEnableDrag = {
-                                draggingItemId = itemId
-                                viewModel.enableDragFor(itemId)
-                            },
-                            showDragHandle = isDraggable,
-                            modifier = itemModifier,
-                        )
-                    }
-
-                    if (isDraggable) {
-                        DraggableItem(
-                            itemId = itemId,
-                            isDragging = draggingItemId == itemId,
-                            onDragStart = { draggingItemId = itemId },
-                            onDrag = {},
-                            onDragEnd = { offsetY ->
-                                val draggedMeta = flatBlocksWithIndices.find {
-                                    it.block is FlatBlock.Item &&
-                                            it.block.itemBlock.item.id == itemId
-                                } ?: return@DraggableItem
-
-                                val draggedPos = itemPositions[itemId] ?: return@DraggableItem
-                                val draggedCenterY = draggedPos.first + draggedPos.second / 2
-
-                                // Filtramos solo otros ítems dentro de la misma sección
-                                val possibleTargets = flatBlocksWithIndices.filter {
-                                    val block = it.block
-                                    block is FlatBlock.Item &&
-                                            block.itemBlock.item.id != itemId &&
-                                            it.block.sectionId == draggedMeta.block.sectionId
-                                }
-
-                                val closestTarget = possibleTargets.minByOrNull { meta ->
-                                    val block = meta.block as? FlatBlock.Item ?: return@minByOrNull Float.MAX_VALUE
-                                    val pos = itemPositions[block.itemBlock.item.id] ?: return@minByOrNull Float.MAX_VALUE
-                                    val centerY = pos.first + pos.second / 2
-                                    kotlin.math.abs(centerY - draggedCenterY)
-                                } ?: return@DraggableItem
-
-                                if (
-                                    draggedMeta.localIndex != null &&
-                                    closestTarget.localIndex != null &&
-                                    draggedMeta.block.sectionId == closestTarget.block.sectionId &&
-                                    draggedMeta.localIndex != closestTarget.localIndex
-                                ) {
-                                    viewModel.moveBlockInSection(
-                                        sectionId = draggedMeta.block.sectionId,
-                                        fromIndex = draggedMeta.localIndex,
-                                        toIndex = closestTarget.localIndex
-                                    )
-                                }
-
-                                draggingItemId = null
-                                viewModel.disableDragFor(itemId)
-                            },
-                            registerItemPosition = { id, y, height ->
-                                itemPositions[id] = y to height
-                            }
-                        ) { modifier, _, _, _ ->
-                            itemCard(modifier.animateItem().fillMaxWidth().padding(vertical = 4.dp))
-                        }
-                    } else {
-                        itemCard(Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 4.dp))
-                    }
+                    // ITEMS: renderiza items con acciones propias
+                    ItemCardEntry(
+                        meta = meta,
+                        viewModel = viewModel
+                    )
                 }
 
-
                 is FlatBlock.AddControls -> {
+                    // BOTONES para añadir ítems o subsecciones
                     SectionAddControls(
                         sectionId = block.sectionId,
                         viewModel = viewModel

@@ -11,22 +11,34 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.sergiom.flycheck.data.model.CheckListTemplateModel
 
+/**
+ * Cabecera principal del editor de checklist.
+ *
+ * Este Composable actúa como un contenedor de nivel superior para la información general
+ * de la plantilla (nombre, modelo, aerolínea y logo). Internamente delega el renderizado
+ * de los datos a [CheckListHeaderCard].
+ *
+ * @param template Objeto que contiene la información principal de la checklist actual.
+ */
 @Composable
 fun EditorHeaderMain(template: CheckListTemplateModel) {
+    // Se utiliza una Card para dar fondo, bordes y elevación a la cabecera
     Card(
         modifier = Modifier
             .fillMaxWidth(),
         shape = MaterialTheme.shapes.small,
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer
+            containerColor = MaterialTheme.colorScheme.primaryContainer // Color de fondo de la card
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 12.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 16.dp)
     ) {
+        // Box interno que añade padding y contiene el componente de cabecera
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp, vertical = 12.dp)
         ) {
+            // Componente que muestra los datos del encabezado
             CheckListHeaderCard(
                 name = template.name,
                 model = template.aircraftModel,

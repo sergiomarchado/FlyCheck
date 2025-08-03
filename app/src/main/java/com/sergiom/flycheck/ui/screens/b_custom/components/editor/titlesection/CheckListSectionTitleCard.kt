@@ -1,4 +1,4 @@
-package com.sergiom.flycheck.ui.screens.b_custom.components.editor.section
+package com.sergiom.flycheck.ui.screens.b_custom.components.editor.titlesection
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
@@ -25,24 +25,33 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.sergiom.flycheck.R
 
+/**
+ * Composable que representa el encabezado de una sección en la checklist.
+ * Muestra el título de la sección y un menú desplegable con acciones: renombrar o eliminar.
+ *
+ * @param title Título de la sección que se mostrará en el encabezado.
+ * @param onRenameClick Callback que se invoca cuando el usuario selecciona la opción "Renombrar".
+ * @param onDeleteClick Callback que se invoca cuando el usuario selecciona la opción "Eliminar".
+ */
 @Composable
 fun CheckListSectionTitleCard(
     title: String,
     onRenameClick: () -> Unit,
     onDeleteClick: () -> Unit
 ) {
+    // Estado para controlar si el menú contextual está visible o no
     var expanded by remember { mutableStateOf(false) }
 
-    // Animación de entrada
+    // Contenedor animado que permite mostrar/ocultar la sección con una transición
     AnimatedVisibility(visible = true) {
         Surface(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxWidth() // Ocupa el ancho completo del padre
                 .padding(horizontal = 8.dp, vertical = 8.dp),
             shape = MaterialTheme.shapes.medium,
-            color = MaterialTheme.colorScheme.surface,
+            color = MaterialTheme.colorScheme.surface, // Color de fondo
             tonalElevation = 4.dp,
-            shadowElevation = 4.dp,
+            shadowElevation = 8.dp,
 
 
         ) {
@@ -52,6 +61,7 @@ fun CheckListSectionTitleCard(
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 12.dp)
             ) {
+                // TÍTULO SUBSECCIÓN
                 Text(
                     text = title,
                     style = MaterialTheme.typography.titleLarge,
@@ -59,6 +69,7 @@ fun CheckListSectionTitleCard(
                     color = MaterialTheme.colorScheme.onSurface
                 )
 
+                // Botón con menú contextual
                 Box {
                     IconButton(onClick = { expanded = true }) {
                         Icon(
@@ -68,6 +79,7 @@ fun CheckListSectionTitleCard(
                         )
                     }
 
+                    // Menú desplegable con acciones
                     DropdownMenu(
                         expanded = expanded,
                         onDismissRequest = { expanded = false }

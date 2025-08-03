@@ -1,4 +1,4 @@
-package com.sergiom.flycheck.ui.screens.b_custom
+package com.sergiom.flycheck.ui.screens.b_custom.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -37,17 +37,28 @@ import com.sergiom.flycheck.presentation.viewmodel.CreatecCustomCheckListViewMod
 
 @Composable
 fun PreCheckListEditorScreen(
+    // Callback que se invoca cuando el usuario pulsa "Continuar"
     onContinue: (String, String, String, Boolean, Int) -> Unit,
+
+    // Controlador de navegación para manejar los "popBackStack" u otras ruta
     navController: NavHostController
 ) {
+    // ViewModel con Hilt para gestionar estado y lógica de la pantalla
     val viewModel: CreatecCustomCheckListViewModel = hiltViewModel()
+
+    // Escucha y recoge el estado actual de la UI desde el ViewModel
     val uiState by viewModel.uiState.collectAsState()
 
+    // Scroll vertical para el contenido de la pantalla
     val scrollState = rememberScrollState()
 
+
     Scaffold(
+
+        // TOPBAR O BARRA SUPERIOR CON MENÚ
         topBar = {
             FlyCheckTopBar(
+                // 🔙 Vuelve a la pantalla anterior
                 onBackClick = {
                     navController.popBackStack()
                 },
@@ -58,6 +69,7 @@ fun PreCheckListEditorScreen(
         }
     ) { innerPadding ->
 
+        // CONTENEDOR PRINCIPAL
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -67,7 +79,7 @@ fun PreCheckListEditorScreen(
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
 
-            // Check List Name
+            // NOMBRE DE LA CHECKLIST
             OutlinedTextField(
                 value = uiState.name,
                 onValueChange = viewModel::onNameChanged,
@@ -85,7 +97,7 @@ fun PreCheckListEditorScreen(
                 )
             }
 
-            // Aircraft Model
+            // MODELO DE AVIÓN
             OutlinedTextField(
                 value = uiState.aircraftModel,
                 onValueChange = viewModel::onAircraftModelChanged,
@@ -103,7 +115,7 @@ fun PreCheckListEditorScreen(
                 )
             }
 
-            // Airline (optional)
+            // AEROLÍNEA
             OutlinedTextField(
                 value = uiState.airline,
                 onValueChange = viewModel::onAirlineChanged,
@@ -113,7 +125,7 @@ fun PreCheckListEditorScreen(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            // Include Logo
+            // INTERRUPTOR DE INCLUIR LOGO
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
@@ -129,7 +141,7 @@ fun PreCheckListEditorScreen(
                 )
             }
 
-            // Selector section number
+            // SELECTOR DE NÚMERO DE SECCIONES INICIALES
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -137,6 +149,7 @@ fun PreCheckListEditorScreen(
             ) {
                 Text(stringResource(R.string.createchecklistscreen_section_text), modifier = Modifier.weight(1f))
 
+                // 🔼🔽 Controles para aumentar/disminuir el número de secciones
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -169,6 +182,7 @@ fun PreCheckListEditorScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // CONTINUAR con la creación de la checklist (pasar al editor o plantilla)
             Button(
                 onClick = {
                     viewModel.validateAndContinue { form ->
