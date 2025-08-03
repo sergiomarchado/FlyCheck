@@ -104,6 +104,9 @@
     <string name="sectionaddscontrols_subsection_title">Título de la subsección</string>
 
 
+    <!--AddSectionUseCase-->
+    <string name="addsectionusecase_title_section">Sección nueva</string>
+
 
 
 

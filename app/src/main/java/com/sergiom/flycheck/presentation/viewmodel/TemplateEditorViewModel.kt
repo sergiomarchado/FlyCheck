@@ -258,4 +258,9 @@ class TemplateEditorViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(blocks = updatedBlocks)
     }
 
+    fun addSection() {
+        val updated = editorUseCases.addSectionUseCase(_uiState.value)
+        _uiState.value = updated
+    }
+
 }

@@ -28,7 +28,8 @@ object AppModule {
             updateItem = UpdateItemUseCase(),
             toggleItemCompletion = ToggleItemCompletionUseCase(),
             updateSectionTitle = UpdateSectionTitleUseCase(),
-            updateSubsectionTitle = UpdateSubsectionTitleUseCase()
+            updateSubsectionTitle = UpdateSubsectionTitleUseCase(),
+            addSectionUseCase = AddSectionUseCase()
         )
     }
 }
