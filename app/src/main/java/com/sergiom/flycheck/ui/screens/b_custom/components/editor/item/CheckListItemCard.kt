@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.MoreVert
@@ -56,6 +57,8 @@ fun CheckListItemCard(
     onDeleteItem: () -> Unit,
     onMoveUp: () -> Unit,
     onMoveDown: () -> Unit,
+    onAddInfoClick: () -> Unit,
+    onViewInfoClick:() -> Unit,
     modifier: Modifier = Modifier
 ) {
     // Determinar si el tema actual es oscuro para ajustar el color de fondo por defecto
@@ -168,35 +171,55 @@ fun CheckListItemCard(
                         }
                     }
                 }
-
-                // MENÚ CONTEXTUAL: Mover, eliminar, etc.
-                Box {
-                    IconButton(onClick = { expanded = true }) {
-                        Icon(
-                            imageVector = Icons.Default.MoreVert,
-                            contentDescription = stringResource(R.string.checklistitemcard_icon_moreopcions),
-                            tint = Color.DarkGray
-                        )
+                Column(horizontalAlignment = Alignment.End) {
+                    // ℹ️ Icono de info si hay contenido
+                    if (!item.infoTitle.isNullOrBlank() || !item.infoBody.isNullOrBlank()) {
+                        IconButton(onClick = onViewInfoClick) {
+                            Icon(
+                                imageVector = Icons.Default.Info,
+                                contentDescription = stringResource(R.string.checklistitemcard_icon_info_contentdescription),
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
                     }
 
-                    DropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false }
-                    ) {
-                        DropdownMenuItem(
-                            text = { Text(stringResource(R.string.checklistitemcard_context_menu_move)) },
-                            onClick = {
-                                expanded = false
-                                showMoveButtons = !showMoveButtons
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text(stringResource(R.string.checklistitemcard_menu_deleteitem)) },
-                            onClick = {
-                                expanded = false
-                                onDeleteItem()
-                            }
-                        )
+                    // Menú contextual
+                    Box {
+                        IconButton(onClick = { expanded = true }) {
+
+                            Icon(
+                                imageVector = Icons.Default.MoreVert,
+                                contentDescription = stringResource(R.string.checklistitemcard_icon_moreopcions),
+                                tint = Color.DarkGray
+                            )
+                        }
+
+                        DropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false }
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.checklistitemcard_context_menu_move)) },
+                                onClick = {
+                                    expanded = false
+                                    showMoveButtons = !showMoveButtons
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.checklistitemcard_menu_deleteitem)) },
+                                onClick = {
+                                    expanded = false
+                                    onDeleteItem()
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.checklistitemcard_context_menu_add_info)) },
+                                onClick = {
+                                    expanded = false
+                                    onAddInfoClick()
+                                }
+                            )
+                        }
                     }
                 }
             }

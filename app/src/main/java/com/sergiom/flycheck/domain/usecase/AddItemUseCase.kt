@@ -5,14 +5,16 @@ import com.sergiom.flycheck.data.model.CheckListBlock
 import com.sergiom.flycheck.data.model.CheckListItemModel
 import com.sergiom.flycheck.data.model.CheckListTemplateModel
 
-// ✅ Caso de uso: se encarga de añadir un nuevo ítem a una sección específica.
+// Caso de uso: se encarga de añadir un nuevo ítem a una sección específica.
 class AddItemUseCase {
 
     operator fun invoke(
         template: CheckListTemplateModel,  // Plantilla actual sobre la que se quiere trabajar
         sectionId: String,                 // ID de la sección donde se añadirá el ítem
         title: String,                     // Título del nuevo ítem
-        action: String                     // Acción asociada al ítem
+        action: String,                     // Acción asociada al ítem
+        infoTitle: String = "",             // Campo info title cuando se añade info adicional
+        infoBody: String = ""               // Campo info string cuando se añade info adicional
     ): Result<CheckListTemplateModel> {   // Retorna un Result: éxito o fallo con mensaje
 
         // Validación 1: El título no puede estar vacío
@@ -50,13 +52,19 @@ class AddItemUseCase {
         }
 
         if (alreadyExists) {
-            return Result.failure(IllegalArgumentException(R.string.templateeditorviewmodel_warning_item_title_empty.toString()))
+            return Result.failure(
+                IllegalArgumentException(
+                    R.string.templateeditorviewmodel_warning_item_title_empty.toString()
+                )
+            )
         }
 
         // Crear el nuevo ítem
         val newItem = CheckListItemModel(
             title = trimmedTitle,
-            action = action
+            action = action,
+            infoTitle = infoTitle.trim(),
+            infoBody = infoBody.trim()
         )
 
         // Crear una nueva sección con el nuevo ítem añadido al final

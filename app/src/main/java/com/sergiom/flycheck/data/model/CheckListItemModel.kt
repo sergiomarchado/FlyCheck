@@ -7,6 +7,8 @@ data class CheckListItemModel(
     val title: String = "",
     val action: String = "",
     val completed: Boolean = false,
-    val backgroundColorHex: String = "#D3D3D3"
+    val backgroundColorHex: String = "#D3D3D3",
+    val infoTitle: String? = null,
+    val infoBody: String? = null
 )
 

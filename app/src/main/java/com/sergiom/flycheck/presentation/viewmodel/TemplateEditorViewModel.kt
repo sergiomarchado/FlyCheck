@@ -38,13 +38,27 @@ class TemplateEditorViewModel @Inject constructor(
 
     // ➕ Añadir un ítem a una sección existente del checklist.
     // Retorna true si la operación fue exitosa, false si falló.
-    fun addItem(sectionId: String, title: String, action: String): Boolean {
+    fun addItem(
+        sectionId: String,
+        title: String,
+        action: String,
+        infoTitle: String = "",
+        infoBody: String = ""
+    ): Boolean {
         // Obtiene el estado actual del template
         val current = _uiState.value
 
         // Llama al caso de uso para intentar añadir un nuevo ítem en la sección indicada.
         // Devuelve un Result<CheckListTemplateModel> que puede ser éxito o error.
-        val result = editorUseCases.addItem(current, sectionId, title, action)
+        val result =
+            editorUseCases.addItem(
+                template = current,
+                sectionId = sectionId,
+                title = title,
+                action = action,
+                infoTitle = infoTitle,
+                infoBody = infoBody
+            )
 
 
         return result.fold(
@@ -68,6 +82,47 @@ class TemplateEditorViewModel @Inject constructor(
     }
 
 
+    /** Actualiza la información de título y cuerpo del díalo de info adicional de item.
+    *
+     * @param sectionId ID de la sección donde se encuentra el ítem.
+     * @param itemId ID del ítem a actualizar.
+     * @param infoTitle Nuevo título de la información adicional.
+     * @param infoBody Nuevo contenido/cuerpo de la información adicional.
+     */
+    fun updateItemInfo(sectionId: String, itemId: String, infoTitle: String, infoBody: String) {
+        // Genera una nueva lista de bloques actualizados
+        val updatedBlocks = _uiState.value.blocks.map { block ->
+
+            // Si el bloque es una sección y su ID coincide con el solicitado
+            if (block is CheckListBlock.SectionBlock && block.section.id == sectionId) {
+
+                // Se copia la sección con los bloques actualizados
+                val updatedSection = block.section.copy(
+                    blocks = block.section.blocks.map { subBlock ->
+
+                        // Si el bloque es un ítem y su ID coincide con el solicitado
+                        if (subBlock is CheckListBlock.ItemBlock && subBlock.item.id == itemId) {
+
+                            // Se crea una copia del ítem con la nueva info
+                            val updatedItem = subBlock.item.copy(
+                                infoTitle = infoTitle,
+                                infoBody = infoBody
+                            )
+                            // Se retorna un nuevo bloque con el ítem actualizado
+                            CheckListBlock.ItemBlock(updatedItem)
+                        } else subBlock   // Si no es el ítem buscado, se deja igual
+                    }
+                )
+                // Se retorna una nueva sección con los bloques internos actualizados
+                CheckListBlock.SectionBlock(updatedSection)
+            } else block  // Si no es la sección buscada, se deja sin cambios
+        }
+
+        // Se actualiza el estado del ViewModel con la nueva lista de bloques
+        _uiState.value = _uiState.value.copy(blocks = updatedBlocks)
+    }
+
+
     // ➕ Añadir una nueva subsección dentro de una sección existente del checklist.
     // Retorna true si se añadió correctamente, false si ocurrió algún error.
     fun addSubsection(sectionId: String, title: String): Boolean {
@@ -82,7 +137,7 @@ class TemplateEditorViewModel @Inject constructor(
             _uiState.value = updatedTemplate
             return true
 
-        // ❌ Si ocurrió un error, intenta mostrar un mensaje mediante Toast
+            // ❌ Si ocurrió un error, intenta mostrar un mensaje mediante Toast
         }.onFailure { error ->
             showToast(error.message?.toIntOrNull() ?: R.string.generic_error)
         }

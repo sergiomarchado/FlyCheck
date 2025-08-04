@@ -58,6 +58,8 @@
     <string name="checklistitemcard_button_move_up">Mover arriba</string>
     <string name="checklistitemcard_button_move_down">Mover abajo</string>
     <string name="checklistitemcard_context_menu_move">Mover</string>
+    <string name="checklistitemcard_icon_info_contentdescription">Mover</string>
+    <string name="checklistitemcard_context_menu_add_info">Añadir nota info</string>
 
     <!--CheckListSection Editor-->
     <string name="checklistsectioneditor_alertdialog_title">Editar título de sección</string>
@@ -106,6 +108,17 @@
 
     <!--AddSectionUseCase-->
     <string name="addsectionusecase_title_section">Sección nueva</string>
+
+    <!--AddSectionUseCase-->
+    <string name="infoeditdialog_title">Añade información al Ítem</string>
+    <string name="infoeditdialog_body">Esta función añadirá un icono para mostrar una nota informativa sobre el ítem. Cuando el usuario pulse, saldra una tarjeta parecida a esta.</string>
+    <string name="infoeditdialog_title_label">Título</string>
+    <string name="infoeditdialog_body_label">Contenido informativo</string>
+
+    <!--ItemCardEntry-->
+    <string name="itemcardentry_textbutton_close">Cerrar</string>
+    <string name="itemcardentry_title_information">Información</string>
+    <string name="itemcardentry_body_no_content">Sin contenido adicional.</string>
 
 
 

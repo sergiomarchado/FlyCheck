@@ -2,12 +2,21 @@ package com.sergiom.flycheck.ui.screens.b_custom.components.editor.item
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.sergiom.flycheck.R
 import com.sergiom.flycheck.data.model.FlatBlock
 import com.sergiom.flycheck.data.model.FlatBlockWithLocalIndex
 import com.sergiom.flycheck.presentation.viewmodel.TemplateEditorViewModel
+import com.sergiom.flycheck.ui.screens.b_custom.components.editor.utils.InfoEditDialog
 
 /**
  * Composable que renderiza una tarjeta (CheckListItemCard) correspondiente a un ítem
@@ -45,6 +54,10 @@ fun ItemCardEntry(
                 .section.blocks.size - 1
         } ?: return  // Si no se encuentra o no hay bloques, se aborta.
 
+    // Estado para mostrar el diálogo de info y editarlo o solo mostrar
+    var showInfoDialog by remember { mutableStateOf(false) }
+    var showReadOnlyInfo by remember { mutableStateOf(false) }
+
     // Render del componente visual del ítem,
     CheckListItemCard(
         item = item,
@@ -77,11 +90,46 @@ fun ItemCardEntry(
                 viewModel.moveBlockInSection(sectionId, localIndex, localIndex + 1)
             }
         },
+        onAddInfoClick = {
+            showInfoDialog = true
+        },
+        onViewInfoClick = {showReadOnlyInfo = true},
         // Estilo del contenedor visual del ítem
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp)
     )
+
+    // Ver solo
+    if (showReadOnlyInfo) {
+        androidx.compose.material3.AlertDialog(
+            onDismissRequest = { showReadOnlyInfo = false },
+            confirmButton = {
+                TextButton(onClick = { showReadOnlyInfo = false }) {
+                    Text(stringResource(R.string.itemcardentry_textbutton_close))
+                }
+            },
+            title = {
+                Text(item.infoTitle ?: stringResource(R.string.itemcardentry_title_information))
+            },
+            text = {
+                Text(item.infoBody ?: stringResource(R.string.itemcardentry_body_no_content))
+            }
+        )
+    }
+
+// Editar
+    if (showInfoDialog) {
+        InfoEditDialog(
+            currentTitle = item.infoTitle.orEmpty(),
+            currentBody = item.infoBody.orEmpty(),
+            onDismiss = { showInfoDialog = false },
+            onConfirm = { newTitle, newBody ->
+                viewModel.updateItemInfo(sectionId, item.id, newTitle, newBody)
+                showInfoDialog = false
+            }
+        )
+    }
 }
 
 
