@@ -131,6 +131,9 @@
     <string name="imageeditdialog_text_user_info">Puedes añadir una imagen que se mostrará junto a este ítem.</string>
     <string name="imageeditdialog_text_title">Añadir imagen</string>
 
+    <string name="checklistitemcard_context_menu_mark_important">Marcar como importante</string>
+    <string name="checklistitemcard_context_menu_unmark_important">Quitar marca de importante</string>
+
 
 
 

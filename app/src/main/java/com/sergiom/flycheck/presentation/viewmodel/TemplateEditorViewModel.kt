@@ -159,6 +159,31 @@ class TemplateEditorViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(blocks = updatedBlocks)
     }
 
+    fun toggleItemImportance(sectionId: String, itemId: String) {
+        val updatedBlocks = _uiState.value.blocks.map { block ->
+            if (block is CheckListBlock.SectionBlock && block.section.id == sectionId) {
+                val updatedSection = block.section.copy(
+                    blocks = block.section.blocks.map { subBlock ->
+                        if (subBlock is CheckListBlock.ItemBlock && subBlock.item.id == itemId) {
+                            val currentColor = subBlock.item.backgroundColorHex
+                            val newColor = if (currentColor == "#FFF59D") {
+                                "#D3D3D3" // original default
+                            } else {
+                                "#FFF59D" // amarillo pastel
+                            }
+
+                            val updatedItem = subBlock.item.copy(backgroundColorHex = newColor)
+                            CheckListBlock.ItemBlock(updatedItem)
+                        } else subBlock
+                    }
+                )
+                CheckListBlock.SectionBlock(updatedSection)
+            } else block
+        }
+
+        _uiState.value = _uiState.value.copy(blocks = updatedBlocks)
+    }
+
 
 
 

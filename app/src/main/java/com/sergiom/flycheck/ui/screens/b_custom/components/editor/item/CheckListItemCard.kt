@@ -47,6 +47,7 @@ import com.sergiom.flycheck.util.ITEM_DEFAULT_BACKGROUND_COLOR_DARK
 import com.sergiom.flycheck.util.ITEM_DEFAULT_BACKGROUND_COLOR_LIGHT
 import com.sergiom.flycheck.util.ITEM_DEFAULT_SCALE
 import com.sergiom.flycheck.util.flyCheckOutlinedTextFieldColorsFor
+import androidx.core.graphics.toColorInt
 
 // REPRESENTA UNA TARJETA INDIVIDUAL DE CADA UNO DE LOS ITEMS DENTRO DE LA CHECKLIST
 @Composable
@@ -62,6 +63,7 @@ fun CheckListItemCard(
     onViewInfoClick:() -> Unit,
     onAddImageClick: () -> Unit,
     onViewImageClick: () -> Unit,
+    onToggleImportant: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     // Determinar si el tema actual es oscuro para ajustar el color de fondo por defecto
@@ -70,7 +72,12 @@ fun CheckListItemCard(
         if (isDark) ITEM_DEFAULT_BACKGROUND_COLOR_DARK else ITEM_DEFAULT_BACKGROUND_COLOR_LIGHT
 
     // Determinar el color de fondo final del ítem en función de si está completado
-    val backgroundColor = if (item.completed) ITEM_COMPLETED_COLOR else defaultBackgroundColor
+    val backgroundColor = if (item.completed) {
+        ITEM_COMPLETED_COLOR
+    } else {
+        runCatching { Color(item.backgroundColorHex.toColorInt()) }
+            .getOrElse { defaultBackgroundColor }
+    }
 
     // Aplicar una animación suave de escala al marcar el ítem como completado
     val scale by animateFloatAsState(
@@ -165,12 +172,16 @@ fun CheckListItemCard(
                         IconButton(onClick = onMoveUp) {
                             Icon(
                                 imageVector= Icons.Default.KeyboardArrowUp,
-                                contentDescription = stringResource(R.string.checklistitemcard_button_move_up))
+                                contentDescription = stringResource(R.string.checklistitemcard_button_move_up),
+                                tint = Color.DarkGray
+                            )
                         }
                         IconButton(onClick = onMoveDown) {
                             Icon(
                                 imageVector = Icons.Default.KeyboardArrowDown,
-                                contentDescription = stringResource(R.string.checklistitemcard_button_move_down))
+                                contentDescription = stringResource(R.string.checklistitemcard_button_move_down),
+                                tint = Color.DarkGray
+                            )
                         }
                     }
                 }
@@ -227,6 +238,7 @@ fun CheckListItemCard(
                                     onDeleteItem()
                                 }
                             )
+
                             DropdownMenuItem(
                                 text = { Text(stringResource(R.string.checklistitemcard_context_menu_add_info)) },
                                 onClick = {
@@ -240,6 +252,22 @@ fun CheckListItemCard(
                                 onClick = {
                                     expanded = false
                                     onAddImageClick()
+                                }
+                            )
+
+                            DropdownMenuItem(
+                                text = {
+                                    val isImportant = item.backgroundColorHex == "#FFF59D"
+                                    Text(
+                                        if (isImportant)
+                                            stringResource(R.string.checklistitemcard_context_menu_unmark_important)
+                                        else
+                                            stringResource(R.string.checklistitemcard_context_menu_mark_important)
+                                    )
+                                },
+                                onClick = {
+                                    expanded = false
+                                    onToggleImportant()
                                 }
                             )
                         }

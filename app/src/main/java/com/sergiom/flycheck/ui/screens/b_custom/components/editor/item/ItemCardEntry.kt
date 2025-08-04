@@ -108,6 +108,9 @@ fun ItemCardEntry(
         onViewImageClick = {
             showReadOnlyImage = true
         },
+        onToggleImportant = {
+            viewModel.toggleItemImportance(sectionId, item.id)
+        },
         // Estilo del contenedor visual del ítem
         modifier = Modifier
             .fillMaxWidth()
