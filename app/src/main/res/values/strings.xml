@@ -135,6 +135,22 @@
     <string name="checklistitemcard_context_menu_unmark_important">Quitar marca de importante</string>
 
 
+    <!--EXPORT FAB-->
+    <string name="exportdialog_title">Exportar checklist</string>
+    <string name="exportdialog_description">Selecciona cómo deseas exportar tu checklist:</string>
+    <string name="exportdialog_option_local">Guardar en local</string>
+    <string name="export_fab_option_local">Guarda la checklist en el almacenamiento interno del dispositivo.</string>
+    <string name="export_fab_option_community">Sube tu checklist para compartirla con otros usuarios de la comunidad.</string>
+    <string name="export_fab_option_file">Exporta la checklist como archivo para compartirlo o subirlo donde quieras.</string>
+    <string name="exportdialog_option_community">Compartir con la comunidad</string>
+    <string name="exportdialog_option_file">Exportar como archivo</string>
+    <string name="exportdialog_cancel">Cancelar</string>
+    <string name="export_fab_contentdesc">Exportar</string>
+    <string name="fab_icon_text">Exportar</string>
+
+
+
+
 
 
 

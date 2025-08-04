@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -129,7 +131,7 @@ fun CheckListItemCard(
                     onValueChange = { localTitle = it },
                     label = { Text(stringResource(R.string.checklistitemcard_outlinedtextfield_item)) },
                     modifier = Modifier
-                        .weight(1f)   // ocupa la mitad del ancho disponible
+                        .weight(1.5f)   // ocupa la mitad del ancho disponible
                         .onFocusChanged { focus ->
                             // Al salir del foco, si el texto ha cambiado, notificamos el cambio
                             if (!focus.isFocused && localTitle != item.title) {
@@ -149,7 +151,7 @@ fun CheckListItemCard(
                     onValueChange = { localAction = it },
                     label = { Text(stringResource(R.string.checklistitemcard_outlinedtextfield_action)) },
                     modifier = Modifier
-                        .weight(1f)
+                        .weight(1.5f)
                         .onFocusChanged { focus ->
                             // Si deja de estar focus se notifica de nuevo el cambio de texto
                             if (!focus.isFocused && localAction != item.action) {
@@ -167,7 +169,6 @@ fun CheckListItemCard(
                 if (showMoveButtons) {
                     Column(
                         verticalArrangement = Arrangement.spacedBy(2.dp),
-                        modifier = Modifier.padding(end = 4.dp)
                     ) {
                         IconButton(onClick = onMoveUp) {
                             Icon(

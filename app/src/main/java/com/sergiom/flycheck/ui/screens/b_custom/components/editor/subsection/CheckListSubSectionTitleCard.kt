@@ -58,7 +58,7 @@ fun CheckListSubsectionTitleCard(
     Surface(
         shape = MaterialTheme.shapes.medium,
         tonalElevation = 0.5.dp,
-        color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f),
+        color = MaterialTheme.colorScheme.surface,
         modifier = modifier.fillMaxWidth()
     ) {
         // Fila principal que contiene el título y los botones del menú

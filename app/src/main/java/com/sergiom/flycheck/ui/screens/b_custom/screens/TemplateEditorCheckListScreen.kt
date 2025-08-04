@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -21,13 +19,14 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.sergiom.flycheck.R
+import com.sergiom.flycheck.data.model.ExportOption
+import com.sergiom.flycheck.data.model.RenameTargetType
 import com.sergiom.flycheck.presentation.viewmodel.TemplateEditorViewModel
+import com.sergiom.flycheck.ui.screens.b_custom.components.editor.ExportFab
 import com.sergiom.flycheck.ui.screens.b_custom.components.editor.FlatSectionListView
 import com.sergiom.flycheck.ui.screens.b_custom.components.editor.FlyCheckTopBar
-import com.sergiom.flycheck.ui.screens.b_custom.components.editor.utils.ObserveUiEvents
-import com.sergiom.flycheck.ui.screens.b_custom.components.editor.header.EditorHeaderMain
 import com.sergiom.flycheck.ui.screens.b_custom.components.editor.titlesection.ConfirmDeleteSectionDialog
-import com.sergiom.flycheck.data.model.RenameTargetType
+import com.sergiom.flycheck.ui.screens.b_custom.components.editor.utils.ObserveUiEvents
 import com.sergiom.flycheck.ui.screens.b_custom.components.editor.utils.RenameDialog
 
 /**
@@ -77,7 +76,6 @@ fun TemplateEditorCheckListScreen(
     // Observa eventos de UI (ej. Toasts)
     ObserveUiEvents(viewModel)
 
-
     Scaffold(
         topBar = {
             FlyCheckTopBar(
@@ -88,7 +86,23 @@ fun TemplateEditorCheckListScreen(
                     // TODO: lógica del menú (exportar, ajustes, etc.)
                 }
             )
+        },
+        floatingActionButton = {
+            ExportFab { option ->
+                when (option) {
+                    ExportOption.Local -> {
+                        // TODO: Implementar lógica para exportación local
+                    }
+                    ExportOption.Community -> {
+                        // TODO: Implementar lógica para subir al servidor o compartir online
+                    }
+                    ExportOption.File -> {
+                        // TODO: Implementar exportación como archivo
+                    }
+                }
+            }
         }
+
     ) { innerPadding ->
 
         Column(

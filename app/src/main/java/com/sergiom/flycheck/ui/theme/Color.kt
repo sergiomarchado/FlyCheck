@@ -22,19 +22,19 @@ val RedError = Color(0xFFE53935)      // Error
 // === Texto ===
 val GreyTextLight = Color(0xFF333333) // Texto claro sobre fondo oscuro
 val GreyTextDark = Color(0xFF1F1F1F)  // Texto oscuro sobre fondo claro
-val GreyLight = Color(0xFFBB2222)  // Texto oscuro sobre fondo claro
+val GreyLight = Color(0xFFDADADA)  // Texto oscuro sobre fondo claro
 
 // === Fondos claros ===
 val SoftWhite = Color(0xFFF5F5F5)
-val SoftSurface = Color(0xFFD4D4D4) // Alternativa más neutra para surface claro
+val SoftSurface = Color(0xFFA6A6A6) // Alternativa más neutra para surface claro
 
 // === Extras modernos ===
 val NeonBlue = Color(0xFF00B0FF)
 val DarkModeAccent = Color(0xFF0A84FF)
 val EditorHeaderMain = Color(0xFF223044)
-val SubSectionDark = Color(0xFF004077)
+val SubSectionDark = Color(0xFF4F4F4F)
 val SubSectionDarkP1 = Color(0xFF2E3F52)
-val SubSectionDarkP2 = Color(0xFF3F2A72)
+val SubSectionDarkP2 = Color(0xFF64539A)
 
 
 
@@ -44,6 +44,7 @@ val DialogSurfaceDark = Color(0xFF1C2B3A) // Fondo para diálogos en dark mode
 
 val BlueDarkBackground = Color(0xFF0D1B2A) // Fondo general
 val BlueDarkSurface = Color(0xFF1B263B)    // Cards, secciones
+val BlueDarkSubSection = Color(0xFF28244F)    // Cards, secciones
 val BlueDarkPrimary = Color(0xFF415A77)    // Acento principal
 val BlueDarkText = Color(0xFFDEE2E6)       // Texto claro
 val BlueDarkBorder = Color(0xFF748CAB)     // Bordes y outline

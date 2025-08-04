@@ -50,7 +50,7 @@ fun FlatSectionListView(
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
-            .padding(vertical = 12.dp, horizontal = 8.dp),
+            .padding(horizontal = 8.dp),
         contentPadding = PaddingValues(bottom = 80.dp)
     ) {
         // CABECERA: información básica de la plantilla (no sticky)
