@@ -9,6 +9,9 @@ data class CheckListItemModel(
     val completed: Boolean = false,
     val backgroundColorHex: String = "#D3D3D3",
     val infoTitle: String? = null,
-    val infoBody: String? = null
+    val infoBody: String? = null,
+    val imageUri: String? = null,
+    val imageTitle: String? = null,
+    val imageDescription: String? = null
 )
 

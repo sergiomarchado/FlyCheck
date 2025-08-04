@@ -122,6 +122,46 @@ class TemplateEditorViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(blocks = updatedBlocks)
     }
 
+    /**
+     * Actualiza la imagen asociada a un ítem dentro de una sección específica.
+     *
+     * @param sectionId ID de la sección donde está el ítem.
+     * @param itemId ID del ítem que se quiere modificar.
+     * @param imageUri URI de la imagen seleccionada.
+     * @param imageTitle Título opcional de la imagen.
+     * @param imageDescription Descripción opcional de la imagen.
+     */
+    fun updateItemImage(
+        sectionId: String,
+        itemId: String,
+        imageUri: String,
+        imageTitle: String = "",
+        imageDescription: String = ""
+    ) {
+        val updatedBlocks = _uiState.value.blocks.map { block ->
+            if (block is CheckListBlock.SectionBlock && block.section.id == sectionId) {
+                val updatedSection = block.section.copy(
+                    blocks = block.section.blocks.map { subBlock ->
+                        if (subBlock is CheckListBlock.ItemBlock && subBlock.item.id == itemId) {
+                            val updatedItem = subBlock.item.copy(
+                                imageUri = imageUri,
+                                imageTitle = imageTitle.takeIf { it.isNotBlank() },
+                                imageDescription = imageDescription.takeIf { it.isNotBlank() }
+                            )
+                            CheckListBlock.ItemBlock(updatedItem)
+                        } else subBlock
+                    }
+                )
+                CheckListBlock.SectionBlock(updatedSection)
+            } else block
+        }
+
+        _uiState.value = _uiState.value.copy(blocks = updatedBlocks)
+    }
+
+
+
+
 
     // ➕ Añadir una nueva subsección dentro de una sección existente del checklist.
     // Retorna true si se añadió correctamente, false si ocurrió algún error.

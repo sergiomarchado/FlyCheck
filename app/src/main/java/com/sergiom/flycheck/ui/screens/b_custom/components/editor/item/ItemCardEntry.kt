@@ -1,6 +1,9 @@
 package com.sergiom.flycheck.ui.screens.b_custom.components.editor.item
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -16,6 +19,7 @@ import com.sergiom.flycheck.R
 import com.sergiom.flycheck.data.model.FlatBlock
 import com.sergiom.flycheck.data.model.FlatBlockWithLocalIndex
 import com.sergiom.flycheck.presentation.viewmodel.TemplateEditorViewModel
+import com.sergiom.flycheck.ui.screens.b_custom.components.editor.utils.ImageEditDialog
 import com.sergiom.flycheck.ui.screens.b_custom.components.editor.utils.InfoEditDialog
 
 /**
@@ -58,6 +62,10 @@ fun ItemCardEntry(
     var showInfoDialog by remember { mutableStateOf(false) }
     var showReadOnlyInfo by remember { mutableStateOf(false) }
 
+    // Estado para mostrar el diálogo de añadir imagen info
+    var showImageDialog by remember { mutableStateOf(false) }
+    var showReadOnlyImage by remember { mutableStateOf(false) }
+
     // Render del componente visual del ítem,
     CheckListItemCard(
         item = item,
@@ -94,6 +102,12 @@ fun ItemCardEntry(
             showInfoDialog = true
         },
         onViewInfoClick = {showReadOnlyInfo = true},
+        onAddImageClick = {
+            showImageDialog = true
+        },
+        onViewImageClick = {
+            showReadOnlyImage = true
+        },
         // Estilo del contenedor visual del ítem
         modifier = Modifier
             .fillMaxWidth()
@@ -130,6 +144,53 @@ fun ItemCardEntry(
             }
         )
     }
+
+    if (showImageDialog) {
+        ImageEditDialog(
+            currentTitle = item.imageTitle.orEmpty(),
+            currentBody = item.imageDescription.orEmpty(),
+            currentImageUri = item.imageUri,
+            onDismiss = { showImageDialog = false },
+            onConfirm = { title, body, uri ->
+                viewModel.updateItemImage(sectionId, item.id, uri ?: "", title, body)
+                showImageDialog = false
+            }
+        )
+    }
+
+    if (showReadOnlyImage) {
+        androidx.compose.material3.AlertDialog(
+            onDismissRequest = { showReadOnlyImage = false },
+            confirmButton = {
+                TextButton(onClick = { showReadOnlyImage = false }) {
+                    Text(stringResource(R.string.itemcardentry_textbutton_close))
+                }
+            },
+            title = {
+                Text(item.imageTitle ?: stringResource(R.string.itemcardentry_title_image))
+            },
+            text = {
+                Column {
+                    item.imageDescription?.let {
+                        Text(it)
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    item.imageUri?.let { uri ->
+                        androidx.compose.foundation.Image(
+                            painter = coil3.compose.rememberAsyncImagePainter(uri),
+                            contentDescription = stringResource(R.string.itemcardentry_image_item),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(200.dp),
+                            contentScale = androidx.compose.ui.layout.ContentScale.Crop
+                        )
+                    }
+                }
+            }
+        )
+    }
 }
+
+
 
 

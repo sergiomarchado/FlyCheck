@@ -36,6 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.sergiom.flycheck.R
@@ -59,6 +60,8 @@ fun CheckListItemCard(
     onMoveDown: () -> Unit,
     onAddInfoClick: () -> Unit,
     onViewInfoClick:() -> Unit,
+    onAddImageClick: () -> Unit,
+    onViewImageClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     // Determinar si el tema actual es oscuro para ajustar el color de fondo por defecto
@@ -172,12 +175,24 @@ fun CheckListItemCard(
                     }
                 }
                 Column(horizontalAlignment = Alignment.End) {
+
                     // ℹ️ Icono de info si hay contenido
                     if (!item.infoTitle.isNullOrBlank() || !item.infoBody.isNullOrBlank()) {
                         IconButton(onClick = onViewInfoClick) {
                             Icon(
                                 imageVector = Icons.Default.Info,
                                 contentDescription = stringResource(R.string.checklistitemcard_icon_info_contentdescription),
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    }
+
+                    // 🖼️ Icono de imagen si hay imagen
+                    if (!item.imageUri.isNullOrBlank()) {
+                        IconButton(onClick = onViewImageClick) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_add_image),
+                                contentDescription = stringResource(R.string.checklistitemcard_icon_image_contentdescription),
                                 tint = MaterialTheme.colorScheme.primary
                             )
                         }
@@ -217,6 +232,14 @@ fun CheckListItemCard(
                                 onClick = {
                                     expanded = false
                                     onAddInfoClick()
+                                }
+                            )
+
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.checklistitemcard_context_menu_add_image)) },
+                                onClick = {
+                                    expanded = false
+                                    onAddImageClick()
                                 }
                             )
                         }

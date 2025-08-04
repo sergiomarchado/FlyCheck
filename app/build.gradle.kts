@@ -77,6 +77,10 @@ dependencies {
 
     implementation(libs.foundation)
 
+    // COIL COMPOSE
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+
 
 
     // TESTING

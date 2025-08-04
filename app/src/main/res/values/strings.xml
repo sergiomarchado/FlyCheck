@@ -58,8 +58,10 @@
     <string name="checklistitemcard_button_move_up">Mover arriba</string>
     <string name="checklistitemcard_button_move_down">Mover abajo</string>
     <string name="checklistitemcard_context_menu_move">Mover</string>
-    <string name="checklistitemcard_icon_info_contentdescription">Mover</string>
+    <string name="checklistitemcard_icon_info_contentdescription">Añadir nota informativa</string>
+    <string name="checklistitemcard_icon_image_contentdescription">Añadir imagen y nota informativa</string>
     <string name="checklistitemcard_context_menu_add_info">Añadir nota info</string>
+    <string name="checklistitemcard_context_menu_add_image">Añadir imagen + info</string>
 
     <!--CheckListSection Editor-->
     <string name="checklistsectioneditor_alertdialog_title">Editar título de sección</string>
@@ -114,11 +116,20 @@
     <string name="infoeditdialog_body">Esta función añadirá un icono para mostrar una nota informativa sobre el ítem. Cuando el usuario pulse, saldra una tarjeta parecida a esta.</string>
     <string name="infoeditdialog_title_label">Título</string>
     <string name="infoeditdialog_body_label">Contenido informativo</string>
+    <string name="infoeditdialog_button_select_image">Seleccionar imagen</string>
+    <string name="infoeditdialog_image_content_description">Imagen seleccionada</string>
 
     <!--ItemCardEntry-->
     <string name="itemcardentry_textbutton_close">Cerrar</string>
     <string name="itemcardentry_title_information">Información</string>
     <string name="itemcardentry_body_no_content">Sin contenido adicional.</string>
+    <string name="itemcardentry_title_image">Imagen e Información</string>
+    <string name="itemcardentry_image_item">Imagen del Ítem</string>
+
+
+    <!--ImageEditDialog-->
+    <string name="imageeditdialog_text_user_info">Puedes añadir una imagen que se mostrará junto a este ítem.</string>
+    <string name="imageeditdialog_text_title">Añadir imagen</string>
 
 
 

@@ -14,7 +14,10 @@ class AddItemUseCase {
         title: String,                     // Título del nuevo ítem
         action: String,                     // Acción asociada al ítem
         infoTitle: String = "",             // Campo info title cuando se añade info adicional
-        infoBody: String = ""               // Campo info string cuando se añade info adicional
+        infoBody: String = "",               // Campo info string cuando se añade info adicional
+        imageUri: String = "",
+        imageTitle: String = "",
+        imageDescription: String = ""
     ): Result<CheckListTemplateModel> {   // Retorna un Result: éxito o fallo con mensaje
 
         // Validación 1: El título no puede estar vacío
@@ -63,8 +66,11 @@ class AddItemUseCase {
         val newItem = CheckListItemModel(
             title = trimmedTitle,
             action = action,
-            infoTitle = infoTitle.trim(),
-            infoBody = infoBody.trim()
+            infoTitle = infoTitle.trim().ifBlank { null },
+            infoBody = infoBody.trim().ifBlank { null },
+            imageUri = imageUri.ifBlank { null },
+            imageTitle = imageTitle.trim().ifBlank { null },
+            imageDescription = imageDescription.trim().ifBlank { null }
         )
 
         // Crear una nueva sección con el nuevo ítem añadido al final
