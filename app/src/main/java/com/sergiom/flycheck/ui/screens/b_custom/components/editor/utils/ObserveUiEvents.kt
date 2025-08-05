@@ -1,9 +1,11 @@
 package com.sergiom.flycheck.ui.screens.b_custom.components.editor.utils
 
+import android.content.Intent
 import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
+import com.sergiom.flycheck.R
 import com.sergiom.flycheck.ui.events.UiEvent
 import com.sergiom.flycheck.presentation.viewmodel.TemplateEditorViewModel
 
@@ -20,18 +22,30 @@ fun ObserveUiEvents(viewModel: TemplateEditorViewModel) {
 
     // LaunchedEffect se ejecuta una única vez cuando se compone este Composable
     LaunchedEffect(Unit) {
-
-        // Se lanza una corutina que recoge los eventos emitidos por el Flow del ViewModel
         viewModel.eventFlow.collect { event ->
+            when (event) {
+                is UiEvent.ShowToast -> {
+                    Toast.makeText(
+                        context,
+                        context.getString(event.resId),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
 
-            // Si el evento es del tipo ShowToast, muestra un Toast con el string correspondiente
-            if (event is UiEvent.ShowToast) {
-                Toast.makeText(
-                    context,
-                    context.getString(event.resId),
-                    Toast.LENGTH_SHORT).show()
+                is UiEvent.ShareFile -> {
+                    context.startActivity(
+                        Intent.createChooser(
+                            event.intent,
+                            context.getString(R.string.share_file_chooser_title)
+                        )
+                    )
+                }
+
+                // Por si añades más eventos en el futuro
+                else -> {}
             }
         }
     }
+
 }
 

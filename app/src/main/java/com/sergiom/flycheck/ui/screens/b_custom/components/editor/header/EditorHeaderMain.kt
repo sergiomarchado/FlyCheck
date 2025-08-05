@@ -43,7 +43,8 @@ fun EditorHeaderMain(template: CheckListTemplateModel) {
                 name = template.name,
                 model = template.aircraftModel,
                 airline = template.airline,
-                includeLogo = template.includeLogo
+                includeLogo = template.includeLogo,
+                logoUri = template.logoUri
             )
         }
     }

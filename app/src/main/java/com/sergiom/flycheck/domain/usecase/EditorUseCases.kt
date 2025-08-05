@@ -12,5 +12,6 @@ data class EditorUseCases(
     val updateSectionTitle: UpdateSectionTitleUseCase,
     val updateSubsectionTitle: UpdateSubsectionTitleUseCase,
     val deleteSection: DeleteSectionUseCase,
-    val addSectionUseCase: AddSectionUseCase
+    val addSectionUseCase: AddSectionUseCase,
+    val exportToJsonUseCase: ExportTemplateUseCase
 )

@@ -3,21 +3,13 @@ package com.sergiom.flycheck.ui.theme
 import androidx.compose.ui.graphics.Color
 
 // === Azul oscuro moderno (principal) ===
-val Blue80 = Color(0xFF9DCBFF)       // Azul claro para light mode
 val Blue40 = Color(0xFF032949)       // Azul profundo principal (modo oscuro)
 val DeepBlueHeader = Color(0xFF112240) // Fondo principal dark moderno
-val DeepBlueSurface = Color(0xFF112240)    // Superficie dark moderna
 val DeepBluePrimary = Color(0xFF031D41)    // Superficie dark moderna
 
 // === Acentos tecnológicos ===
-val Cyan80 = Color(0xFFB2EBF2)
-val Cyan40 = Color(0xFF00BCD4)       // Acento cian brillante
 val Cyan30 = Color(0xFF008DC0)       // Acento cian brillante
 
-// === Estados ===
-val GreenSuccess = Color(0xFF00C853)  // Éxito
-val OrangeWarning = Color(0xFFFFA726) // Advertencia
-val RedError = Color(0xFFE53935)      // Error
 
 // === Texto ===
 val GreyTextLight = Color(0xFF333333) // Texto claro sobre fondo oscuro
@@ -29,18 +21,14 @@ val SoftWhite = Color(0xFFF5F5F5)
 val SoftSurface = Color(0xFFA6A6A6) // Alternativa más neutra para surface claro
 
 // === Extras modernos ===
-val NeonBlue = Color(0xFF00B0FF)
 val DarkModeAccent = Color(0xFF0A84FF)
-val EditorHeaderMain = Color(0xFF223044)
 val SubSectionDark = Color(0xFF4F4F4F)
-val SubSectionDarkP1 = Color(0xFF2E3F52)
 val SubSectionDarkP2 = Color(0xFF64539A)
 
 
 
 val TextOnDarkPrimary = Color(0xFFE0E0E0) // Gris claro legible en fondo oscuro
 val TextOnDarkSecondary = Color(0xFFCCCCCC)
-val DialogSurfaceDark = Color(0xFF1C2B3A) // Fondo para diálogos en dark mode
 
 val BlueDarkBackground = Color(0xFF0D1B2A) // Fondo general
 val BlueDarkSurface = Color(0xFF1B263B)    // Cards, secciones

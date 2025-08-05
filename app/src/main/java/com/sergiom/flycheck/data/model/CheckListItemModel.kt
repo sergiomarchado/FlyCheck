@@ -1,7 +1,9 @@
 package com.sergiom.flycheck.data.model
 
+import kotlinx.serialization.Serializable
 import java.util.UUID
 
+@Serializable
 data class CheckListItemModel(
     val id: String = UUID.randomUUID().toString(),
     val title: String = "",

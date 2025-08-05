@@ -1,5 +1,15 @@
 package com.sergiom.flycheck.presentation.viewmodel
 
+import android.Manifest
+import android.content.ContentValues
+import android.content.Context
+import android.net.Uri
+import android.os.Build
+import android.os.Environment
+import android.provider.MediaStore
+import androidx.annotation.RequiresApi
+import androidx.annotation.RequiresPermission
+import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sergiom.flycheck.R
@@ -8,12 +18,15 @@ import com.sergiom.flycheck.data.model.CheckListSection
 import com.sergiom.flycheck.data.model.CheckListTemplateModel
 import com.sergiom.flycheck.domain.usecase.EditorUseCases
 import com.sergiom.flycheck.ui.events.UiEvent
+import com.sergiom.flycheck.util.JsonUtils
+import com.sergiom.flycheck.util.NotificationHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 
 /**
@@ -315,7 +328,8 @@ class TemplateEditorViewModel @Inject constructor(
         model: String,
         airline: String,
         includeLogo: Boolean,
-        sectionCount: Int
+        sectionCount: Int,
+        logoUri: Uri?
     ) {
         // Evita sobrescribir si la plantilla ya está cargada (útil al recomponer)
         if (_uiState.value.blocks.isNotEmpty()) return
@@ -334,6 +348,7 @@ class TemplateEditorViewModel @Inject constructor(
             aircraftModel = model,
             airline = airline,
             includeLogo = includeLogo,
+            logoUri = logoUri,
             blocks = blocks
         )
     }
@@ -382,5 +397,118 @@ class TemplateEditorViewModel @Inject constructor(
         val updated = editorUseCases.addSectionUseCase(_uiState.value)
         _uiState.value = updated
     }
+
+    /**
+     * Exporta la checklist actual como JSON en el almacenamiento privado de la app.
+     * Esta opción NO abre menú de compartir ni genera notificaciones,
+     * solo guarda el archivo internamente y notifica el resultado mediante UiEvent.
+     */
+    fun exportTemplateToJsonFile(context: Context) {
+        viewModelScope.launch {
+            val template = uiState.value
+
+            val result = editorUseCases.exportToJsonUseCase(context, template)
+
+            result.onSuccess { exportedFile ->
+                // ✅ Emitimos evento específico para exportación local exitosa
+                _eventFlow.emit(UiEvent.ExportLocalSuccess(exportedFile))
+            }.onFailure {
+                _eventFlow.emit(UiEvent.ShowToast(R.string.export_failed))
+            }
+        }
+    }
+
+
+
+
+    /**
+     * Exporta la checklist actual como JSON en la carpeta Descargas (MediaStore o almacenamiento privado en <29).
+     * Muestra una notificación con acciones ("Abrir" y "Compartir") y lanza un intent ACTION_SEND.
+     *
+     * @RequiresPermission POST_NOTIFICATIONS en Android 13+ para mostrar notificaciones.
+     */
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
+    fun exportAndShareTemplate(context: Context) {
+        viewModelScope.launch {
+            val template = uiState.value
+            val jsonString = JsonUtils.json.encodeToString(template)
+            val fileName = "plantilla_${template.name.ifBlank { "sin_nombre" }}.json"
+
+            try {
+                var exportUri: Uri? = null
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    // ✅ Android 10+ → Guardar en carpeta Descargas pública con MediaStore
+                    val contentValues = ContentValues().apply {
+                        put(MediaStore.Downloads.DISPLAY_NAME, fileName)
+                        put(MediaStore.Downloads.MIME_TYPE, "application/json")
+                        put(MediaStore.Downloads.IS_PENDING, 1)
+                    }
+
+                    val resolver = context.contentResolver
+                    val downloadsUri = MediaStore.Downloads.EXTERNAL_CONTENT_URI
+                    val uri = resolver.insert(downloadsUri, contentValues)
+
+                    if (uri != null) {
+                        resolver.openOutputStream(uri)?.use { outputStream ->
+                            outputStream.write(jsonString.toByteArray())
+                        }
+
+                        // Marcar el archivo como listo
+                        contentValues.clear()
+                        contentValues.put(MediaStore.Downloads.IS_PENDING, 0)
+                        resolver.update(uri, contentValues, null, null)
+
+                        exportUri = uri
+                    }
+
+                } else {
+                    // ✅ Android 9 o inferior → Guardar en almacenamiento privado externo
+                    val file = File(
+                        context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS),
+                        fileName
+                    )
+                    file.writeText(jsonString)
+
+                    exportUri = FileProvider.getUriForFile(
+                        context,
+                        "${context.packageName}.provider",
+                        file
+                    )
+                }
+
+                if (exportUri != null) {
+                    // ✅ Mostrar notificación con acciones (Abrir carpeta y/o Compartir)
+                    NotificationHelper.showExportWithActionsNotification(
+                        context = context,
+                        fileName = fileName,
+                        fileUri = exportUri
+                    )
+
+                    // Opcional: mostrar un Toast también
+                    _eventFlow.emit(UiEvent.ShowToast(R.string.export_success_hint))
+
+                } else {
+                    _eventFlow.emit(UiEvent.ShowToast(R.string.export_failed))
+                }
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _eventFlow.emit(UiEvent.ShowToast(R.string.export_failed))
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+
 
 }

@@ -1,6 +1,7 @@
 package com.sergiom.flycheck.navigation
 
 import android.annotation.SuppressLint
+import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -44,7 +45,9 @@ fun AppNavHost(navController: NavHostController) {
         composable(NavigationRoutes.CheckListCustom.route) {
             PreCheckListEditorScreen(
                 navController = navController,
-                onContinue = { name, model, airline, logo, sectionCount ->
+                onContinue = { name, model, airline, logo, sectionCount, logoUri ->
+                    navController.currentBackStackEntry?.savedStateHandle?.set("logoUri", logoUri)
+
                     navController.navigate(
                         NavigationRoutes.CheckListEditor.withArgs(
                             name, model, airline, logo, sectionCount
@@ -63,6 +66,9 @@ fun AppNavHost(navController: NavHostController) {
             val airline = backStackEntry.arguments?.getString("airline") ?: ""
             val logo = backStackEntry.arguments?.getString("logo")?.toBooleanStrictOrNull() ?: false
             val sectionCount = backStackEntry.arguments?.getString("sectionCount")?.toIntOrNull() ?: 1
+            val logoUri: Uri? = navController.previousBackStackEntry
+                ?.savedStateHandle
+                ?.get<Uri>("logoUri")
 
             TemplateEditorCheckListScreen(
                 templateName = name,
@@ -70,7 +76,8 @@ fun AppNavHost(navController: NavHostController) {
                 airline = airline,
                 includeLogo = logo,
                 sectionCount = sectionCount,
-                navController = navController
+                navController = navController,
+                logoUri = logoUri
             )
         }
 

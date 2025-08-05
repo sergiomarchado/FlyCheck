@@ -1,7 +1,7 @@
 package com.sergiom.flycheck.ui.screens.b_custom.components.editor.header
 
 import android.content.res.Configuration
-import androidx.compose.foundation.Image
+import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -18,10 +17,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import com.sergiom.flycheck.R
 
 /**
@@ -38,7 +38,8 @@ fun CheckListHeaderCard(
     name: String,
     model: String,
     airline: String,
-    includeLogo: Boolean
+    includeLogo: Boolean,
+    logoUri: Uri?
 ) {
     // Detectamos la orientación del dispositivo
     val isLandscape = LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
@@ -78,15 +79,16 @@ fun CheckListHeaderCard(
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onPrimary
                 )
-                if (includeLogo) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_ryanair),
+                if (includeLogo && logoUri != null) {
+                    AsyncImage(
+                        model = logoUri,
                         contentDescription = stringResource(R.string.checklistheader_contentdescription),
                         modifier = Modifier
-                            .height(48.dp)
-                            .width(48.dp)
+                            .height(56.dp)
+                            .width(56.dp)
                             .padding(start = 4.dp)
-                            .clip(RoundedCornerShape(6.dp))  // Logo con bordes redondeados
+                            .clip(RoundedCornerShape(6.dp)),
+                        contentScale = ContentScale.Fit
                     )
                 }
             }
@@ -118,13 +120,15 @@ fun CheckListHeaderCard(
             ) {
                 // Aerolínea y logo (opcional)
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    if (includeLogo) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_ryanair),
+                    if (includeLogo && logoUri != null) {
+                        AsyncImage(
+                            model = logoUri,
                             contentDescription = stringResource(R.string.checklistheader_contentdescription),
                             modifier = Modifier
-                                .size(30.dp)
-                                .clip(RoundedCornerShape(6.dp))
+                                .height(48.dp)
+                                .width(48.dp)
+                                .clip(RoundedCornerShape(6.dp)),
+                            contentScale = ContentScale.Fit
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                     }

@@ -1,5 +1,11 @@
 package com.sergiom.flycheck.ui.screens.b_custom.screens
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,14 +20,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.sergiom.flycheck.R
 import com.sergiom.flycheck.data.model.ExportOption
 import com.sergiom.flycheck.data.model.RenameTargetType
 import com.sergiom.flycheck.presentation.viewmodel.TemplateEditorViewModel
+import com.sergiom.flycheck.ui.events.UiEvent
 import com.sergiom.flycheck.ui.screens.b_custom.components.editor.ExportFab
 import com.sergiom.flycheck.ui.screens.b_custom.components.editor.FlatSectionListView
 import com.sergiom.flycheck.ui.screens.b_custom.components.editor.FlyCheckTopBar
@@ -41,6 +50,8 @@ import com.sergiom.flycheck.ui.screens.b_custom.components.editor.utils.RenameDi
  * @param navController Controlador de navegación.
  * @param viewModel ViewModel asociado a la pantalla.
  */
+
+@SuppressLint("NewApi")
 @Composable
 fun TemplateEditorCheckListScreen(
     templateName: String,
@@ -48,6 +59,7 @@ fun TemplateEditorCheckListScreen(
     airline: String,
     includeLogo: Boolean,
     sectionCount: Int,
+    logoUri: Uri?,
     navController: NavHostController,
     viewModel: TemplateEditorViewModel = hiltViewModel()
 ) {
@@ -58,7 +70,8 @@ fun TemplateEditorCheckListScreen(
             model = model,
             airline = airline,
             includeLogo = includeLogo,
-            sectionCount = sectionCount
+            sectionCount = sectionCount,
+            logoUri = logoUri
         )
     }
 
@@ -76,6 +89,38 @@ fun TemplateEditorCheckListScreen(
     // Observa eventos de UI (ej. Toasts)
     ObserveUiEvents(viewModel)
 
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        viewModel.eventFlow.collect { event ->
+            when (event) {
+                is UiEvent.ExportSuccess -> {
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.export_success_local),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                is UiEvent.ExportLocalSuccess -> {
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.export_success_local),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                is UiEvent.ShowToast -> {
+                    Toast.makeText(context, context.getString(event.resId), Toast.LENGTH_SHORT)
+                        .show()
+                }
+
+                else -> Unit
+            }
+        }
+    }
+
+
     Scaffold(
         topBar = {
             FlyCheckTopBar(
@@ -91,13 +136,32 @@ fun TemplateEditorCheckListScreen(
             ExportFab { option ->
                 when (option) {
                     ExportOption.Local -> {
-                        // TODO: Implementar lógica para exportación local
+                        viewModel.exportTemplateToJsonFile(context)
                     }
                     ExportOption.Community -> {
                         // TODO: Implementar lógica para subir al servidor o compartir online
                     }
                     ExportOption.File -> {
-                        // TODO: Implementar exportación como archivo
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            // Android 13+ → comprobar permiso POST_NOTIFICATIONS
+                            if (ContextCompat.checkSelfPermission(
+                                    context,
+                                    Manifest.permission.POST_NOTIFICATIONS
+                                ) == PackageManager.PERMISSION_GRANTED
+                            ) {
+                                viewModel.exportAndShareTemplate(context)
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    context.getString(R.string.permission_notifications_required),
+                                    Toast.LENGTH_LONG
+                                ).show()
+                                // Aquí podrías abrir un diálogo o lanzar request de permisos si quieres
+                            }
+                        } else {
+                            // Para Android 12 o menos, no es necesario el permiso
+                            viewModel.exportAndShareTemplate(context)
+                        }
                     }
                 }
             }

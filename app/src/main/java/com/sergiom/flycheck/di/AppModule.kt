@@ -17,7 +17,9 @@ object AppModule {
     // que agrupa todos los casos de uso relacionados con la edición de plantillas.
     @Provides
     @Singleton  // La misma instancia se compartirá en toda la app.
-    fun provideEditorUseCases(): EditorUseCases {
+    fun provideEditorUseCases(
+        exportToJsonUseCase: ExportTemplateUseCase
+    ): EditorUseCases {
         return EditorUseCases(
             // Cada uno de estos casos de uso encapsula una operación específica del editor.
             addItem = AddItemUseCase(),
@@ -29,7 +31,9 @@ object AppModule {
             toggleItemCompletion = ToggleItemCompletionUseCase(),
             updateSectionTitle = UpdateSectionTitleUseCase(),
             updateSubsectionTitle = UpdateSubsectionTitleUseCase(),
-            addSectionUseCase = AddSectionUseCase()
+            addSectionUseCase = AddSectionUseCase(),
+            exportToJsonUseCase = exportToJsonUseCase
+
         )
     }
 }

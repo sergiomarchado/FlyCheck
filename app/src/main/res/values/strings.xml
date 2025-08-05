@@ -150,6 +150,25 @@
 
 
 
+    <string name="export_failed">Error al exportar la plantilla.</string>
+    <string name="export_share_title">Exportar archivo</string>
+
+    <string name="export_success">Exportación completada</string>
+    <string name="export_saved_to_downloads">Archivo guardado en Descargas</string>
+
+    <string name="export_success_local">Checklist guardada en el almacenamiento interno de la app.</string>
+    <string name="permission_notifications_required">Activa los permisos de notificaciones para ver el resultado de la exportación.</string>
+    <string name="export_success_hint">Exportación completada. Archivo disponible en Descargas.</string>
+    <string name="export_saved_to_private_storage">Checklist exportada como %1$s en almacenamiento interno.</string>
+
+    <string name="open_downloads">Abrir carpeta</string>
+    <string name="action_share">Compartir</string>
+    <string name="share_file_chooser_title">Compartir archivo</string>
+
+    <string name="createchecklistscreen_button_selectlogo">Seleccionar logo</string>
+    <string name="createchecklistscreen_contentDescription_logo_preview">Previsualización del logo seleccionado</string>
+
+
 
 
 

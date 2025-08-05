@@ -1,5 +1,8 @@
 package com.sergiom.flycheck.ui.screens.b_custom.screens
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,19 +29,21 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import coil3.compose.rememberAsyncImagePainter
 import com.sergiom.flycheck.R
-import com.sergiom.flycheck.ui.screens.b_custom.components.editor.FlyCheckTopBar
 import com.sergiom.flycheck.presentation.viewmodel.CreatecCustomCheckListViewModel
+import com.sergiom.flycheck.ui.screens.b_custom.components.editor.FlyCheckTopBar
 
 
 @Composable
 fun PreCheckListEditorScreen(
     // Callback que se invoca cuando el usuario pulsa "Continuar"
-    onContinue: (String, String, String, Boolean, Int) -> Unit,
+    onContinue: (String, String, String, Boolean, Int, Uri?) -> Unit,
 
     // Controlador de navegación para manejar los "popBackStack" u otras ruta
     navController: NavHostController
@@ -51,6 +56,15 @@ fun PreCheckListEditorScreen(
 
     // Scroll vertical para el contenido de la pantalla
     val scrollState = rememberScrollState()
+
+    val context = LocalContext.current
+
+// ✅ Picker para seleccionar imagen
+    val logoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        viewModel.onLogoSelected(uri)
+    }
 
 
     Scaffold(
@@ -141,6 +155,28 @@ fun PreCheckListEditorScreen(
                 )
             }
 
+            // --- Botón: Seleccionar logo ---
+            if (uiState.includeLogo) {
+                Button(
+                    onClick = { logoPickerLauncher.launch("image/*") },
+                    shape = MaterialTheme.shapes.extraLarge,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(stringResource(R.string.createchecklistscreen_button_selectlogo))
+                }
+
+                // ✅ Muestra miniatura si hay imagen seleccionada
+                uiState.logoUri?.let { uri ->
+                    androidx.compose.foundation.Image(
+                        painter = rememberAsyncImagePainter(uri),
+                        contentDescription = stringResource(R.string.createchecklistscreen_contentDescription_logo_preview),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(150.dp)
+                    )
+                }
+            }
+
             // SELECTOR DE NÚMERO DE SECCIONES INICIALES
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -191,7 +227,8 @@ fun PreCheckListEditorScreen(
                             form.aircraftModel,
                             form.airline,
                             form.includeLogo,
-                            form.sectionCount
+                            form.sectionCount,
+                            form.logoUri
                         )
                     }
                 },

@@ -1,5 +1,6 @@
 package com.sergiom.flycheck.presentation.viewmodel
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import com.sergiom.flycheck.presentation.viewmodel.state.CreateCheckListFormState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -62,6 +63,10 @@ class CreatecCustomCheckListViewModel @Inject constructor() : ViewModel() {
                 it.copy(nameError = nameError, modelError = modelError)
             }
         }
+    }
+
+    fun onLogoSelected(uri: Uri?) {
+        _uiState.update { it.copy(logoUri = uri) }
     }
 
 }

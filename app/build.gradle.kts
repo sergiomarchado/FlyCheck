@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+    kotlin("plugin.serialization") version "2.2.0"
 }
 
 android {
@@ -80,6 +81,9 @@ dependencies {
     // COIL COMPOSE
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
+
+    // SERIALIZACIÓN JSON
+    implementation(libs.kotlinx.serialization.json)
 
 
 

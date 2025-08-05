@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -41,6 +39,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.toColorInt
 import com.sergiom.flycheck.R
 import com.sergiom.flycheck.data.model.CheckListItemModel
 import com.sergiom.flycheck.util.ITEM_COMPLETED_COLOR
@@ -49,7 +48,6 @@ import com.sergiom.flycheck.util.ITEM_DEFAULT_BACKGROUND_COLOR_DARK
 import com.sergiom.flycheck.util.ITEM_DEFAULT_BACKGROUND_COLOR_LIGHT
 import com.sergiom.flycheck.util.ITEM_DEFAULT_SCALE
 import com.sergiom.flycheck.util.flyCheckOutlinedTextFieldColorsFor
-import androidx.core.graphics.toColorInt
 
 // REPRESENTA UNA TARJETA INDIVIDUAL DE CADA UNO DE LOS ITEMS DENTRO DE LA CHECKLIST
 @Composable
