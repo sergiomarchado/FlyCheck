@@ -9,6 +9,7 @@
     <!--SPLASH SCREEN-->
     <string name="splash_screen_main_text">FlyCheck ✈️</string>
     <string name="splash_screen_loadingtext">Preparando cabina…</string>
+    <string name="splash_screen_contentdescription">Logo de FlyCheck app</string>
 
     <!--HOME SCREEN-->
     <string name="home_screen_maintext">¿Qué tipo de Check List quieres usar hoy?</string>

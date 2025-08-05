@@ -1,5 +1,6 @@
 package com.sergiom.flycheck.ui.screens.a_welcome
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -34,12 +36,9 @@ fun SplashScreen(onTimeout: () -> Unit) {
         contentAlignment = Alignment.Center
     ){
         Column (horizontalAlignment = Alignment.CenterHorizontally){
-            Text(
-                text = stringResource(R.string.splash_screen_main_text),
-                fontSize = 36.sp,
-                fontWeight = FontWeight.Bold,
-                color = LOGO_LETTERS_COLOR
-            )
+            Image(
+                painter = painterResource(R.drawable.ic_icon_splash),
+                contentDescription = stringResource(R.string.splash_screen_contentdescription))
 
             Spacer(modifier = Modifier.height(12.dp))
 
