@@ -501,6 +501,30 @@ class TemplateEditorViewModel @Inject constructor(
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
+    @RequiresPermission(Manifest.permission.POST_NOTIFICATIONS)
+    fun exportChecklistAsZipToDownloads(context: Context) {
+        viewModelScope.launch {
+            val template = uiState.value
+
+            val result = editorUseCases.exportChecklistZipUseCase(context, template)
+
+            result.onSuccess { (fileName, fileUri) ->
+                // ✅ Mostrar notificación con acciones
+                NotificationHelper.showExportWithActionsNotification(
+                    context = context,
+                    fileName = fileName,
+                    fileUri = fileUri
+                )
+
+                _eventFlow.emit(UiEvent.ShowToast(R.string.export_success_hint))
+            }.onFailure {
+                _eventFlow.emit(UiEvent.ShowToast(R.string.export_failed))
+            }
+        }
+    }
+
+
 
 
 

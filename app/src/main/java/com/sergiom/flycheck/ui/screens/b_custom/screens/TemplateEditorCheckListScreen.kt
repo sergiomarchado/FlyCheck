@@ -143,24 +143,21 @@ fun TemplateEditorCheckListScreen(
                     }
                     ExportOption.File -> {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                            // Android 13+ → comprobar permiso POST_NOTIFICATIONS
                             if (ContextCompat.checkSelfPermission(
                                     context,
                                     Manifest.permission.POST_NOTIFICATIONS
                                 ) == PackageManager.PERMISSION_GRANTED
                             ) {
-                                viewModel.exportAndShareTemplate(context)
+                                viewModel.exportChecklistAsZipToDownloads(context)
                             } else {
                                 Toast.makeText(
                                     context,
                                     context.getString(R.string.permission_notifications_required),
                                     Toast.LENGTH_LONG
                                 ).show()
-                                // Aquí podrías abrir un diálogo o lanzar request de permisos si quieres
                             }
                         } else {
-                            // Para Android 12 o menos, no es necesario el permiso
-                            viewModel.exportAndShareTemplate(context)
+                            viewModel.exportChecklistAsZipToDownloads(context)
                         }
                     }
                 }

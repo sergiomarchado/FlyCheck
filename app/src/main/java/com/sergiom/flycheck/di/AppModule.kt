@@ -18,7 +18,8 @@ object AppModule {
     @Provides
     @Singleton  // La misma instancia se compartirá en toda la app.
     fun provideEditorUseCases(
-        exportToJsonUseCase: ExportTemplateUseCase
+        exportToJsonUseCase: ExportTemplateUseCase,
+        exportToZipUseCase: ExportChecklistZipUseCase
     ): EditorUseCases {
         return EditorUseCases(
             // Cada uno de estos casos de uso encapsula una operación específica del editor.
@@ -32,7 +33,8 @@ object AppModule {
             updateSectionTitle = UpdateSectionTitleUseCase(),
             updateSubsectionTitle = UpdateSubsectionTitleUseCase(),
             addSectionUseCase = AddSectionUseCase(),
-            exportToJsonUseCase = exportToJsonUseCase
+            exportToJsonUseCase = exportToJsonUseCase,
+            exportChecklistZipUseCase = exportToZipUseCase
 
         )
     }
