@@ -8,8 +8,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.sergiom.flycheck.ui.screens.a_welcome.HomeScreen
 import com.sergiom.flycheck.ui.screens.a_welcome.SplashScreen
-import com.sergiom.flycheck.ui.screens.b_custom.screens.PreCheckListEditorScreen
-import com.sergiom.flycheck.ui.screens.b_custom.screens.TemplateEditorCheckListScreen
+import com.sergiom.flycheck.ui.screens.b_editor.PreCheckListEditorScreen
+import com.sergiom.flycheck.ui.screens.b_editor.TemplateEditorCheckListScreen
 
 // Define la estructura de navegación principal de la app usando Jetpack Navigation en Compose
 @SuppressLint("UnrememberedGetBackStackEntry")

@@ -1,5 +1,7 @@
 package com.sergiom.flycheck.di
 
+import com.sergiom.flycheck.domain.editor.ChecklistMover
+import com.sergiom.flycheck.domain.editor.ItemEditor
 import com.sergiom.flycheck.domain.usecase.*
 import dagger.Module
 import dagger.Provides
@@ -38,4 +40,12 @@ object AppModule {
 
         )
     }
+
+    @Provides
+    @Singleton
+    fun provideItemEditor(): ItemEditor = ItemEditor()
+
+    @Provides
+    @Singleton
+    fun provideChecklistMover(): ChecklistMover = ChecklistMover()
 }

@@ -1,8 +1,8 @@
 package com.sergiom.flycheck.domain.usecase
 
 import com.sergiom.flycheck.R
-import com.sergiom.flycheck.data.model.CheckListBlock
-import com.sergiom.flycheck.data.model.CheckListTemplateModel
+import com.sergiom.flycheck.data.models.CheckListBlock
+import com.sergiom.flycheck.data.models.CheckListTemplateModel
 
 class UpdateSectionTitleUseCase {
 

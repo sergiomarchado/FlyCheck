@@ -1,9 +1,9 @@
 package com.sergiom.flycheck.domain.usecase
 
 import com.sergiom.flycheck.R
-import com.sergiom.flycheck.data.model.CheckListBlock
-import com.sergiom.flycheck.data.model.CheckListItemModel
-import com.sergiom.flycheck.data.model.CheckListTemplateModel
+import com.sergiom.flycheck.data.models.CheckListBlock
+import com.sergiom.flycheck.data.models.CheckListItemModel
+import com.sergiom.flycheck.data.models.CheckListTemplateModel
 
 // Caso de uso: se encarga de añadir un nuevo ítem a una sección específica.
 class AddItemUseCase {

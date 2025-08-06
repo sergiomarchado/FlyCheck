@@ -6,9 +6,9 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import androidx.annotation.RequiresApi
-import com.sergiom.flycheck.data.model.CheckListBlock
-import com.sergiom.flycheck.data.model.CheckListTemplateModel
-import com.sergiom.flycheck.util.JsonUtils
+import com.sergiom.flycheck.data.models.CheckListBlock
+import com.sergiom.flycheck.data.models.CheckListTemplateModel
+import com.sergiom.flycheck.ui.utils.JsonUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.BufferedOutputStream

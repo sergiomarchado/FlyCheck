@@ -1,7 +1,7 @@
 package com.sergiom.flycheck.domain.usecase
 
-import com.sergiom.flycheck.data.model.CheckListBlock
-import com.sergiom.flycheck.data.model.CheckListSection
+import com.sergiom.flycheck.data.models.CheckListBlock
+import com.sergiom.flycheck.data.models.CheckListSection
 
 /* Caso de uso: actualizar un ítem dentro de una sección.
 

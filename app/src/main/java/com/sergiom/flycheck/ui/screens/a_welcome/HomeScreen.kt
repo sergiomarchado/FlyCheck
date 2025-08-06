@@ -18,7 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sergiom.flycheck.R
-import com.sergiom.flycheck.util.LOGO_LETTERS_COLOR
+import com.sergiom.flycheck.ui.common.LOGO_LETTERS_COLOR
 
 @Composable
 fun HomeScreen(

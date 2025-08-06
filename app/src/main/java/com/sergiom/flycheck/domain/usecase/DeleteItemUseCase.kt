@@ -1,7 +1,7 @@
 package com.sergiom.flycheck.domain.usecase
 
-import com.sergiom.flycheck.data.model.CheckListBlock
-import com.sergiom.flycheck.data.model.CheckListTemplateModel
+import com.sergiom.flycheck.data.models.CheckListBlock
+import com.sergiom.flycheck.data.models.CheckListTemplateModel
 
 // Caso de uso encargado de eliminar un ítem de una sección específica dentro de una plantilla
 class DeleteItemUseCase {

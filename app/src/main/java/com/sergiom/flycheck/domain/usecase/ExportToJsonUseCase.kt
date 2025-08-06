@@ -2,8 +2,8 @@ package com.sergiom.flycheck.domain.usecase
 
 import android.content.Context
 import android.os.Environment
-import com.sergiom.flycheck.data.model.CheckListTemplateModel
-import com.sergiom.flycheck.util.JsonUtils
+import com.sergiom.flycheck.data.models.CheckListTemplateModel
+import com.sergiom.flycheck.ui.utils.JsonUtils
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
