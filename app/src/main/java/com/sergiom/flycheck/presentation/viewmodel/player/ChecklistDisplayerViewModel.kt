@@ -4,11 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sergiom.flycheck.data.models.CheckListTemplateModel
 import com.sergiom.flycheck.domain.player.ChecklistPlayer
+import com.sergiom.flycheck.domain.player.FlatPlayback
 import com.sergiom.flycheck.domain.player.ItemStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.flow.*
 import kotlinx.serialization.json.Json
+import javax.inject.Inject
 
 data class SectionSummary(
     val title: String,
@@ -46,11 +47,23 @@ class ChecklistDisplayerViewModel @Inject constructor(
     private val json: Json
 ) : ViewModel() {
 
-    private var inMemoryTemplate: CheckListTemplateModel? = null
+    /** Para evitar recargar la misma checklist si ya está cargada */
+    private var currentTemplateId: String? = null
 
+    /** Exponer el FlatPlayback completo para listas */
+    val flat: StateFlow<FlatPlayback?> =
+        player.state.map { it?.flat }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+
+    /** Exponer el mapa de estados por itemId para pintar cada fila */
+    val statuses: StateFlow<Map<String, ItemStatus>> =
+        player.state.map { it?.statuses ?: emptyMap() }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyMap())
+
+    /** Estado actual para la cabecera/tarjeta */
     val uiState: StateFlow<DisplayerUiState> =
         player.state.filterNotNull().map { s ->
-            // Construir resúmenes por sección
+            // Resumen por sección
             val summaries: List<SectionSummary> = run {
                 val starts = s.flat.sectionStartsAt
                 val titles = s.flat.sectionTitles
@@ -70,34 +83,25 @@ class ChecklistDisplayerViewModel @Inject constructor(
                                 }
                                 d
                             }
-                            add(SectionSummary(
-                                title = titles.getOrNull(i).orEmpty(),
-                                done = done,
-                                total = total
-                            ))
+                            add(
+                                SectionSummary(
+                                    title = titles.getOrNull(i).orEmpty(),
+                                    done = done,
+                                    total = total
+                                )
+                            )
                         }
                     }
                 }
             }
 
-            // 🔒 Caso vacío: no acceder a s.current
+            // Caso vacío
             if (s.total == 0) {
                 return@map DisplayerUiState(
                     title = s.flat.template.name,
                     model = s.flat.template.aircraftModel,
                     airline = s.flat.template.airline,
-                    sectionTitle = "",
-                    subsectionPath = "",
-                    itemTitle = "",
-                    itemAction = "",
-                    itemId = "",
-                    itemStatus = ItemStatus.PENDING,
-                    progress = 0f,
-                    total = 0,
-                    index = 0,
-                    emphasisColorHex = "#D3D3D3",
                     sectionTitles = s.flat.sectionTitles,
-                    currentSectionIndex = 0,
                     sectionSummaries = summaries
                 )
             }
@@ -105,6 +109,7 @@ class ChecklistDisplayerViewModel @Inject constructor(
             val ref = s.current
             val item = ref.itemBlock.item
             val status = s.statuses[item.id] ?: ItemStatus.PENDING
+
             DisplayerUiState(
                 title = s.flat.template.name,
                 model = s.flat.template.aircraftModel,
@@ -130,22 +135,35 @@ class ChecklistDisplayerViewModel @Inject constructor(
             )
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), DisplayerUiState())
 
+    /** Inicializa el player con un modelo (solo si cambia el id) */
     fun initWithTemplate(template: CheckListTemplateModel) {
-        if (player.state.value != null) return
-        inMemoryTemplate = template
+        if (currentTemplateId == template.id) return
+        currentTemplateId = template.id
         player.load(template)
     }
 
+    /** Inicializa el player a partir de un JSON serializado */
     fun initWithTemplateJson(jsonString: String) {
-        if (player.state.value != null) return
         runCatching {
             json.decodeFromString(CheckListTemplateModel.serializer(), jsonString)
-        }.onSuccess(::initWithTemplate)
-            .onFailure { it.printStackTrace() }
+        }.onSuccess { template ->
+            initWithTemplate(template)
+        }.onFailure { it.printStackTrace() }
     }
 
+    /** Limpia el estado (por ejemplo al salir del Displayer) */
+    fun reset() {
+        currentTemplateId = null
+        player.reset()
+    }
+
+    // Acciones
     fun onNext() = player.next()
     fun onPrev() = player.prev()
     fun onToggle() = player.toggleCurrentDone()
     fun onJumpToSection(i: Int) = player.jumpToSection(i)
+
+    // Helpers para el listado
+    fun onToggleItem(itemId: String) = player.toggleById(itemId)
+    fun onJumpToItem(index: Int) = player.jumpTo(index)
 }

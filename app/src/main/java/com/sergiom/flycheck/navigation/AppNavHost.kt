@@ -12,6 +12,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.sergiom.flycheck.presentation.viewmodel.player.ChecklistDisplayerViewModel
+import com.sergiom.flycheck.presentation.viewmodel.manager.ChecklistManagerViewModel
 import com.sergiom.flycheck.ui.screens.a_welcome.HomeScreenContainer
 import com.sergiom.flycheck.ui.screens.a_welcome.SplashScreen
 import com.sergiom.flycheck.ui.screens.b_editor.PreCheckListEditorScreen
@@ -20,7 +21,6 @@ import com.sergiom.flycheck.ui.screens.c_displayer.ChecklistDisplayerScreen
 import com.sergiom.flycheck.ui.screens.c_displayer.ChecklistManagerScreen
 import com.sergiom.flycheck.ui.utils.JsonUtils
 import com.sergiom.flycheck.data.models.CheckListTemplateModel
-import com.sergiom.flycheck.presentation.viewmodel.manager.ChecklistManagerViewModel
 
 @SuppressLint("UnrememberedGetBackStackEntry")
 @Composable
@@ -98,7 +98,8 @@ fun AppNavHost(navController: NavHostController) {
                 onSelect = { info ->
                     vm.loadChecklist(info.id)?.let { template ->
                         val jsonStr = JsonUtils.json.encodeToString(
-                            CheckListTemplateModel.serializer(), template
+                            CheckListTemplateModel.serializer(),
+                            template
                         )
                         navController.currentBackStackEntry
                             ?.savedStateHandle
@@ -123,7 +124,7 @@ fun AppNavHost(navController: NavHostController) {
 
             LaunchedEffect(jsonStr) {
                 if (!jsonStr.isNullOrBlank()) {
-                    vm.initWithTemplateJson(jsonStr) // El VM decodifica y hace player.load
+                    vm.initWithTemplateJson(jsonStr)
                     // Limpia la clave para evitar re-inicializaciones al volver atrás
                     navController.previousBackStackEntry
                         ?.savedStateHandle
@@ -132,13 +133,23 @@ fun AppNavHost(navController: NavHostController) {
             }
 
             val state = vm.uiState.collectAsState()
+            val flat = vm.flat.collectAsState()
+            val statuses = vm.statuses.collectAsState()
+
             ChecklistDisplayerScreen(
                 state = state.value,
+                flat = flat.value,
+                statuses = statuses.value,
                 onPrev = vm::onPrev,
                 onNext = vm::onNext,
-                onToggle = vm::onToggle,
+                onToggle = vm::onToggle,             // toggle del ítem actual (compatibilidad)
+                onToggleItem = vm::onToggleItem,     // toggle por itemId (lista)
+                onJumpToItem = vm::onJumpToItem,     // saltar a índice global
                 onSelectSection = vm::onJumpToSection,
-                onBack = { navController.popBackStack() }
+                onBack = {
+                    vm.reset()                       // evita que se “quede” la última checklist
+                    navController.popBackStack()
+                }
             )
         }
 
