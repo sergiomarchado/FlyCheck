@@ -2,52 +2,54 @@ package com.sergiom.flycheck.navigation
 
 import android.annotation.SuppressLint
 import android.net.Uri
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.sergiom.flycheck.ui.screens.a_welcome.HomeScreen
+import com.sergiom.flycheck.presentation.viewmodel.player.ChecklistDisplayerViewModel
+import com.sergiom.flycheck.ui.screens.a_welcome.HomeScreenContainer
 import com.sergiom.flycheck.ui.screens.a_welcome.SplashScreen
 import com.sergiom.flycheck.ui.screens.b_editor.PreCheckListEditorScreen
 import com.sergiom.flycheck.ui.screens.b_editor.TemplateEditorCheckListScreen
+import com.sergiom.flycheck.ui.screens.c_displayer.ChecklistDisplayerScreen
+import com.sergiom.flycheck.ui.screens.c_displayer.ChecklistManagerScreen
+import com.sergiom.flycheck.ui.utils.JsonUtils
+import com.sergiom.flycheck.data.models.CheckListTemplateModel
+import com.sergiom.flycheck.presentation.viewmodel.manager.ChecklistManagerViewModel
 
-// Define la estructura de navegación principal de la app usando Jetpack Navigation en Compose
 @SuppressLint("UnrememberedGetBackStackEntry")
 @Composable
 fun AppNavHost(navController: NavHostController) {
 
-    // PANTALLA INICIAL DE LA APP
-    NavHost(navController = navController, startDestination = NavigationRoutes.Splash.route){
+    NavHost(navController = navController, startDestination = NavigationRoutes.Splash.route) {
 
-        // Pantalla de bienvenida (Splash)
+        // Splash
         composable(NavigationRoutes.Splash.route) {
-            // Simulamos un splash screen corto con delay
             SplashScreen(
                 onTimeout = {
-                    navController.navigate(NavigationRoutes.Home.route){
-                        popUpTo(NavigationRoutes.Splash.route) { inclusive = true  }
+                    navController.navigate(NavigationRoutes.Home.route) {
+                        popUpTo(NavigationRoutes.Splash.route) { inclusive = true }
                     }
                 }
             )
         }
 
-        // HOME SCREEN
-        composable(NavigationRoutes.Home.route){
-            HomeScreen(
-                onGoCustomCheckList = {
-                    navController.navigate(NavigationRoutes.CheckListCustom.route)
-                },
-                onGoPredefinedCheckList = {navController.navigate(NavigationRoutes.CheckListPredefined.route)}
-            )
+        // Home
+        composable(NavigationRoutes.Home.route) {
+            HomeScreenContainer(navController = navController)
         }
 
-        // OPCIÓN DE CREAR CHECK LIST PERSONALIZADA O CUSTOM
+        // Crear checklist custom
         composable(NavigationRoutes.CheckListCustom.route) {
             PreCheckListEditorScreen(
                 navController = navController,
                 onContinue = { name, model, airline, logo, sectionCount, logoUri ->
                     navController.currentBackStackEntry?.savedStateHandle?.set("logoUri", logoUri)
-
                     navController.navigate(
                         NavigationRoutes.CheckListEditor.withArgs(
                             name, model, airline, logo, sectionCount
@@ -57,7 +59,7 @@ fun AppNavHost(navController: NavHostController) {
             )
         }
 
-        /// Editor checklist con datos pasados por navegación
+        // Editor
         composable(
             route = NavigationRoutes.CheckListEditor.FULLROUTE
         ) { backStackEntry ->
@@ -81,10 +83,68 @@ fun AppNavHost(navController: NavHostController) {
             )
         }
 
-        // Placeholder para futuras checklists predefinidas
+        // Predefined (pendiente)
         composable(NavigationRoutes.CheckListPredefined.route) {
-            // Pendiente de implementar más adelante
+            Text("Predefinidas próximamente")
+        }
+
+        // Manager (gestor de checklists locales)
+        composable(NavigationRoutes.ChecklistManager.route) {
+            val vm: ChecklistManagerViewModel = hiltViewModel()
+            val items by vm.checklists.collectAsState()
+
+            ChecklistManagerScreen(
+                items = items,
+                onSelect = { info ->
+                    vm.loadChecklist(info.id)?.let { template ->
+                        val jsonStr = JsonUtils.json.encodeToString(
+                            CheckListTemplateModel.serializer(), template
+                        )
+                        navController.currentBackStackEntry
+                            ?.savedStateHandle
+                            ?.set("templateForPlaybackJson", jsonStr)
+                        navController.navigate(NavigationRoutes.ChecklistDisplayer.FULLROUTE)
+                    }
+                },
+                onDelete = { info -> vm.deleteChecklist(info.id) },
+                onRename = { info, newName -> vm.renameChecklist(info.id, newName) }
+            )
+        }
+
+        // Checklist Displayer
+        composable(NavigationRoutes.ChecklistDisplayer.FULLROUTE) {
+            val vm: ChecklistDisplayerViewModel = hiltViewModel()
+
+            // Recupera el JSON dejado en el entry anterior (Home/Manager) ANTES de navegar
+            val jsonStr: String? =
+                navController.previousBackStackEntry
+                    ?.savedStateHandle
+                    ?.get("templateForPlaybackJson")
+
+            LaunchedEffect(jsonStr) {
+                if (!jsonStr.isNullOrBlank()) {
+                    vm.initWithTemplateJson(jsonStr) // El VM decodifica y hace player.load
+                    // Limpia la clave para evitar re-inicializaciones al volver atrás
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.remove<String>("templateForPlaybackJson")
+                }
+            }
+
+            val state = vm.uiState.collectAsState()
+            ChecklistDisplayerScreen(
+                state = state.value,
+                onPrev = vm::onPrev,
+                onNext = vm::onNext,
+                onToggle = vm::onToggle,
+                onSelectSection = vm::onJumpToSection,
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        // Comunidad (placeholder)
+        composable(NavigationRoutes.Community.route) {
+            Text("Comunidad Próximamente")
         }
     }
 }
-

@@ -42,7 +42,7 @@ class ChecklistViewModel @Inject constructor() : ViewModel() {
     fun markAsCompleted(item: CheckListItemModel) {
         val index = _checkListItemModels.indexOf(item)
         if (index != -1) {
-            _checkListItemModels[index] = item.copy(completed = !item.completed)
+            _checkListItemModels[index] = item.copy(completed= !item.completed)
         }
     }
 }

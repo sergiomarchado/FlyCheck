@@ -48,4 +48,21 @@ object AppModule {
     @Provides
     @Singleton
     fun provideChecklistMover(): ChecklistMover = ChecklistMover()
+
+    // di/AppModule.kt (añade esto a tu módulo existente)
+    @Provides @Singleton
+    fun provideJson(): kotlinx.serialization.json.Json =
+        com.sergiom.flycheck.ui.utils.JsonUtils.json // ya lo tienes configurado
+
+    @Provides @Singleton
+    fun provideImportFromUri(json: kotlinx.serialization.json.Json) =
+        ImportTemplateFromUriUseCase(json)
+
+    @Provides @Singleton
+    fun provideListLocal(json: kotlinx.serialization.json.Json) =
+        ListLocalExportedTemplatesUseCase(json)
+
+    @Provides @Singleton
+    fun provideLoadLastLocal(list: ListLocalExportedTemplatesUseCase) =
+        LoadLastLocalExportedTemplateUseCase(list)
 }
