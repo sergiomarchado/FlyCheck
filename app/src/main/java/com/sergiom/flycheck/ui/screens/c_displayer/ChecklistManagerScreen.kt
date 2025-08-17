@@ -6,12 +6,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.sergiom.flycheck.data.local.ChecklistInfo
@@ -21,7 +17,7 @@ import com.sergiom.flycheck.ui.screens.c_displayer.components.manager.RenameDial
 
 /**
  * Lista de checklists con TopBar, estados (loading/error/empty) y diálogo de renombrado.
- * Orquesta subcomposables definidos en el paquete `components`.
+ * Integrada con el sistema de tema (usa los mismos colores que el resto).
  */
 @Composable
 fun ChecklistManagerScreen(
@@ -34,13 +30,15 @@ fun ChecklistManagerScreen(
     isLoading: Boolean = false,
     error: String? = null,
     onRetry: () -> Unit = {},
-    snackbarHostState: SnackbarHostState? = null // opcional: para mostrar snackbars
+    snackbarHostState: SnackbarHostState? = null,
+    // Opcional: botón para alternar tema en el TopBar
+    onToggleTheme: (() -> Unit)? = null
 ) {
     var renameTarget by remember { mutableStateOf<ChecklistInfo?>(null) }
     var newName by rememberSaveable { mutableStateOf("") }
 
     Scaffold(
-        topBar = { ChecklistManagerTopBar(onBack) },
+        topBar = { ChecklistManagerTopBar(onBack = onBack, onToggleTheme = onToggleTheme) },
         snackbarHost = { snackbarHostState?.let { SnackbarHost(it) } }
     ) { padding ->
         Box(

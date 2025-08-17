@@ -1,5 +1,38 @@
-<vector xmlns:android="http://schemas.android.com/apk/res/android" android:height="24dp" android:tint="#000000" android:viewportHeight="960" android:viewportWidth="960" android:width="24dp">
-      
-    <path android:fillColor="@android:color/white" android:pathData="M480,932L346,800L160,800L160,614L28,480L160,346L160,160L346,160L480,28L614,160L800,160L800,346L932,480L800,614L800,800L614,800L480,932ZM480,680Q563,680 621.5,621.5Q680,563 680,480Q680,397 621.5,338.5Q563,280 480,280L480,680ZM480,820L580,720L720,720L720,580L820,480L720,380L720,240L580,240L480,140L380,240L240,240L240,380L140,480L240,580L240,720L380,720L480,820ZM480,480L480,480L480,480L480,480L480,480L480,480L480,480L480,480L480,480L480,480L480,480L480,480L480,480L480,480L480,480L480,480Z"/>
-    
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Dispositivo grande (vertical) -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#000000"
+        android:strokeWidth="1.6"
+        android:strokeLineJoin="round"
+        android:strokeLineCap="round"
+        android:pathData="M6,3h6a2,2 0 0 1 2,2v12a2,2 0 0 1 -2,2H6a2,2 0 0 1 -2,-2V5a2,2 0 0 1 2,-2z"/>
+
+    <!-- Tablet (vertical) -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#000000"
+        android:strokeWidth="1.6"
+        android:strokeLineJoin="round"
+        android:strokeLineCap="round"
+        android:pathData="M12.5,5h3.5a1.6,1.6 0 0 1 1.6,1.6v8.8a1.6,1.6 0 0 1 -1.6,1.6h-3.5a1.6,1.6 0 0 1 -1.6,-1.6V6.6a1.6,1.6 0 0 1 1.6,-1.6z"/>
+
+    <!-- Móvil (vertical) -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#000000"
+        android:strokeWidth="1.6"
+        android:strokeLineJoin="round"
+        android:strokeLineCap="round"
+        android:pathData="M15.5,9.5h3a1.2,1.2 0 0 1 1.2,1.2v8.2a1.2,1.2 0 0 1 -1.2,1.2h-3a1.2,1.2 0 0 1 -1.2,-1.2v-8.2a1.2,1.2 0 0 1 1.2,-1.2z"/>
+
+    <!-- Botón/home del móvil -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M17,17.7m-0.45,0a0.45,0.45 0 1,0 0.9,0a0.45,0.45 0 1,0 -0.9,0"/>
 </vector>

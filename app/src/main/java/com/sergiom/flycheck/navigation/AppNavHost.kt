@@ -16,7 +16,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.sergiom.flycheck.data.models.CheckListTemplateModel
+import com.sergiom.flycheck.presentation.viewmodel.manager.ChecklistManagerViewModel
 import com.sergiom.flycheck.presentation.viewmodel.player.ChecklistDisplayerViewModel
+import com.sergiom.flycheck.presentation.viewmodel.theme.ThemeViewModel
 import com.sergiom.flycheck.ui.screens.a_welcome.HomeScreenContainer
 import com.sergiom.flycheck.ui.screens.a_welcome.SplashScreen
 import com.sergiom.flycheck.ui.screens.b_editor.PreCheckListEditorScreen
@@ -94,10 +96,11 @@ fun AppNavHost(navController: NavHostController) {
 
         // Manager (gestor de checklists locales)
         composable(NavigationRoutes.ChecklistManager.route) {
-            val vm: com.sergiom.flycheck.presentation.viewmodel.manager.ChecklistManagerViewModel = hiltViewModel()
+            val vm: ChecklistManagerViewModel = hiltViewModel()
             val ui by vm.uiState.collectAsStateWithLifecycle()
             val scope = rememberCoroutineScope()
             val snackbar = remember { SnackbarHostState() }
+            val themeVm: ThemeViewModel = hiltViewModel()
 
             // Recoger efectos y mostrarlos como snackbars
             LaunchedEffect(Unit) {
@@ -131,7 +134,8 @@ fun AppNavHost(navController: NavHostController) {
                     }
                 },
                 onDelete = { info -> vm.deleteChecklist(info.id) },
-                onRename = { info, newName -> vm.renameChecklist(info.id, newName) }
+                onRename = { info, newName -> vm.renameChecklist(info.id, newName) },
+                onToggleTheme = { themeVm.cycle() }
             )
         }
 

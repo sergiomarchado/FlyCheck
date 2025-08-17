@@ -3,6 +3,7 @@ package com.sergiom.flycheck.domain.usecase
 import android.content.Context
 import android.os.Environment
 import com.sergiom.flycheck.data.models.CheckListTemplateModel
+import com.sergiom.flycheck.domain.export.materializeUris
 import com.sergiom.flycheck.ui.utils.JsonUtils
 import java.io.File
 import java.text.SimpleDateFormat
@@ -12,24 +13,24 @@ import javax.inject.Inject
 
 class ExportTemplateUseCase @Inject constructor() {
 
-    operator fun invoke (context: Context, template: CheckListTemplateModel): Result<File> {
-        return try {
-            val jsonString = JsonUtils.json.encodeToString(template)
+    operator fun invoke(context: Context, template: CheckListTemplateModel): Result<File> = runCatching {
+        // 1) Materializar URIs (content:// -> file:/// en sandbox de la app)
+        val materialized = template.materializeUris(context)
 
-            val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-            val fileName = "plantilla_${template.name.ifBlank { "sin_nombre" }}_$timestamp.json"
+        // 2) Serializar
+        val jsonString = JsonUtils.json.encodeToString(materialized)
 
-            // Carpeta segura externa
-            val exportDir = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
-            if (exportDir != null && !exportDir.exists()) exportDir.mkdirs()
+        // 3) Guardar en app-specific external documents
+        val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val safeName = template.name.ifBlank { "sin_nombre" }
+        val fileName = "plantilla_${safeName}_$timestamp.json"
 
-            val file = File(exportDir, fileName)
-            file.writeText(jsonString)
+        val exportDir = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS)
+            ?.apply { if (!exists()) mkdirs() }
+            ?: throw IllegalStateException("No external documents dir")
 
-            Result.success(file)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Result.failure(e)
-        }
+        val file = File(exportDir, fileName)
+        file.writeText(jsonString)
+        file
     }
 }
