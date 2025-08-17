@@ -1,4 +1,3 @@
-// di/ChecklistManagerModule.kt
 package com.sergiom.flycheck.di
 
 import android.content.Context
@@ -8,6 +7,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.serialization.json.Json
 import javax.inject.Singleton
 
@@ -15,12 +15,12 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object ChecklistManagerModule {
 
-    @Provides
-    @Singleton
+    @Provides @Singleton
     fun provideChecklistManagerRepository(
         @ApplicationContext context: Context,
-        json: Json
+        json: Json,
+        @IoDispatcher io: CoroutineDispatcher
     ): ChecklistManagerRepository {
-        return ChecklistManagerRepository(context, json)
+        return ChecklistManagerRepository(context, json, io)
     }
 }

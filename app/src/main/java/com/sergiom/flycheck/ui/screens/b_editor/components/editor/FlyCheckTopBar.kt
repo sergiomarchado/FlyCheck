@@ -1,7 +1,6 @@
 package com.sergiom.flycheck.ui.screens.b_editor.components.editor
 
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
@@ -23,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.sergiom.flycheck.R
 import com.sergiom.flycheck.ui.common.LOGO_LETTERS_COLOR
+import com.sergiom.flycheck.ui.theme.LocalIsDarkTheme
 
 /**
  * Componente visual de barra superior (TopAppBar) reutilizable.
@@ -39,7 +39,7 @@ fun FlyCheckTopBar(
 ) {
 
     // Detecta si el sistema está en modo oscuro para ajustar el color del TopAppBar.
-    val isDark = isSystemInDarkTheme()
+    val isDark = LocalIsDarkTheme.current
     val defaultTopBarColor =
         if(isDark) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.primary
 

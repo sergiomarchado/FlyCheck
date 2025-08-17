@@ -2,17 +2,21 @@ package com.sergiom.flycheck.navigation
 
 import android.annotation.SuppressLint
 import android.net.Uri
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.sergiom.flycheck.data.models.CheckListTemplateModel
 import com.sergiom.flycheck.presentation.viewmodel.player.ChecklistDisplayerViewModel
-import com.sergiom.flycheck.presentation.viewmodel.manager.ChecklistManagerViewModel
 import com.sergiom.flycheck.ui.screens.a_welcome.HomeScreenContainer
 import com.sergiom.flycheck.ui.screens.a_welcome.SplashScreen
 import com.sergiom.flycheck.ui.screens.b_editor.PreCheckListEditorScreen
@@ -20,7 +24,7 @@ import com.sergiom.flycheck.ui.screens.b_editor.TemplateEditorCheckListScreen
 import com.sergiom.flycheck.ui.screens.c_displayer.ChecklistDisplayerScreen
 import com.sergiom.flycheck.ui.screens.c_displayer.ChecklistManagerScreen
 import com.sergiom.flycheck.ui.utils.JsonUtils
-import com.sergiom.flycheck.data.models.CheckListTemplateModel
+import kotlinx.coroutines.launch
 
 @SuppressLint("UnrememberedGetBackStackEntry")
 @Composable
@@ -90,21 +94,40 @@ fun AppNavHost(navController: NavHostController) {
 
         // Manager (gestor de checklists locales)
         composable(NavigationRoutes.ChecklistManager.route) {
-            val vm: ChecklistManagerViewModel = hiltViewModel()
-            val items by vm.checklists.collectAsState()
+            val vm: com.sergiom.flycheck.presentation.viewmodel.manager.ChecklistManagerViewModel = hiltViewModel()
+            val ui by vm.uiState.collectAsStateWithLifecycle()
+            val scope = rememberCoroutineScope()
+            val snackbar = remember { SnackbarHostState() }
+
+            // Recoger efectos y mostrarlos como snackbars
+            LaunchedEffect(Unit) {
+                vm.effects.collect { effect ->
+                    when (effect) {
+                        is com.sergiom.flycheck.presentation.viewmodel.manager.ManagerEffect.ShowMessage ->
+                            snackbar.showSnackbar(effect.text)
+                    }
+                }
+            }
 
             ChecklistManagerScreen(
-                items = items,
+                items = ui.items,
+                isLoading = ui.isLoading,
+                error = ui.error,
+                onRetry = vm::refresh,
+                snackbarHostState = snackbar,
+                onBack = { navController.popBackStack() },
                 onSelect = { info ->
-                    vm.loadChecklist(info.id)?.let { template ->
-                        val jsonStr = JsonUtils.json.encodeToString(
-                            CheckListTemplateModel.serializer(),
-                            template
-                        )
-                        navController.currentBackStackEntry
-                            ?.savedStateHandle
-                            ?.set("templateForPlaybackJson", jsonStr)
-                        navController.navigate(NavigationRoutes.ChecklistDisplayer.FULLROUTE)
+                    scope.launch {
+                        vm.loadChecklist(info.id)?.let { template ->
+                            val jsonStr = JsonUtils.json.encodeToString(
+                                CheckListTemplateModel.serializer(),
+                                template
+                            )
+                            navController.currentBackStackEntry
+                                ?.savedStateHandle
+                                ?.set("templateForPlaybackJson", jsonStr)
+                            navController.navigate(NavigationRoutes.ChecklistDisplayer.FULLROUTE)
+                        }
                     }
                 },
                 onDelete = { info -> vm.deleteChecklist(info.id) },

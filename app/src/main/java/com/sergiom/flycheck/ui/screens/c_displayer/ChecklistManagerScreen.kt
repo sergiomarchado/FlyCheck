@@ -1,82 +1,77 @@
 package com.sergiom.flycheck.ui.screens.c_displayer
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.sergiom.flycheck.data.local.ChecklistInfo
+import com.sergiom.flycheck.ui.screens.c_displayer.components.manager.ChecklistManagerContent
+import com.sergiom.flycheck.ui.screens.c_displayer.components.manager.ChecklistManagerTopBar
+import com.sergiom.flycheck.ui.screens.c_displayer.components.manager.RenameDialog
 
+/**
+ * Lista de checklists con TopBar, estados (loading/error/empty) y diálogo de renombrado.
+ * Orquesta subcomposables definidos en el paquete `components`.
+ */
 @Composable
 fun ChecklistManagerScreen(
     items: List<ChecklistInfo>,
     onSelect: (ChecklistInfo) -> Unit,
     onDelete: (ChecklistInfo) -> Unit,
-    onRename: (ChecklistInfo, String) -> Unit
+    onRename: (ChecklistInfo, String) -> Unit,
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier,
+    isLoading: Boolean = false,
+    error: String? = null,
+    onRetry: () -> Unit = {},
+    snackbarHostState: SnackbarHostState? = null // opcional: para mostrar snackbars
 ) {
     var renameTarget by remember { mutableStateOf<ChecklistInfo?>(null) }
-    var newName by remember { mutableStateOf("") }
+    var newName by rememberSaveable { mutableStateOf("") }
 
-    Box(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        if (items.isEmpty()) {
-            Text("No tienes checklists guardadas aún")
-        } else {
-            LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                items(items) { item ->
-                    Card(
-                        modifier = Modifier.fillMaxWidth()
-                            .clickable { onSelect(item) },
-                        elevation = CardDefaults.cardElevation(4.dp)
-                    ) {
-                        Column(Modifier.padding(16.dp)) {
-                            Text(item.name, style = MaterialTheme.typography.titleMedium)
-                            Text("${item.model} • ${item.airline}", style = MaterialTheme.typography.bodySmall)
-                            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                                IconButton(onClick = { renameTarget = item; newName = item.name }) {
-                                    Icon(Icons.Default.Edit, contentDescription = "Renombrar")
-                                }
-                                IconButton(onClick = { onDelete(item) }) {
-                                    Icon(Icons.Default.Delete, contentDescription = "Eliminar")
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+    Scaffold(
+        topBar = { ChecklistManagerTopBar(onBack) },
+        snackbarHost = { snackbarHostState?.let { SnackbarHost(it) } }
+    ) { padding ->
+        Box(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(padding)
+                .padding(16.dp)
+        ) {
+            ChecklistManagerContent(
+                items = items,
+                isLoading = isLoading,
+                error = error,
+                onRetry = onRetry,
+                onSelect = onSelect,
+                onRequestRename = { info ->
+                    renameTarget = info
+                    newName = info.name
+                },
+                onDelete = onDelete
+            )
         }
     }
 
     if (renameTarget != null) {
-        AlertDialog(
-            onDismissRequest = { renameTarget = null },
-            title = { Text("Renombrar checklist") },
-            text = {
-                OutlinedTextField(
-                    value = newName,
-                    onValueChange = { newName = it },
-                    singleLine = true
-                )
-            },
-            confirmButton = {
-                TextButton(onClick = {
-                    if (newName.isNotBlank()) {
-                        onRename(renameTarget!!, newName)
-                    }
-                    renameTarget = null
-                }) {
-                    Text("Aceptar")
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { renameTarget = null }) {
-                    Text("Cancelar")
-                }
+        RenameDialog(
+            value = newName,
+            onValueChange = { newName = it },
+            onDismiss = { renameTarget = null },
+            onConfirm = {
+                renameTarget?.let { onRename(it, newName.trim()) }
+                renameTarget = null
             }
         )
     }

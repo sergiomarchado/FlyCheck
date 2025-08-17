@@ -1,6 +1,5 @@
 package com.sergiom.flycheck.ui.screens.b_editor.components.editor
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -21,8 +20,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.sergiom.flycheck.R
 import com.sergiom.flycheck.data.models.ExportOption
-import com.sergiom.flycheck.ui.screens.b_editor.components.editor.utils.ExportDialogOption
 import com.sergiom.flycheck.ui.common.FAB_DEFAULT_BACKGROUND_COLOR_DARK
+import com.sergiom.flycheck.ui.screens.b_editor.components.editor.utils.ExportDialogOption
+import com.sergiom.flycheck.ui.theme.LocalIsDarkTheme
 
 
 @Composable
@@ -31,7 +31,7 @@ fun ExportFab(onExportOptionSelected: (ExportOption) -> Unit) {
     var showDialog by remember { mutableStateOf(false) }
 
     // Detecta si el sistema está en modo oscuro para ajustar el color del FAB.
-    val isDark = isSystemInDarkTheme()
+    val isDark = LocalIsDarkTheme.current
     val defaultTopBarColor =
         if(isDark) FAB_DEFAULT_BACKGROUND_COLOR_DARK else MaterialTheme.colorScheme.primary
 

@@ -62,7 +62,7 @@ fun HomeScreen(
 
             // Abrir archivo externo (Downloads, etc.)
             OutlinedButton(onClick = onOpenFromDevice, modifier = Modifier.fillMaxWidth()) {
-                Text("Abrir archivo (.json / .zip)")
+                Text("Abrir desde archivo (.zip)")
             }
 
             Spacer(Modifier.height(12.dp))

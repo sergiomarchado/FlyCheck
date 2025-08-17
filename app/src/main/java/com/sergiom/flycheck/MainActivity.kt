@@ -1,3 +1,4 @@
+// app/src/main/java/com/sergiom/flycheck/MainActivity.kt
 package com.sergiom.flycheck
 
 import android.Manifest
@@ -10,23 +11,28 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.sergiom.flycheck.navigation.AppNavHost
+import com.sergiom.flycheck.presentation.viewmodel.theme.ThemeViewModel
 import com.sergiom.flycheck.ui.theme.FlyCheckTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Pedir permiso para notificaciones si es Android 13+
+
+        // Android 13+: permiso notificaciones
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.POST_NOTIFICATIONS
+                    this, Manifest.permission.POST_NOTIFICATIONS
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
                 ActivityCompat.requestPermissions(
@@ -36,19 +42,24 @@ class MainActivity : ComponentActivity() {
                 )
             }
         }
+
         enableEdgeToEdge()
+
         setContent {
-            FlyCheckTheme {
-                Surface (
+            // VM de tema (Hilt)
+            val themeVm: ThemeViewModel = hiltViewModel()
+            val mode by themeVm.mode.collectAsState()
+
+            // Usa directamente el modo (SYSTEM/LIGHT/DARK)
+            FlyCheckTheme(mode = mode /*, dynamicColor = false */) {
+                val navController = rememberNavController()
+                Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
-                ){
-                    val navController = rememberNavController()
+                ) {
                     AppNavHost(navController = navController)
                 }
-
             }
         }
     }
 }
-

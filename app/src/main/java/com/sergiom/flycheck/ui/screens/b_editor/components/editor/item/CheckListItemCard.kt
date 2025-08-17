@@ -2,7 +2,6 @@ package com.sergiom.flycheck.ui.screens.b_editor.components.editor.item
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,6 +37,7 @@ import com.sergiom.flycheck.ui.screens.b_editor.components.editor.item.subcompon
 import com.sergiom.flycheck.ui.screens.b_editor.components.editor.item.subcomponents.ItemSideIcons
 import com.sergiom.flycheck.ui.screens.b_editor.components.editor.item.subcomponents.ItemTextField
 import com.sergiom.flycheck.ui.screens.b_editor.components.editor.item.subcomponents.MoveButtons
+import com.sergiom.flycheck.ui.theme.LocalIsDarkTheme
 
 // REPRESENTA UNA TARJETA INDIVIDUAL DE CADA UNO DE LOS ITEMS DENTRO DE LA CHECKLIST
 @Composable
@@ -57,7 +57,7 @@ fun CheckListItemCard(
     modifier: Modifier = Modifier
 ) {
     // Determinar si el tema actual es oscuro para ajustar el color de fondo por defecto
-    val isDark = isSystemInDarkTheme()
+    val isDark = LocalIsDarkTheme.current
     val defaultBackgroundColor =
         if (isDark) ITEM_DEFAULT_BACKGROUND_COLOR_DARK else ITEM_DEFAULT_BACKGROUND_COLOR_LIGHT
 
