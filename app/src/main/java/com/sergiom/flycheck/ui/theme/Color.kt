@@ -32,7 +32,7 @@ val TextOnDarkSecondary = Color(0xFFCCCCCC)
 
 val BlueDarkBackground = Color(0xFF0D1B2A) // Fondo general
 val BlueDarkSurface = Color(0xFF1B263B)    // Cards, secciones
-val BlueDarkSubSection = Color(0xFF28244F)    // Cards, secciones
+val BlueDarkSubSection = Color(0xFF262626)    // Cards, secciones
 val BlueDarkPrimary = Color(0xFF415A77)    // Acento principal
 val BlueDarkText = Color(0xFFDEE2E6)       // Texto claro
 val BlueDarkBorder = Color(0xFF748CAB)     // Bordes y outline

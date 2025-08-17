@@ -2,7 +2,7 @@ package com.sergiom.flycheck.domain.export
 
 import android.content.Context
 import android.net.Uri
-import com.sergiom.flycheck.data.local.ImageStore
+import com.sergiom.flycheck.data.storage.ImageStore
 import com.sergiom.flycheck.data.models.CheckListBlock
 import com.sergiom.flycheck.data.models.CheckListItemModel
 import com.sergiom.flycheck.data.models.CheckListSection

@@ -3,7 +3,7 @@ package com.sergiom.flycheck.ui.screens.c_displayer.components.manager
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.Box
-import com.sergiom.flycheck.data.local.ChecklistInfo
+import com.sergiom.flycheck.data.models.ChecklistInfo
 
 /** Decide qué mostrar según loading/error/empty/lista. */
 @Composable

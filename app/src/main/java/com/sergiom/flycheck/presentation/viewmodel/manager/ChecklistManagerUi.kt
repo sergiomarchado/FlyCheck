@@ -1,6 +1,6 @@
 package com.sergiom.flycheck.presentation.viewmodel.manager
 
-import com.sergiom.flycheck.data.local.ChecklistInfo
+import com.sergiom.flycheck.data.models.ChecklistInfo
 
 /** Estado de UI del gestor. */
 data class ManagerUiState(

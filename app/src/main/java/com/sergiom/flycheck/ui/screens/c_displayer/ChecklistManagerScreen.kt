@@ -10,7 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.sergiom.flycheck.data.local.ChecklistInfo
+import com.sergiom.flycheck.data.models.ChecklistInfo
 import com.sergiom.flycheck.ui.screens.c_displayer.components.manager.ChecklistManagerContent
 import com.sergiom.flycheck.ui.screens.c_displayer.components.manager.ChecklistManagerTopBar
 import com.sergiom.flycheck.ui.screens.c_displayer.components.manager.RenameDialog

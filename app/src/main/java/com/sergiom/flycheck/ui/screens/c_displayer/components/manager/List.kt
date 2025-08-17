@@ -11,7 +11,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.sergiom.flycheck.data.local.ChecklistInfo
+import com.sergiom.flycheck.data.models.ChecklistInfo
 
 /** Lista de checklists. */
 @Composable

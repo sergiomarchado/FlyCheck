@@ -102,7 +102,7 @@ fun AppNavHost(navController: NavHostController) {
             val snackbar = remember { SnackbarHostState() }
             val themeVm: ThemeViewModel = hiltViewModel()
 
-            // Recoger efectos y mostrarlos como snackbars
+            // Efectos → snackbars
             LaunchedEffect(Unit) {
                 vm.effects.collect { effect ->
                     when (effect) {
@@ -122,6 +122,7 @@ fun AppNavHost(navController: NavHostController) {
                 onSelect = { info ->
                     scope.launch {
                         vm.loadChecklist(info.id)?.let { template ->
+                            // El repo ya devuelve el template normalizado (URIs file://).
                             val jsonStr = JsonUtils.json.encodeToString(
                                 CheckListTemplateModel.serializer(),
                                 template
@@ -129,12 +130,18 @@ fun AppNavHost(navController: NavHostController) {
                             navController.currentBackStackEntry
                                 ?.savedStateHandle
                                 ?.set("templateForPlaybackJson", jsonStr)
+
                             navController.navigate(NavigationRoutes.ChecklistDisplayer.FULLROUTE)
                         }
                     }
                 },
-                onDelete = { info -> vm.deleteChecklist(info.id) },
-                onRename = { info, newName -> vm.renameChecklist(info.id, newName) },
+                onDelete = { info ->
+                    // El repo elimina JSON y carpeta de imágenes asociada.
+                    vm.deleteChecklist(info.id)
+                },
+                onRename = { info, newName ->
+                    vm.renameChecklist(info.id, newName)
+                },
                 onToggleTheme = { themeVm.cycle() }
             )
         }
@@ -143,7 +150,6 @@ fun AppNavHost(navController: NavHostController) {
         composable(NavigationRoutes.ChecklistDisplayer.FULLROUTE) {
             val vm: ChecklistDisplayerViewModel = hiltViewModel()
 
-            // Recupera el JSON dejado en el entry anterior (Home/Manager) ANTES de navegar
             val jsonStr: String? =
                 navController.previousBackStackEntry
                     ?.savedStateHandle
@@ -152,7 +158,6 @@ fun AppNavHost(navController: NavHostController) {
             LaunchedEffect(jsonStr) {
                 if (!jsonStr.isNullOrBlank()) {
                     vm.initWithTemplateJson(jsonStr)
-                    // Limpia la clave para evitar re-inicializaciones al volver atrás
                     navController.previousBackStackEntry
                         ?.savedStateHandle
                         ?.remove<String>("templateForPlaybackJson")
@@ -169,12 +174,12 @@ fun AppNavHost(navController: NavHostController) {
                 statuses = statuses.value,
                 onPrev = vm::onPrev,
                 onNext = vm::onNext,
-                onToggle = vm::onToggle,             // toggle del ítem actual (compatibilidad)
-                onToggleItem = vm::onToggleItem,     // toggle por itemId (lista)
-                onJumpToItem = vm::onJumpToItem,     // saltar a índice global
+                onToggle = vm::onToggle,
+                onToggleItem = vm::onToggleItem,
+                onJumpToItem = vm::onJumpToItem,
                 onSelectSection = vm::onJumpToSection,
                 onBack = {
-                    vm.reset()                       // evita que se “quede” la última checklist
+                    vm.reset()
                     navController.popBackStack()
                 }
             )
