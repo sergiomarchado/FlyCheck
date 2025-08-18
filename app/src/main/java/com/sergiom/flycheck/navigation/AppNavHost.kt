@@ -27,6 +27,7 @@ import com.sergiom.flycheck.ui.screens.c_displayer.ChecklistDisplayerScreen
 import com.sergiom.flycheck.ui.screens.c_displayer.ChecklistManagerScreen
 import com.sergiom.flycheck.ui.utils.JsonUtils
 import com.sergiom.flycheck.viewmodel.manager.ManagerEffect
+import com.sergiom.flycheck.viewmodel.player.UiEvent
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnrememberedGetBackStackEntry")
@@ -148,14 +149,17 @@ fun AppNavHost(navController: NavHostController) {
         }
 
         // Checklist Displayer
+        // Checklist Displayer
         composable(NavigationRoutes.ChecklistDisplayer.FULLROUTE) {
             val vm: ChecklistDisplayerViewModel = hiltViewModel()
 
+            // Si venimos del manager, rescatamos el JSON del SavedStateHandle
             val jsonStr: String? =
                 navController.previousBackStackEntry
                     ?.savedStateHandle
                     ?.get("templateForPlaybackJson")
 
+            // Carga del template (una sola vez) + limpieza del handle
             LaunchedEffect(jsonStr) {
                 if (!jsonStr.isNullOrBlank()) {
                     vm.initWithTemplateJson(jsonStr)
@@ -165,23 +169,36 @@ fun AppNavHost(navController: NavHostController) {
                 }
             }
 
-            val state = vm.uiState.collectAsState()
-            val flat = vm.flat.collectAsState()
-            val statuses = vm.statuses.collectAsState()
+            // Flujos del VM
+            val state by vm.uiState.collectAsState()
+            val flat by vm.flat.collectAsState()
+            val statuses by vm.statuses.collectAsState()
+
+            // Snackbar para eventos efímeros
+            val snackbar = remember { SnackbarHostState() }
+            LaunchedEffect(Unit) {
+                vm.events.collect { ev ->
+                    when (ev) {
+                        is UiEvent.ShowMessage -> snackbar.showSnackbar(ev.text)
+                    }
+                }
+            }
 
             ChecklistDisplayerScreen(
-                state = state.value,
-                flat = flat.value,
-                statuses = statuses.value,
+                state = state,
+                flat = flat,
+                statuses = statuses,
                 onToggleItem = vm::onToggleItem,
                 onJumpToItem = vm::onJumpToItem,
                 onSelectSection = vm::onJumpToSection,
                 onBack = {
                     vm.reset()
                     navController.popBackStack()
-                }
+                },
+                snackbarHostState = snackbar
             )
         }
+
 
         // Comunidad (placeholder)
         composable(NavigationRoutes.Community.route) {

@@ -8,7 +8,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.sergiom.flycheck.ui.screens.b_editor.components.editor.header.CheckListHeaderCard
-
+/**
+ * Tarjeta de cabecera del displayer.
+ *
+ * Envuelve y muestra el componente [CheckListHeaderCard], que contiene
+ * la información principal de la checklist (nombre, modelo, aerolínea, logo).
+ *
+ * Uso:
+ * - Se coloca en la parte superior de la pantalla de ejecución de checklist.
+ * - Se muestra siempre que exista información del template (aunque no haya ítems).
+ */
 @Composable
 internal fun DisplayerHeaderCard(
     title: String,
@@ -30,6 +39,7 @@ internal fun DisplayerHeaderCard(
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp, vertical = 12.dp)
         ) {
+            // Reutiliza la cabecera ya definida en el editor,
             CheckListHeaderCard(
                 name = title,
                 model = model,

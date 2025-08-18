@@ -1,5 +1,6 @@
 package com.sergiom.flycheck.ui.screens.c_displayer.components.displayer
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
@@ -44,6 +45,34 @@ import com.sergiom.flycheck.ui.common.ITEM_DEFAULT_SCALE
 import com.sergiom.flycheck.ui.theme.LocalIsDarkTheme
 import com.sergiom.flycheck.ui.theme.parseHexPerson
 
+/**
+ * ## ItemRowCard
+ *
+ * **Propósito**: Renderiza una fila de la checklist con estilo de tarjeta.
+ * - Muestra el **título** del ítem y, si procede, una **acción** corta en un chip.
+ * - Indica estado **completado** mediante animación de color y escala.
+ * - Ofrece accesos a **información** adicional y **imagen** asociada (iconos a la derecha).
+ *
+ * **Comportamiento adaptativo**:
+ * - Detecta el ancho de pantalla para alternar entre layout **una fila** (ancho cómodo)
+ *   y layout **compacto** (dos filas) usando `compactBreakpoint`.
+ *
+ * **Animaciones**:
+ * - Color de fondo (`bgColor`) y escala (`scale`) animados con `spring` suave cuando cambia `isDone`.
+ *
+ * @param title Título del ítem.
+ * @param action Texto corto de acción (se muestra en un AssistChip si no está en blanco).
+ * @param emphasisHex Color base en HEX para el fondo (personalización por ítem).
+ * @param isDone Si el ítem está marcado como completado.
+ * @param hasInfo Si el ítem dispone de información adicional para mostrar en un diálogo.
+ * @param hasImage Si el ítem tiene imagen asociada.
+ * @param onClick Acción principal al tocar la tarjeta o el chip (marcar/desmarcar).
+ * @param onInfoClick Acción al tocar el icono de información.
+ * @param onImageClick Acción al tocar el icono de imagen.
+ * @param modifier Modificador externo para composición.
+ * @param compactBreakpoint Umbral de anchura para cambiar a layout compacto.
+ */
+@SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 internal fun ItemRowCard(
     title: String,
@@ -64,11 +93,14 @@ internal fun ItemRowCard(
     val screenWidthDp = configuration.screenWidthDp.dp
     val compact = screenWidthDp < compactBreakpoint
 
+    // Animación del color de fondo: cambia a color de "completado" cuando isDone = true
     val bgColor by animateColorAsState(
         targetValue = if (isDone) ITEM_COMPLETED_COLOR else baseColor,
         animationSpec = spring(stiffness = Spring.StiffnessLow),
         label = "bg"
     )
+
+    // Animación de escala: leve “pop” al completar
     val scale by animateFloatAsState(
         targetValue = if (isDone) ITEM_COMPLETED_SCALE else ITEM_DEFAULT_SCALE,
         animationSpec = spring(stiffness = Spring.StiffnessLow),
@@ -77,7 +109,7 @@ internal fun ItemRowCard(
 
     val shape = RoundedCornerShape(16.dp)
 
-    // Colores del chip (solo ajustamos el color del texto en dark)
+    // Colores del chip (en dark forzamos texto negro para contraste sobre fondo claro)
     val chipColors = AssistChipDefaults.assistChipColors(
         labelColor = if (isDark) Color.Black else MaterialTheme.colorScheme.onSurfaceVariant
     )
@@ -90,7 +122,7 @@ internal fun ItemRowCard(
             .clickable(onClick = onClick),
         colors = CardDefaults.cardColors(
             containerColor = bgColor,
-            // ← clave: en dark, que TODO el contenido (Text por defecto) sea negro
+            // En modo oscuro, aseguramos contraste alto para el contenido
             contentColor = if (isDark) Color.Black else MaterialTheme.colorScheme.onSurface
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = if (isDone) 6.dp else 2.dp),
@@ -110,6 +142,7 @@ internal fun ItemRowCard(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
+                    // Título principal del ítem
                     Text(
                         text = title,
                         style = MaterialTheme.typography.titleMedium,
@@ -119,6 +152,7 @@ internal fun ItemRowCard(
                         modifier = Modifier.weight(1f, fill = true)
                     )
 
+                    // Chip de acción (si hay texto)
                     if (action.isNotBlank()) {
                         AssistChip(
                             onClick = onClick,
@@ -127,6 +161,7 @@ internal fun ItemRowCard(
                         )
                     }
 
+                    // Botonera con info e imagen (si procede)
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(2.dp),
                         verticalAlignment = Alignment.CenterVertically

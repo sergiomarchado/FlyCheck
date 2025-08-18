@@ -13,7 +13,15 @@ import com.sergiom.flycheck.R
 import com.sergiom.flycheck.ui.common.LOGO_LETTERS_COLOR
 import com.sergiom.flycheck.ui.theme.LocalIsDarkTheme
 import com.sergiom.flycheck.ui.theme.ThemeMode
-
+/**
+ * Barra superior (TopAppBar) de la pantalla del displayer.
+ *
+ * Muestra:
+ * - Título de la pantalla.
+ * - Botón de **back**.
+ * - Botón para abrir el selector de **secciones** (habilitado/deshabilitado).
+ * - Botón para **alternar el tema** (system/light/dark).
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun DisplayerTopBar(
@@ -24,11 +32,13 @@ internal fun DisplayerTopBar(
     themeMode: ThemeMode,
     onToggleTheme: () -> Unit
 ) {
+    // Determina esquema de color del contenedor según modo oscuro/claro actual
     val isDark = LocalIsDarkTheme.current
     val container = if (isDark) MaterialTheme.colorScheme.tertiary
     else MaterialTheme.colorScheme.primary
     val iconColor = MaterialTheme.colorScheme.onPrimary
 
+    // Selección del icono de tema según el modo activo
     val themeIconRes = when (themeMode) {
         ThemeMode.SYSTEM -> R.drawable.ic_theme_auto
         ThemeMode.LIGHT  -> R.drawable.ic_theme_light
@@ -40,29 +50,27 @@ internal fun DisplayerTopBar(
         navigationIcon = {
             IconButton(onClick = onBack) {
                 Icon(
-                    painter = painterResource(R.drawable.ic_arrow_back), // o sigue usando Icons.AutoMirrored…
+                    painter = painterResource(R.drawable.ic_arrow_back),
                     contentDescription = "Volver",
                     tint = iconColor
                 )
             }
         },
         actions = {
+            // Abrir selector de secciones (deshabilitado si no hay secciones)
             IconButton(onClick = onOpenSections, enabled = sectionsEnabled) {
                 Icon(
-                    painter = painterResource(R.drawable.ic_list),   // o tu drawable
+                    painter = painterResource(R.drawable.ic_list),
                     contentDescription = "Secciones",
                     tint = iconColor
                 )
             }
-            // Botón de tema (usa tu drawable)
+            // Alternar tema (system/light/dark)
             IconButton(onClick = onToggleTheme) {
                 Icon(
                     painter = painterResource(themeIconRes),
                     contentDescription = "Cambiar tema",
-                    // si tu vector es monocromo, puedes tintarlo:
                     tint = iconColor
-                    // si es PNG a color, quita el tinte:
-                    // tint = Color.Unspecified
                 )
             }
         },

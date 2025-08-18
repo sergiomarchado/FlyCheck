@@ -19,12 +19,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.sergiom.flycheck.domain.player.FlatPlayback
-import com.sergiom.flycheck.domain.player.ItemRef
 import com.sergiom.flycheck.domain.player.ItemStatus
 
 /**
- * Lista seccionada: inserta cabeceras de subsección cuando cambia el path.
- * Las cabeceras muestran SOLO el último nivel de la subsección.
+ * ## DisplayerItemList
+ *
+ * **Propósito**: Mostrar la lista de ítems de la sección actual.
+ * Reutiliza el helper compartido [buildSectionRows] para construir:
+ * - Cabeceras de subsección (cuando cambia el path).
+ * - Ítems operables con su índice global.
  */
 @Composable
 internal fun DisplayerItemList(
@@ -35,9 +38,10 @@ internal fun DisplayerItemList(
     onShowInfo: (title: String?, body: String?) -> Unit,
     onShowImage: (uri: String, title: String?, desc: String?) -> Unit
 ) {
-    val items = remember(flat, sectionIndex) { buildSectionList(flat, sectionIndex) }
+    // Derivamos las filas desde el helper único (memoizado por flat + sección)
+    val rows = remember(flat, sectionIndex) { buildSectionRows(flat, sectionIndex) }
 
-    if (items.isEmpty()) {
+    if (rows.isEmpty()) {
         EmptyChecklistCard()
         return
     }
@@ -46,10 +50,10 @@ internal fun DisplayerItemList(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(bottom = 16.dp)
     ) {
-        items(items, key = { it.key }) { row ->
+        items(rows, key = { it.key }) { row ->
             when (row) {
-                is RowItem.SubsectionHeader -> SubsectionHeader(row.title)
-                is RowItem.CheckItem -> {
+                is DisplayerRowItem.SubsectionHeader -> SubsectionHeader(row.title)
+                is DisplayerRowItem.CheckItem -> {
                     val item = row.ref.itemBlock.item
                     val id = item.id
                     val isDone = statuses[id] == ItemStatus.DONE
@@ -78,46 +82,9 @@ internal fun DisplayerItemList(
     }
 }
 
-/* ---- helpers / subcomposables ---- */
+/* ---- Subcomposables ligeros ---- */
 
-private sealed interface RowItem { val key: String
-    data class SubsectionHeader(val title: String, override val key: String) : RowItem
-    data class CheckItem(val globalIndex: Int, val ref: ItemRef, override val key: String) : RowItem
-}
-
-private fun buildSectionList(flat: FlatPlayback?, sectionIndex: Int): List<RowItem> {
-    if (flat == null) return emptyList()
-
-    val raw = mutableListOf<Pair<Int, ItemRef>>()
-    flat.items.forEachIndexed { gi, ref ->
-        if (ref.sectionIndex == sectionIndex) raw += gi to ref
-    }
-    if (raw.isEmpty()) return emptyList()
-
-    val result = mutableListOf<RowItem>()
-    var lastSubPath: List<String> = emptyList()
-
-    for ((gi, ref) in raw) {
-        // cambia de subsección: añade header SOLO con el último nivel
-        if (ref.subsectionTitles != lastSubPath && ref.subsectionTitles.isNotEmpty()) {
-            lastSubPath = ref.subsectionTitles
-            val headerTitle = ref.subsectionTitles.lastOrNull()
-            if (headerTitle != null) {
-                result += RowItem.SubsectionHeader(
-                    title = headerTitle,
-                    key = "h:$sectionIndex:$gi"
-                )
-            }
-        }
-        result += RowItem.CheckItem(
-            globalIndex = gi,
-            ref = ref,
-            key = "i:$gi:${ref.itemBlock.item.id}"
-        )
-    }
-    return result
-}
-
+/** Tarjeta de placeholder para secciones sin ítems. */
 @Composable
 internal fun EmptyChecklistCard() {
     ElevatedCard(Modifier.fillMaxWidth()) {
@@ -138,22 +105,22 @@ internal fun EmptyChecklistCard() {
     }
 }
 
+/** Cabecera visual para una subsección dentro de la lista. */
 @Composable
 internal fun SubsectionHeader(title: String) {
-
     Surface(
         shape = MaterialTheme.shapes.small,
         tonalElevation = 0.9.dp,
         color = MaterialTheme.colorScheme.surface,
-        modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 8.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp, bottom = 8.dp)
     ) {
-        // Fila principal que contiene el título y los botones del menú
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            // Título de la sub-sección
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleMedium,

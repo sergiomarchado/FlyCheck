@@ -2,14 +2,19 @@
   <dictionary name="project">
     <words>
       <w>acción</w>
+      <w>agrupa</w>
       <w>ajustes</w>
       <w>animación</w>
       <w>bloque</w>
       <w>componente</w>
+      <w>contamos</w>
+      <w>cuántos</w>
+      <w>defensivo</w>
       <w>disponible</w>
       <w>diálogo</w>
       <w>diálogos</w>
       <w>eliminar</w>
+      <w>están</w>
       <w>eventos</w>
       <w>exportar</w>
       <w>información</w>
@@ -18,11 +23,16 @@
       <w>mitad</w>
       <w>mostrar</w>
       <w>ocupa</w>
+      <w>orden</w>
+      <w>ordenados</w>
       <w>otros</w>
       <w>plantilla</w>
       <w>renombrar</w>
+      <w>saltar</w>
       <w>sección</w>
+      <w>subsección</w>
       <w>título</w>
+      <w>vacío</w>
       <w>vibración</w>
       <w>índice</w>
     </words>

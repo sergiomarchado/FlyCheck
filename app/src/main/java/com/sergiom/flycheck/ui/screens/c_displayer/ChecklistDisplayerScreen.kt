@@ -30,10 +30,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.sergiom.flycheck.data.models.DisplayerUiState
 import com.sergiom.flycheck.domain.player.FlatPlayback
-import com.sergiom.flycheck.domain.player.ItemRef
 import com.sergiom.flycheck.domain.player.ItemStatus
-import com.sergiom.flycheck.viewmodel.player.DisplayerUiState
 import com.sergiom.flycheck.viewmodel.theme.ThemeViewModel
 import com.sergiom.flycheck.ui.screens.c_displayer.components.displayer.DisplayerHeaderCard
 import com.sergiom.flycheck.ui.screens.c_displayer.components.displayer.DisplayerItemList
@@ -46,7 +45,34 @@ import com.sergiom.flycheck.ui.screens.c_displayer.components.displayer.ItemRowC
 import com.sergiom.flycheck.ui.screens.c_displayer.components.displayer.SectionPickerSheet
 import com.sergiom.flycheck.ui.screens.c_displayer.components.displayer.SectionTabs
 import com.sergiom.flycheck.ui.screens.c_displayer.components.displayer.SubsectionHeader
+import com.sergiom.flycheck.ui.screens.c_displayer.components.displayer.buildSectionRows
+import com.sergiom.flycheck.ui.screens.c_displayer.components.displayer.DisplayerRowItem
 
+/**
+ * # ChecklistDisplayerScreen
+ *
+ * **Propósito**: Pantalla principal del Displayer para ejecutar una checklist.
+ * Orquesta la UI (Material 3 + Compose) para:
+ * - Mostrar metadatos del template (modelo, aerolínea, logo).
+ * - Navegar entre **secciones** y **subsecciones** (tabs + bottom sheet selector).
+ * - Visualizar el **progreso** de la sección actual.
+ * - Listar y marcar ítems, mostrando info contextual (diálogos de texto/imagen).
+ *
+ * **Entradas**:
+ * - `state`: estado de presentación (títulos, índices de sección, conteos…).
+ * - `flat`: representación lineal (flattened) de la checklist.
+ * - `statuses`: mapa de estado por ítem (`DONE` / no `DONE`).
+ *
+ * **Callbacks**:
+ * - `onToggleItem(id)`: alterna el estado de un ítem.
+ * - `onJumpToItem(globalIndex)`: salta al ítem global indicado (post toggle).
+ * - `onSelectSection(index)`: cambia de sección.
+ * - `onBack()`: navegación hacia atrás.
+ *
+ * **Adaptativo**:
+ * - En **móvil apaisado compacto** (alto < 480dp) usa layout con **header scrolleable** y **tabs sticky**.
+ * - En otros tamaños, layout columnar “normal”.
+ */
 @SuppressLint("ConfigurationScreenWidthHeight")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -60,20 +86,23 @@ fun ChecklistDisplayerScreen(
     onBack: () -> Unit,
     snackbarHostState: SnackbarHostState? = null
 ) {
-    // ---- UI state local ----
+    // ---- Estado local de la pantalla (solo UI) ----
     var showSectionPicker by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     var infoDialog by remember { mutableStateOf<Pair<String?, String?>?>(null) }
     var imageDialog by remember { mutableStateOf<Triple<String, String?, String?>?>(null) }
 
+    // Modo “móvil paisaje compacto” para cambiar layout
     val configuration = LocalConfiguration.current
     val isCompactLandscape =
         configuration.orientation == Configuration.ORIENTATION_LANDSCAPE &&
                 configuration.screenHeightDp < 480
 
+    // Tema: integración con ThemeViewModel para alternar modo desde la top bar
     val themeVm: ThemeViewModel = hiltViewModel()
     val mode by themeVm.mode.collectAsState()
+
     Scaffold(
         topBar = {
             DisplayerTopBar(
@@ -89,7 +118,7 @@ fun ChecklistDisplayerScreen(
     ) { padding ->
 
         if (isCompactLandscape) {
-            // ======= MÓVIL HORIZONTAL: header scrolleable + tabs sticky =======
+            // ======= MÓVIL HORIZONTAL COMPACTO: header scrolleable + tabs sticky =======
             CompactLandscapeContent(
                 paddingValues = padding,
                 state = state,
@@ -108,7 +137,7 @@ fun ChecklistDisplayerScreen(
                     .padding(padding)
                     .padding(16.dp)
             ) {
-                // Cabecera con datos del template
+                // Cabecera con datos del template (si hay checklist cargada)
                 if (flat != null) {
                     DisplayerHeaderCard(
                         title = state.title,
@@ -127,21 +156,21 @@ fun ChecklistDisplayerScreen(
                 )
                 Spacer(modifier = Modifier.height(6.dp))
 
-                // Progreso por sección
+                // Progreso de la sección actual
                 DisplayerProgress(
                     sectionDone = state.sectionDone,
                     sectionTotal = state.sectionTotal,
                     sectionTitle = state.sectionTitle
                 )
 
-                // Lista de ítems de la sección actual (con subsecciones)
+                // Lista de ítems de la sección actual (incluye subsecciones)
                 DisplayerItemList(
                     flat = flat,
                     sectionIndex = state.currentSectionIndex,
                     statuses = statuses,
-                    onRowToggle = { id, globalIndex ->
+                    onRowToggle = { id, gi ->
                         onToggleItem(id)
-                        onJumpToItem(globalIndex)
+                        onJumpToItem(gi)
                     },
                     onShowInfo = { title, body -> infoDialog = title to body },
                     onShowImage = { uri, title, desc -> imageDialog = Triple(uri, title, desc) }
@@ -150,7 +179,7 @@ fun ChecklistDisplayerScreen(
         }
     }
 
-    // BottomSheet de selección
+    // ----- BottomSheet selector de secciones/subsecciones -----
     if (showSectionPicker) {
         ModalBottomSheet(
             onDismissRequest = { showSectionPicker = false },
@@ -172,7 +201,7 @@ fun ChecklistDisplayerScreen(
         }
     }
 
-    // Diálogos
+    // ----- Diálogos contextuales -----
     infoDialog?.let { (title, body) ->
         InfoDialog(title = title, body = body, onDismiss = { infoDialog = null })
     }
@@ -195,8 +224,8 @@ private fun CompactLandscapeContent(
     onShowInfo: (String?, String?) -> Unit,
     onShowImage: (String, String?, String?) -> Unit
 ) {
-    // Generamos la lista de filas (cabeceras de subsección + items) de la sección actual
-    val rows = remember(flat, state.currentSectionIndex) {
+    // Recalcula solo si cambian `flat` o la sección actual
+    val rows: List<DisplayerRowItem> = remember(flat, state.currentSectionIndex) {
         buildSectionRows(flat, state.currentSectionIndex)
     }
 
@@ -221,10 +250,12 @@ private fun CompactLandscapeContent(
             }
         }
 
-        // Tabs sticky
+        // Tabs + Progreso (sticky)
         stickyHeader(key = "tabs") {
             Box(
-                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
             ) {
                 Column(Modifier.padding(vertical = 8.dp)) {
                     SectionTabs(
@@ -241,14 +272,14 @@ private fun CompactLandscapeContent(
             }
         }
 
-        // Lista seccionada
+        // Lista: subsecciones + ítems
         if (rows.isEmpty()) {
             item(key = "empty") { EmptyChecklistCard() }
         } else {
             items(rows, key = { it.key }) { row ->
                 when (row) {
-                    is RowItem.SubsectionHeader -> SubsectionHeader(row.title)
-                    is RowItem.CheckItem -> {
+                    is DisplayerRowItem.SubsectionHeader -> SubsectionHeader(row.title)
+                    is DisplayerRowItem.CheckItem -> {
                         val item = row.ref.itemBlock.item
                         val isDone = statuses[item.id] == ItemStatus.DONE
                         ItemRowCard(
@@ -259,41 +290,20 @@ private fun CompactLandscapeContent(
                             hasInfo = !item.infoTitle.isNullOrBlank() || !item.infoBody.isNullOrBlank(),
                             hasImage = !item.imageUri.isNullOrBlank(),
                             onClick = { onRowToggle(item.id, row.globalIndex) },
-                            onInfoClick = { if (!item.infoTitle.isNullOrBlank() || !item.infoBody.isNullOrBlank()) onShowInfo(item.infoTitle, item.infoBody) },
-                            onImageClick = { if (!item.imageUri.isNullOrBlank()) onShowImage(item.imageUri, item.imageTitle, item.imageDescription) }
+                            onInfoClick = {
+                                if (!item.infoTitle.isNullOrBlank() || !item.infoBody.isNullOrBlank()) {
+                                    onShowInfo(item.infoTitle, item.infoBody)
+                                }
+                            },
+                            onImageClick = {
+                                if (!item.imageUri.isNullOrBlank()) {
+                                    onShowImage(item.imageUri, item.imageTitle, item.imageDescription)
+                                }
+                            }
                         )
                     }
                 }
             }
         }
     }
-}
-
-/* --------- helpers para la lista seccionada (mismo criterio que DisplayerItemList) --------- */
-
-private sealed interface RowItem { val key: String
-    data class SubsectionHeader(val title: String, override val key: String) : RowItem
-    data class CheckItem(val globalIndex: Int, val ref: ItemRef, override val key: String) : RowItem
-}
-
-private fun buildSectionRows(flat: FlatPlayback?, sectionIndex: Int): List<RowItem> {
-    if (flat == null) return emptyList()
-    val raw = mutableListOf<Pair<Int, ItemRef>>()
-    flat.items.forEachIndexed { gi, ref -> if (ref.sectionIndex == sectionIndex) raw += gi to ref }
-    if (raw.isEmpty()) return emptyList()
-
-    val result = mutableListOf<RowItem>()
-    var lastSubPath: List<String> = emptyList()
-
-    for ((gi, ref) in raw) {
-        if (ref.subsectionTitles != lastSubPath && ref.subsectionTitles.isNotEmpty()) {
-            lastSubPath = ref.subsectionTitles
-            val headerTitle = ref.subsectionTitles.lastOrNull()
-            if (headerTitle != null) {
-                result += RowItem.SubsectionHeader(title = headerTitle, key = "h:$sectionIndex:$gi")
-            }
-        }
-        result += RowItem.CheckItem(globalIndex = gi, ref = ref, key = "i:$gi:${ref.itemBlock.item.id}")
-    }
-    return result
 }
