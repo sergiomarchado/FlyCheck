@@ -1,40 +1,56 @@
-# 🛫 FlyCheck — App de Listas de Verificación para Aviación y Simulación Aérea.
+# 🛫 FlyCheck — App de Listas de Verificación para Aviación y Simulación Aérea
 
-**FlyCheck** es una aplicación Android nativa desarrollada con **Jetpack Compose** y **Kotlin**, diseñada para facilitar la creación y gestión de *checklists* (listas de verificación) específicas para aviones y aerolíneas.
+**FlyCheck** es una aplicación Android nativa (Kotlin + **Jetpack Compose**) para **crear, gestionar y ejecutar** *checklists* específicas de aviones y aerolíneas.
 
-Pensada para entornos aeronáuticos (pilotos virtuales, simuladores o incluso formación real), permite documentar procedimientos técnicos con imágenes, instrucciones y secciones personalizadas.
+Pensada para entornos aeronáuticos (pilotos virtuales, simulación o incluso formación real), permite documentar procedimientos con imágenes, instrucciones y secciones personalizadas, y reproducirlas de forma clara durante el vuelo.
 
-> 🎯 Proyecto desarrollado como parte de mi porfolio como desarrollador Android, con vistas a su futura publicación en Google Play.
+> 🎯 Proyecto de porfolio con vistas a publicación en Google Play.
+
+---
+
+<img src="screenshots/ic_fly_check.png" alt="Pantalla de inicio"/>
+
+---
+**VERSIÓN PÚBLICA/ PORTFOLIO** se continará el desarrollo en privado.
 
 ---
 
 ## ✨ Características principales
 
-- 🎛️ EDITOR COMPLETO: Secciones, Subsecciones, Ítems y contenido multimedia
-- 🖼️ Soporte de imágenes por ítem (galería o cámara): cada item puede tener asociada una imagen para su localización o simplemente anotaciones importantes.
-- 🧠 Campos informativos con descripciones técnicas: Campo de información técnica o remarcable sobre algún Ítem en particular.
-- 💾 Exportación como archivo `.zip`: Pensado en el desarrollo del "Displayer /Reproductor" de las checklist y poder compartir con la comunidad o entre usuarios, los archivos .ZIP incluyen:
-  - Un archivo `.json` estructurado
-  - Una carpeta `/images` con los recursos multimedia
+### 🧩 Editor de plantillas (Checklist Builder)
+- Secciones, subsecciones e ítems con estructura libre.
+- 🖼️ Imagen por ítem (galería/cámara) para localizar elementos de cabina.
+- 🧠 Campo de información técnica por ítem (texto de apoyo).
+- 🎨 Colores de énfasis por ítem.
+- 💾 Exportación a `.zip` (incluye `checklist.json` + carpeta `/images`).
+- 📤 Compartir directamente o guardar localmente.
 
-- 📤 Compartir directamente desde la app o guardar localmente
-- 📲 Compatible con Android 7.0 hasta Android 14+
-- 📱 Splash screen animado con branding personalizado
-- 🔔 Notificaciones con acciones rápidas al exportar
+### ▶️ Displayer / Reproductor de checklist
+- Ejecución paso a paso con **progreso por sección**.
+- **Pestañas de secciones** (chips) con estados normal/seleccionado/**completado**.
+- **Subsecciones** con cabeceras en lista y **selector rápido** (bottom sheet) para saltar.
+- Diálogos de **información** y **imagen** por ítem.
+- **Diseño adaptativo**:
+  - Móvil apaisado compacto: *header* desplazable + **tabs sticky**.
+  - Resto de tamaños: layout columnar con cabecera, tabs, progreso y lista.
+- **Tema** claro/oscuro/sistema con toggle en la TopBar.
+
+### 📁 Manager de checklists locales
+- Listado de plantillas guardadas en el dispositivo.
+- **Abrir** en el Displayer, **renombrar** y **eliminar**.
+- Feedback mediante **Snackbars**.
 
 ---
 
-## 🛠️ Tecnologías y librerías usadas
+## 🛠️ Tecnologías y librerías
 
-- **Jetpack Compose** — UI declarativa moderna
-- **Kotlin Coroutines & Flow** — Gestión reactiva del estado
-- **Hilt (DI)** — Inyección de dependencias
-- **Navigation Compose** — Navegación declarativa
-- **MediaStore API** — Gestión moderna de archivos
-- **FileProvider** — Compatibilidad de archivos en Android 7+
-- **Material 3** — Sistema de diseño moderno (Material You)
-- **Notificaciones** — Integración con NotificationManager
-- **JSON Serialization** — Serialización con kotlinx.serialization
+- **Jetpack Compose** (Material 3 / Material You)
+- **Kotlin Coroutines & StateFlow**
+- **Hilt** (DI)
+- **Navigation Compose**
+- **kotlinx.serialization** (JSON)
+- **MediaStore / FileProvider**
+- **NotificationManager**
 
 ---
 
@@ -61,18 +77,36 @@ Cuando se exporta una plantilla, se genera un `.zip` con esta estructura:
   <img src="screenshots/editor2_imagenitemdemo.png" alt="Editor con info extendida" width="200"/>
   <img src="screenshots/exportdemo.png" alt="Exportación ZIP" width="200"/>
   <img src="screenshots/exportnotification.png" alt="Notificación de exportación" width="200"/>
+  <img src="screenshots/displayer.png" alt="Displayer o reproductor de checklist" width="250"/>
 </div>
+---
+
+## 🧠 Arquitectura (resumen) & rendimiento
+
+- **MVVM + Compose-first**: la UI es declarativa y consume un `DisplayerUiState` como única fuente de verdad.
+- **Derivación de estado** en el ViewModel (no en la UI): resúmenes por sección y subsección con datos del modelo aplanado.
+- **Pre-indexado** de secciones/subsecciones (\*SectionIndex\*): acelera cómputos contando `DONE` sobre arrays de índices ya filtrados.
+- **Trabajo pesado off-main** (`Dispatchers.Default`) y `distinctUntilChanged` para reducir recomposiciones.
+- **Eventos efímeros** (`UiEvent`) para Snackbars (errores al parsear JSON, etc.).
+- **Robustez**: clamps defensivos (`progress` en `[0,1]`, `done ≤ total`), manejo de checklist vacía y validación de saltos.
+
+---
+
+## ▶️ Cómo ejecutar el proyecto
+
+1. Clona el repositorio y ábrelo con **Android Studio** (JDK 17 recomendado).
+2. Sincroniza Gradle.
+3. Ejecuta en un dispositivo/emulador **API 24+**.
+
 ---
 
 ## 🚀 Proyección a futuro
 
-FlyCheck está diseñado para evolucionar hacia una solución más amplia con:
-
-- ☁️ Sincronización en la nube (Firebase o propio backend)
-- 🌐 Repositorio comunitario de plantillas (compartición online)
-- 🛫 Base de datos offline integrada
-- 📲 Publicación oficial en **Google Play**
-- 🧩 Soporte para nuevos tipos de bloques (checkboxes dinámicos, temporizadores, etc.)
+- ☁️ Sincronización en la nube (Firebase o backend propio).
+- 🌐 Repositorio comunitario de plantillas (compartición online).
+- 🛫 Base de datos offline integrada.
+- 🧩 Nuevos tipos de bloques (checkboxes dinámicos, temporizadores, etc.).
+- 📲 Publicación oficial en **Google Play**.
 
 ---
 
@@ -85,7 +119,7 @@ Desarrollado por **Sergio M.**
 
 ---
 
-🔒 Código fuente con derechos reservados
+🔒 **Derechos reservados**
 
 El contenido de este repositorio está protegido por derechos de autor y es propiedad exclusiva de Sergio M. No se permite el uso, modificación, redistribución ni comercialización del código sin autorización previa por escrito.
 
@@ -99,6 +133,4 @@ Este proyecto está destinado únicamente a fines demostrativos en el contexto d
 - ¿Tienes ideas o sugerencias? Abre un *issue* o *pull request*.
 - ¿Eres piloto o estudiante? ¡Contáctame para probar futuras versiones beta!
 
----
-
-> 💬 *FlyCheck es más que una app, es una herramienta diseñada con pasión por la aviación y el desarrollo móvil.*
+> 💬 *FlyCheck es más que una app: una herramienta hecha con pasión por la aviación y el desarrollo Android.*
