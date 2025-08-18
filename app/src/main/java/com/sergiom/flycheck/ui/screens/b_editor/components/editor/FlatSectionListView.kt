@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.sergiom.flycheck.data.models.CheckListTemplateModel
 import com.sergiom.flycheck.data.models.FlatBlock
 import com.sergiom.flycheck.data.models.RenameTargetType
-import com.sergiom.flycheck.presentation.viewmodel.editor.TemplateEditorViewModel
+import com.sergiom.flycheck.viewmodel.editor.TemplateEditorViewModel
 import com.sergiom.flycheck.ui.screens.b_editor.components.editor.header.EditorHeaderMain
 import com.sergiom.flycheck.ui.screens.b_editor.components.editor.item.ItemCardEntry
 import com.sergiom.flycheck.ui.screens.b_editor.components.editor.subsection.SubsectionCardEntry

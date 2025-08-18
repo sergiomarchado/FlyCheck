@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.sergiom.flycheck.presentation.viewmodel.player.SectionSummary
+import com.sergiom.flycheck.viewmodel.player.SectionSummary
 import com.sergiom.flycheck.ui.common.ITEM_COMPLETED_COLOR
 import com.sergiom.flycheck.ui.theme.LocalIsDarkTheme
 

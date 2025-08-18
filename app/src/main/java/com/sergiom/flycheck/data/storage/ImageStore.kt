@@ -17,7 +17,7 @@ import java.io.FileOutputStream
  * Utilidad para gestionar imágenes de checklists en almacenamiento app-specific:
  *   .../Android/data/<pkg>/files/Pictures/checklists/<templateId>/images
  *
- * NOTA: Son operaciones de E/S. Lánzalas en Dispatchers.IO desde VM/UseCase.
+ * NOTA: Son operaciones de E/S.
  */
 object ImageStore {
 
@@ -62,14 +62,6 @@ object ImageStore {
         } catch (_: Throwable) {
             src
         }
-    }
-
-    /**
-     * Asegura copias locales para todas las imágenes de un template usando el **id interno** del template.
-     * Útil cuando el id (UUID) coincide con el “namespace” de imágenes.
-     */
-    fun ensureLocalCopies(context: Context, template: CheckListTemplateModel): CheckListTemplateModel {
-        return ensureLocalCopies(context, template.id, template)
     }
 
     /**

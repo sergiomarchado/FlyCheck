@@ -37,7 +37,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil3.compose.rememberAsyncImagePainter
 import com.sergiom.flycheck.R
-import com.sergiom.flycheck.presentation.viewmodel.preeditor.CreatecCustomCheckListViewModel
+import com.sergiom.flycheck.viewmodel.preeditor.CreatecCustomCheckListViewModel
 import com.sergiom.flycheck.ui.screens.b_editor.components.editor.FlyCheckTopBar
 
 

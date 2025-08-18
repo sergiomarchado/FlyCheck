@@ -1,4 +1,4 @@
-package com.sergiom.flycheck.presentation.viewmodel.player
+package com.sergiom.flycheck.viewmodel.player
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -209,10 +209,6 @@ class ChecklistDisplayerViewModel @Inject constructor(
         player.reset()
     }
 
-    // --- Acciones ---
-    fun onNext() = player.next()
-    fun onPrev() = player.prev()
-    fun onToggle() = player.toggleCurrentDone()
     fun onJumpToSection(i: Int) = player.jumpToSection(i)
 
     // Lista

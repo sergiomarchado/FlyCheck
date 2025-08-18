@@ -33,8 +33,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.sergiom.flycheck.domain.player.FlatPlayback
 import com.sergiom.flycheck.domain.player.ItemRef
 import com.sergiom.flycheck.domain.player.ItemStatus
-import com.sergiom.flycheck.presentation.viewmodel.player.DisplayerUiState
-import com.sergiom.flycheck.presentation.viewmodel.theme.ThemeViewModel
+import com.sergiom.flycheck.viewmodel.player.DisplayerUiState
+import com.sergiom.flycheck.viewmodel.theme.ThemeViewModel
 import com.sergiom.flycheck.ui.screens.c_displayer.components.displayer.DisplayerHeaderCard
 import com.sergiom.flycheck.ui.screens.c_displayer.components.displayer.DisplayerItemList
 import com.sergiom.flycheck.ui.screens.c_displayer.components.displayer.DisplayerProgress
@@ -54,9 +54,6 @@ fun ChecklistDisplayerScreen(
     state: DisplayerUiState,
     flat: FlatPlayback?,
     statuses: Map<String, ItemStatus>,
-    onPrev: () -> Unit,
-    onNext: () -> Unit,
-    onToggle: () -> Unit,
     onToggleItem: (String) -> Unit,
     onJumpToItem: (Int) -> Unit,
     onSelectSection: (Int) -> Unit,

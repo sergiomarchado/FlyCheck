@@ -1,4 +1,4 @@
-package com.sergiom.flycheck.presentation.viewmodel.manager
+package com.sergiom.flycheck.viewmodel.manager
 
 import com.sergiom.flycheck.data.models.ChecklistInfo
 

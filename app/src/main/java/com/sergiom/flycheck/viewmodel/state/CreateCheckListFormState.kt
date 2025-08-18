@@ -1,4 +1,4 @@
-package com.sergiom.flycheck.presentation.viewmodel.state
+package com.sergiom.flycheck.viewmodel.state
 
 import android.net.Uri
 

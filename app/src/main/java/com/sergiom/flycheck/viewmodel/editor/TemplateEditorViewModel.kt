@@ -1,4 +1,4 @@
-package com.sergiom.flycheck.presentation.viewmodel.editor
+package com.sergiom.flycheck.viewmodel.editor
 
 import android.Manifest
 import android.content.Context

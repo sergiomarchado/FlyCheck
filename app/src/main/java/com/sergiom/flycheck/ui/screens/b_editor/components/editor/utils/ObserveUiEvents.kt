@@ -7,7 +7,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
 import com.sergiom.flycheck.R
 import com.sergiom.flycheck.ui.events.UiEvent
-import com.sergiom.flycheck.presentation.viewmodel.editor.TemplateEditorViewModel
+import com.sergiom.flycheck.viewmodel.editor.TemplateEditorViewModel
 
 /**
  * Composable responsable de observar los eventos de UI emitidos desde el ViewModel

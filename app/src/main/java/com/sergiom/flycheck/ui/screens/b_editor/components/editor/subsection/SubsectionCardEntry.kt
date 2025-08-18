@@ -9,7 +9,7 @@ import com.sergiom.flycheck.data.models.CheckListBlock
 import com.sergiom.flycheck.data.models.FlatBlock
 import com.sergiom.flycheck.data.models.FlatBlockWithLocalIndex
 import com.sergiom.flycheck.data.models.RenameTargetType
-import com.sergiom.flycheck.presentation.viewmodel.editor.TemplateEditorViewModel
+import com.sergiom.flycheck.viewmodel.editor.TemplateEditorViewModel
 
 /**
  * Composable que representa una entrada visual de una subsección dentro del checklist.

@@ -29,7 +29,7 @@ import androidx.navigation.NavHostController
 import com.sergiom.flycheck.R
 import com.sergiom.flycheck.data.models.ExportOption
 import com.sergiom.flycheck.data.models.RenameTargetType
-import com.sergiom.flycheck.presentation.viewmodel.editor.TemplateEditorViewModel
+import com.sergiom.flycheck.viewmodel.editor.TemplateEditorViewModel
 import com.sergiom.flycheck.ui.events.UiEvent
 import com.sergiom.flycheck.ui.screens.b_editor.components.editor.ExportFab
 import com.sergiom.flycheck.ui.screens.b_editor.components.editor.FlatSectionListView

@@ -1,4 +1,4 @@
-package com.sergiom.flycheck.presentation.viewmodel.manager
+package com.sergiom.flycheck.viewmodel.manager
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -43,16 +43,6 @@ class ChecklistManagerViewModel @Inject constructor(
                 viewModelScope.launch { _effects.emit(ManagerEffect.ShowMessage("No se pudo cargar")) }
             }
             .getOrNull()
-
-    /** Guarda (persiste) un template ya normalizado para que sus URIs file:// queden en disco. */
-    fun saveNormalized(id: String, template: CheckListTemplateModel) {
-        viewModelScope.launch {
-            runCatching { repo.saveChecklist(id, template) }
-                .onFailure {
-                    _effects.emit(ManagerEffect.ShowMessage("No se pudo guardar la checklist normalizada"))
-                }
-        }
-    }
 
     /** Elimina en background y refresca. */
     fun deleteChecklist(id: String) {

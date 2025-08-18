@@ -19,7 +19,7 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.sergiom.flycheck.navigation.AppNavHost
-import com.sergiom.flycheck.presentation.viewmodel.theme.ThemeViewModel
+import com.sergiom.flycheck.viewmodel.theme.ThemeViewModel
 import com.sergiom.flycheck.ui.theme.FlyCheckTheme
 import dagger.hilt.android.AndroidEntryPoint
 

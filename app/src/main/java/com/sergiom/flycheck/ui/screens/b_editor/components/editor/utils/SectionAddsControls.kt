@@ -17,7 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.sergiom.flycheck.presentation.viewmodel.editor.TemplateEditorViewModel
+import com.sergiom.flycheck.viewmodel.editor.TemplateEditorViewModel
 import com.sergiom.flycheck.R
 
 /**

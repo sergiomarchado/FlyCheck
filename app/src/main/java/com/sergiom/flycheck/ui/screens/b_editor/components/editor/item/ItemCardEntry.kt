@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.sergiom.flycheck.R
 import com.sergiom.flycheck.data.models.FlatBlock
 import com.sergiom.flycheck.data.models.FlatBlockWithLocalIndex
-import com.sergiom.flycheck.presentation.viewmodel.editor.TemplateEditorViewModel
+import com.sergiom.flycheck.viewmodel.editor.TemplateEditorViewModel
 import com.sergiom.flycheck.ui.screens.b_editor.components.editor.utils.ImageEditDialog
 import com.sergiom.flycheck.ui.screens.b_editor.components.editor.utils.InfoEditDialog
 

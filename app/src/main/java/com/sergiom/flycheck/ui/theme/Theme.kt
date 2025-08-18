@@ -81,6 +81,7 @@ fun FlyCheckTheme(
 
 
 /* ===== OPCIONAL: overload de compatibilidad ===== */
+@Suppress("unused")
 @Composable
 fun FlyCheckTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),

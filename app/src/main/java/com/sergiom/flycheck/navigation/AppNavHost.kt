@@ -16,9 +16,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.sergiom.flycheck.data.models.CheckListTemplateModel
-import com.sergiom.flycheck.presentation.viewmodel.manager.ChecklistManagerViewModel
-import com.sergiom.flycheck.presentation.viewmodel.player.ChecklistDisplayerViewModel
-import com.sergiom.flycheck.presentation.viewmodel.theme.ThemeViewModel
+import com.sergiom.flycheck.viewmodel.manager.ChecklistManagerViewModel
+import com.sergiom.flycheck.viewmodel.player.ChecklistDisplayerViewModel
+import com.sergiom.flycheck.viewmodel.theme.ThemeViewModel
 import com.sergiom.flycheck.ui.screens.a_welcome.HomeScreenContainer
 import com.sergiom.flycheck.ui.screens.a_welcome.SplashScreen
 import com.sergiom.flycheck.ui.screens.b_editor.PreCheckListEditorScreen
@@ -26,6 +26,7 @@ import com.sergiom.flycheck.ui.screens.b_editor.TemplateEditorCheckListScreen
 import com.sergiom.flycheck.ui.screens.c_displayer.ChecklistDisplayerScreen
 import com.sergiom.flycheck.ui.screens.c_displayer.ChecklistManagerScreen
 import com.sergiom.flycheck.ui.utils.JsonUtils
+import com.sergiom.flycheck.viewmodel.manager.ManagerEffect
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnrememberedGetBackStackEntry")
@@ -106,7 +107,7 @@ fun AppNavHost(navController: NavHostController) {
             LaunchedEffect(Unit) {
                 vm.effects.collect { effect ->
                     when (effect) {
-                        is com.sergiom.flycheck.presentation.viewmodel.manager.ManagerEffect.ShowMessage ->
+                        is ManagerEffect.ShowMessage ->
                             snackbar.showSnackbar(effect.text)
                     }
                 }
@@ -172,9 +173,6 @@ fun AppNavHost(navController: NavHostController) {
                 state = state.value,
                 flat = flat.value,
                 statuses = statuses.value,
-                onPrev = vm::onPrev,
-                onNext = vm::onNext,
-                onToggle = vm::onToggle,
                 onToggleItem = vm::onToggleItem,
                 onJumpToItem = vm::onJumpToItem,
                 onSelectSection = vm::onJumpToSection,

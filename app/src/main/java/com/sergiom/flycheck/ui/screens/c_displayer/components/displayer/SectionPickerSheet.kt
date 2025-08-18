@@ -6,8 +6,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.sergiom.flycheck.presentation.viewmodel.player.SectionSummary
-import com.sergiom.flycheck.presentation.viewmodel.player.SubsectionSummary
+import com.sergiom.flycheck.viewmodel.player.SectionSummary
+import com.sergiom.flycheck.viewmodel.player.SubsectionSummary
 
 @Composable
 internal fun SectionPickerSheet(

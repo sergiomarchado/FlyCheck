@@ -1,4 +1,4 @@
-package com.sergiom.flycheck.presentation.viewmodel.theme
+package com.sergiom.flycheck.viewmodel.theme
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

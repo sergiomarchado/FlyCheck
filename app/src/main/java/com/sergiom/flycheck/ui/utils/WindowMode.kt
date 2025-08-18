@@ -1,5 +1,6 @@
 package com.sergiom.flycheck.ui.utils
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -19,6 +20,7 @@ data class WindowMode(
     val isCompactHeight get() = heightClass == HeightClass.Compact
 }
 
+@SuppressLint("ConfigurationScreenWidthHeight")
 @Composable
 fun rememberWindowMode(): WindowMode {
     val cfg = LocalConfiguration.current
