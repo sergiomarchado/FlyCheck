@@ -70,14 +70,14 @@ Cuando se exporta una plantilla, se genera un `.zip` con esta estructura:
 ## 📸 Capturas de pantalla
 
 <div style="display: flex; overflow-x: auto; gap: 10px; padding: 10px 0;">
-  <img src="screenshots/home.png" alt="Pantalla de inicio" width="200"/>
-  <img src="screenshots/preeditor.png" alt="Pre-editor" width="200"/>
-  <img src="screenshots/editor1.png" alt="Editor 1" width="200"/>
-  <img src="screenshots/editor2_imagenitem.png" alt="Editor con imagen" width="200"/>
-  <img src="screenshots/editor2_imagenitemdemo.png" alt="Editor con info extendida" width="200"/>
-  <img src="screenshots/exportdemo.png" alt="Exportación ZIP" width="200"/>
-  <img src="screenshots/exportnotification.png" alt="Notificación de exportación" width="200"/>
-  <img src="screenshots/displayer.png" alt="Displayer o reproductor de checklist" width="250"/>
+  <img src="screenshots/home.png" alt="Pantalla de inicio" width="300"/>
+  <img src="screenshots/preeditor.png" alt="Pre-editor" width="300"/>
+  <img src="screenshots/editor1.png" alt="Editor 1" width="300"/>
+  <img src="screenshots/editor2_imagenitem.png" alt="Editor con imagen" width="300"/>
+  <img src="screenshots/editor2_imagenitemdemo.png" alt="Editor con info extendida" width="300"/>
+  <img src="screenshots/exportdemo.png" alt="Exportación ZIP" width="300"/>
+  <img src="screenshots/exportnotification.png" alt="Notificación de exportación" width="300"/>
+  <img src="screenshots/displayer.png" alt="Displayer o reproductor de checklist" width="350"/>
 </div>
 ---
 
